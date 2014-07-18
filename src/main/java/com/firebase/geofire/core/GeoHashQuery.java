@@ -162,6 +162,14 @@ public class GeoHashQuery {
         return this.startValue.compareTo(hashStr) <= 0 && this.endValue.compareTo(hashStr) > 0;
     }
 
+    public String getStartValue() {
+        return this.startValue;
+    }
+
+    public String getEndValue() {
+        return this.endValue;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

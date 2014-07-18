@@ -1,7 +1,6 @@
 package com.firebase.geofire;
 
 import com.firebase.geofire.util.GeoUtils;
-import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

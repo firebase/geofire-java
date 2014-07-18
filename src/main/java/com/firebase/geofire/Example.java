@@ -8,7 +8,7 @@ public class Example {
         Firebase firebase = new Firebase("https://geofire-ios.firebaseio.com/geofire");
         GeoFire geoFire = new GeoFire(firebase);
         GeoQuery query = geoFire.queryAtLocation(37.7, -122.4, 10000);
-        query.addGeoQueryEventListener(new GeoQuery.GeoQueryEventListener() {
+        query.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, double latitude, double longitude) {
                 System.out.println(String.format("%s entered at [%f, %f]", key, latitude, longitude));
