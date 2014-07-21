@@ -54,7 +54,7 @@ To remove a location and delete it from Firebase simply call
 geoFire.removeKey("firebase-hq");
 ```
 
-#### Retrieving a loation
+#### Retrieving a location
 Retrieving locations happens with listeners. Like with any Firebase reference,
 the listener is called once for the initial position and then for every update
 of the location. Like that, your app can always stay up-to-date automatically.
