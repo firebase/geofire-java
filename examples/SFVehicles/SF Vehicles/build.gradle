@@ -10,6 +10,7 @@ apply plugin: 'android'
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 android {
@@ -45,6 +46,6 @@ dependencies {
     // Firebase
     compile 'com.firebase:firebase-client:1.0.16'
     // GeoFire
-    compile files('../../../target/geofire-1.0-SNAPSHOT.jar')
+    compile 'com.firebase:geofire:1.0-SNAPSHOT'
 }
 
