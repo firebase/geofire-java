@@ -111,8 +111,8 @@ geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
     @Override
     public void onKeyMoved(String key, double lat, double lng) {
         System.err.println(String.format("Key %s moved within the search area to [%f,%f]", key, lat, lng));
-        }
-    });
+    }
+});
 ```
 
 To remove the listener call either `removeListener` to remove a single event listener, or `removeAllListeners` to remove all event listeners for a `GeoQuery`.
