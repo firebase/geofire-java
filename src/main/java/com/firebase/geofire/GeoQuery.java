@@ -33,10 +33,7 @@ import com.firebase.geofire.core.GeoHash;
 import com.firebase.geofire.core.GeoHashQuery;
 import com.firebase.geofire.util.GeoUtils;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A GeoQuery object can be used for geo queries in a given cirlce. The GeoQuery class is thread safe.
@@ -201,9 +198,12 @@ public class GeoQuery {
             LocationInfo oldLocationInfo = info.getValue();
             this.updateLocationInfo(info.getKey(), oldLocationInfo.latitude, oldLocationInfo.longitude);
         }
-        for(Map.Entry<String, LocationInfo> entry: this.locationInfos.entrySet()) {
+        // remove locations that are not part of the geo query anymore
+        Iterator<Map.Entry<String, LocationInfo>> it = this.locationInfos.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, LocationInfo> entry = it.next();
             if (!this.geoHashQueriesContainGeoHash(entry.getValue().geoHash)) {
-                this.locationInfos.remove(entry.getKey());
+                it.remove();
             }
         }
     }
