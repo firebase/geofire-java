@@ -33,10 +33,10 @@ public class RealDataTest {
     }
 
     protected void setLoc(GeoFire geoFire, String key, double latitude, double longitude, boolean wait) {
-        Future<FirebaseError> future = geoFire.setLocation(key, latitude, longitude);
+        Future<GeoFireResult> future = geoFire.setLocation(key, latitude, longitude);
         if (wait) {
             try {
-                Assert.assertNull(future.get(4, TimeUnit.SECONDS));
+                Assert.assertTrue(future.get(4, TimeUnit.SECONDS).wasSuccessful());
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             } catch (ExecutionException e) {
@@ -48,10 +48,10 @@ public class RealDataTest {
     }
 
     protected void removeLoc(GeoFire geoFire, String key, boolean wait) {
-        Future<FirebaseError> future = geoFire.removeLocation(key);
+        Future<GeoFireResult> future = geoFire.removeLocation(key);
         if (wait) {
             try {
-                Assert.assertNull(future.get(4, TimeUnit.SECONDS));
+                Assert.assertTrue(future.get(4, TimeUnit.SECONDS).wasSuccessful());
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             } catch (ExecutionException e) {

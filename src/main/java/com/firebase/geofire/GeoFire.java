@@ -117,9 +117,8 @@ public class GeoFire {
      * @param latitude The latitude of the location in the range of [-90,90]
      * @param longitude The longitude of the location in the range of [-180,180]
      * @return A Future which will be done once the location was successfully saved on the server or an error occurred.
-     * In that case of an error get() will return a FirebaseError. In the case of success get() will return null.
      */
-    public Future<FirebaseError> setLocation(String key, double latitude, double longitude) {
+    public Future<GeoFireResult> setLocation(String key, double latitude, double longitude) {
         if (key == null) {
             throw new NullPointerException();
         }
@@ -131,11 +130,11 @@ public class GeoFire {
         Map<String, Object> updates = new HashMap<String, Object>();
         updates.put("g", geoHash.getGeoHashString());
         updates.put("l", new double[]{latitude, longitude});
-        final SimpleFuture<FirebaseError> future = new SimpleFuture<FirebaseError>();
+        final SimpleFuture<GeoFireResult> future = new SimpleFuture<GeoFireResult>();
         keyRef.setValue(updates, geoHash.getGeoHashString(), new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                future.put(firebaseError);
+                future.put(new GeoFireResult(firebaseError));
             }
         });
         return future;
@@ -145,15 +144,14 @@ public class GeoFire {
      * Removes the location for a key from this GeoFire
      * @param key The key to remove from this GeoFire
      * @return A Future which will be done once the location on the server was successfully removed or an error occurred.
-     * In the case of an error get() will return a FirebaseError. In the case of success it get() will return null.
      */
-    public Future<FirebaseError> removeLocation(String key) {
+    public Future<GeoFireResult> removeLocation(String key) {
         Firebase keyRef = this.firebaseRefForKey(key);
-        final SimpleFuture<FirebaseError> future = new SimpleFuture<FirebaseError>();
+        final SimpleFuture<GeoFireResult> future = new SimpleFuture<GeoFireResult>();
         keyRef.setValue(null, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                future.put(firebaseError);
+                future.put(new GeoFireResult(firebaseError));
             }
         });
         return future;
