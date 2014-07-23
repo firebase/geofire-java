@@ -159,6 +159,9 @@ public class GeoQuery {
     }
 
     private boolean geoHashQueriesContainGeoHash(GeoHash geoHash) {
+        if (this.queries == null) {
+            return false;
+        }
         for (GeoHashQuery query: this.queries) {
             if (query.containsGeoHash(geoHash)) {
                 return true;
