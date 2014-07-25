@@ -23,6 +23,10 @@ You can also directly add the jar file in the folder `dist` to your project.
 
 ## API Reference
 
+*TODO: add link to API reference*
+
+## Quick Start
+
 ### GeoFire
 
 A `GeoFire` object is used to read and write geolocation data to your Firebase
