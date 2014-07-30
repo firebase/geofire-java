@@ -23,7 +23,7 @@ You can also directly add the jar file in the folder `dist` to your project.
 
 ## API Reference
 
-A full API reference is available [here](https://geofire-java.firebaseapp.com/docs/").
+A full API reference is available [here](https://geofire-java.firebaseapp.com/docs/).
 
 ## Quick Start
 
