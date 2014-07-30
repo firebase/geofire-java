@@ -1,0 +1,9 @@
+{
+  "firebase": "geofire-java",
+  "public": "site",
+  "ignore": [
+    "firebase.json",
+    "**/.*",
+    "**/node_modules/**"
+  ]
+}
