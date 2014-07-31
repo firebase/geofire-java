@@ -33,11 +33,9 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.firebase.geofire.core.GeoHash;
-import com.firebase.geofire.core.SimpleFuture;
 import com.firebase.geofire.util.GeoUtils;
 
 import java.util.*;
-import java.util.concurrent.Future;
 
 /**
  * A GeoFire instance is used to store geo location data in Firebase.
@@ -116,9 +114,20 @@ public class GeoFire {
      * @param key The key to save the location for
      * @param latitude The latitude of the location in the range of [-90,90]
      * @param longitude The longitude of the location in the range of [-180,180]
-     * @return A Future which will be done once the location was successfully saved on the server or an error occurred.
      */
-    public Future<GeoFireResult> setLocation(String key, double latitude, double longitude) {
+    public void setLocation(String key, double latitude, double longitude) {
+        this.setLocation(key, latitude, longitude, null);
+    }
+
+    /**
+     * Sets the location for a given key
+     * @param key The key to save the location for
+     * @param latitude The latitude of the location in the range of [-90,90]
+     * @param longitude The longitude of the location in the range of [-180,180]
+     * @param completionListener A listener that is called once the location was successfully saved on the server or an
+     *                           error occurred.
+     */
+    public void setLocation(String key, double latitude, double longitude, Firebase.CompletionListener completionListener) {
         if (key == null) {
             throw new NullPointerException();
         }
@@ -130,31 +139,29 @@ public class GeoFire {
         Map<String, Object> updates = new HashMap<String, Object>();
         updates.put("g", geoHash.getGeoHashString());
         updates.put("l", new double[]{latitude, longitude});
-        final SimpleFuture<GeoFireResult> future = new SimpleFuture<GeoFireResult>();
-        keyRef.setValue(updates, geoHash.getGeoHashString(), new Firebase.CompletionListener() {
-            @Override
-            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                future.put(new GeoFireResult(firebaseError));
-            }
-        });
-        return future;
+        keyRef.setValue(updates, geoHash.getGeoHashString(), completionListener);
     }
 
     /**
      * Removes the location for a key from this GeoFire
      * @param key The key to remove from this GeoFire
-     * @return A Future which will be done once the location on the server was successfully removed or an error occurred.
      */
-    public Future<GeoFireResult> removeLocation(String key) {
+    public void removeLocation(String key) {
+        this.removeLocation(key, null);
+    }
+
+    /**
+     * Removes the location for a key from this GeoFire
+     * @param key The key to remove from this GeoFire
+     * @param completionListener A completion listener that is called once the location is removed successfully removed
+     *                           from the server or an error occurred
+     */
+    public void removeLocation(String key, Firebase.CompletionListener completionListener) {
+        if (key == null) {
+            throw new NullPointerException();
+        }
         Firebase keyRef = this.firebaseRefForKey(key);
-        final SimpleFuture<GeoFireResult> future = new SimpleFuture<GeoFireResult>();
-        keyRef.setValue(null, new Firebase.CompletionListener() {
-            @Override
-            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                future.put(new GeoFireResult(firebaseError));
-            }
-        });
-        return future;
+        keyRef.setValue(null, completionListener);
     }
 
     /**

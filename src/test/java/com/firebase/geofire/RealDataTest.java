@@ -4,6 +4,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.firebase.geofire.core.SimpleFuture;
 import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Before;
@@ -33,10 +34,16 @@ public class RealDataTest {
     }
 
     protected void setLoc(GeoFire geoFire, String key, double latitude, double longitude, boolean wait) {
-        Future<GeoFireResult> future = geoFire.setLocation(key, latitude, longitude);
+        final SimpleFuture<FirebaseError> futureError = new SimpleFuture<FirebaseError>();
+        geoFire.setLocation(key, latitude, longitude, new Firebase.CompletionListener() {
+            @Override
+            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                futureError.put(firebaseError);
+            }
+        });
         if (wait) {
             try {
-                Assert.assertTrue(future.get(4, TimeUnit.SECONDS).wasSuccessful());
+                Assert.assertNull(futureError.get(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             } catch (ExecutionException e) {
@@ -48,10 +55,16 @@ public class RealDataTest {
     }
 
     protected void removeLoc(GeoFire geoFire, String key, boolean wait) {
-        Future<GeoFireResult> future = geoFire.removeLocation(key);
+        final SimpleFuture<FirebaseError> futureError = new SimpleFuture<FirebaseError>();
+        geoFire.removeLocation(key, new Firebase.CompletionListener() {
+            @Override
+            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                futureError.put(firebaseError);
+            }
+        });
         if (wait) {
             try {
-                Assert.assertTrue(future.get(4, TimeUnit.SECONDS).wasSuccessful());
+                Assert.assertNull(futureError.get(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             } catch (ExecutionException e) {
