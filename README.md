@@ -23,7 +23,7 @@ You can also directly add the jar file in the folder `dist` to your project.
 
 ## API Reference
 
-A full API reference is available [here](https://geofire-java.firebaseapp.com/docs/).
+[A full API reference is available here](https://geofire-java.firebaseapp.com/docs/).
 
 ## Quick Start
 
@@ -72,7 +72,7 @@ geoFire.addLocationEventListener("firebase-hq", new LocationEventListener() {
 
     @Override
     public void onKeyRemoved(String key) {
-        System.err.println(String.format("The location for key %s was remove", key));
+        System.err.println(String.format("The location for key %s was removed”, key));
     }
 
     @Override
@@ -87,8 +87,8 @@ geoFire.addLocationEventListener("firebase-hq", new LocationEventListener() {
 Locations can be queries with an `GeoQuery` object.
 
 ```java
-// creates a new query around [37.7832, -122.4056] with a radius of 1000 meters
-GeoQuery query = new GeoQuery(geoFire, 37.7832, -122.4056, 1000);
+// creates a new query around [37.7832, -122.4056] with a radius of 0.6 kilometers
+GeoQuery geoQuery = geoFire.queryAtLocation(37.7832, -122.4056, 0.6);
 ```
 
 #### Receiving events for geo queries
@@ -109,7 +109,7 @@ geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
 
     @Override
     public void onKeyExited(String key) {
-        System.err.println(String.format("Key %s is no longer in the search area"));
+        System.err.println(String.format("Key %s is no longer in the search area”, key));
     }
 
     @Override
@@ -125,7 +125,7 @@ To remove the listener call either `removeListener` to remove a single event lis
 
 The GeoQuery search area can be changed with `setCenter` and `setRadius` Key
 exited and key entered events will be triggered for keys moving in and out of
-the old and new search area respecitively. No key moved events will be
+the old and new search area respectively. No key moved events will be
 triggered.
 
 Updating the search area can be helpful for e.g. updating the query to the new visible map area after a user scrolls.
