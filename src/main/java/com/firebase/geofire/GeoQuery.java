@@ -36,7 +36,7 @@ import com.firebase.geofire.util.GeoUtils;
 import java.util.*;
 
 /**
- * A GeoQuery object can be used for geo queries in a given cirlce. The GeoQuery class is thread safe.
+ * A GeoQuery object can be used for geo queries in a given circle. The GeoQuery class is thread safe.
  */
 public class GeoQuery {
 
@@ -78,7 +78,7 @@ public class GeoQuery {
 
         @Override
         public synchronized void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            // ignore, this should be handle by onChildChanged
+            // ignore, this should be handled by onChildChanged
         }
 
         @Override
@@ -89,7 +89,9 @@ public class GeoQuery {
 
     private final GeoFire geoFire;
     private final Set<GeoQueryEventListener> eventListeners = new HashSet<GeoQueryEventListener>();
+    private final Set<GeoQueryReadyListener> readyListeners = new HashSet<GeoQueryReadyListener>();
     private final Map<GeoHashQuery, Query> firebaseQueries = new HashMap<GeoHashQuery, Query>();
+    private final Set<GeoHashQuery> outstandingQueries = new HashSet<GeoHashQuery>();
     private final Map<String, LocationInfo> locationInfos = new HashMap<String, LocationInfo>();
     private double centerLatitude;
     private double centerLongitude;
@@ -101,13 +103,14 @@ public class GeoQuery {
      * @param geoFire The GeoFire object this GeoQuery uses
      * @param latitude The latitude of the center of this query in the range of [-90,90]
      * @param longitude The longitude of the center of this query in the range of [-180,180]
-     * @param radius The radius of this query in meters
+     * @param radius The radius of this query in kilometers
      */
-    public GeoQuery(GeoFire geoFire, double latitude, double longitude, double radius) {
+    GeoQuery(GeoFire geoFire, double latitude, double longitude, double radius) {
         this.geoFire = geoFire;
         this.centerLatitude = latitude;
         this.centerLongitude = longitude;
-        this.radius = radius;
+        // convert from kilometers to meters
+        this.radius = radius * 1000;
     }
 
     private boolean locationIsInQuery(double latitude, double longitude) {
@@ -174,9 +177,57 @@ public class GeoQuery {
         for(Map.Entry<GeoHashQuery, Query> entry: this.firebaseQueries.entrySet()) {
             entry.getValue().removeEventListener(this.childEventLister);
         }
+        this.outstandingQueries.clear();
         this.firebaseQueries.clear();
         this.queries = null;
         this.locationInfos.clear();
+    }
+
+    private boolean hasListeners() {
+        return !this.eventListeners.isEmpty() || !this.readyListeners.isEmpty();
+    }
+
+    private boolean canFireReady() {
+        return this.outstandingQueries.isEmpty();
+    }
+
+    private void checkAndFireReady() {
+        if (canFireReady()) {
+            for (final GeoQueryReadyListener listener: this.readyListeners) {
+                postEvent(new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.onReady();
+                    }
+                });
+            }
+        }
+    }
+
+    private void addValueToReadyListener(final Query firebase, final GeoHashQuery query) {
+        firebase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                synchronized (GeoQuery.this) {
+                    GeoQuery.this.outstandingQueries.remove(query);
+                    GeoQuery.this.checkAndFireReady();
+                }
+            }
+
+            @Override
+            public void onCancelled(final FirebaseError firebaseError) {
+                synchronized (GeoQuery.this) {
+                    for (final GeoQueryReadyListener listener : GeoQuery.this.readyListeners) {
+                        postEvent(new Runnable() {
+                            @Override
+                            public void run() {
+                                listener.onCancelled(firebaseError);
+                            }
+                        });
+                    }
+                }
+            }
+        });
     }
 
     private void setupQueries() {
@@ -187,13 +238,16 @@ public class GeoQuery {
             if (!newQueries.contains(query)) {
                 firebaseQueries.get(query).removeEventListener(this.childEventLister);
                 firebaseQueries.remove(query);
+                outstandingQueries.remove(query);
             }
         }
-        for (GeoHashQuery query: newQueries) {
+        for (final GeoHashQuery query: newQueries) {
             if (!oldQueries.contains(query)) {
+                outstandingQueries.add(query);
                 Firebase firebase = this.geoFire.getFirebase();
                 Query firebaseQuery = firebase.startAt(query.getStartValue()).endAt(query.getEndValue());
                 firebaseQuery.addChildEventListener(this.childEventLister);
+                addValueToReadyListener(firebaseQuery, query);
                 firebaseQueries.put(query, firebaseQuery);
             }
         }
@@ -209,6 +263,8 @@ public class GeoQuery {
                 it.remove();
             }
         }
+
+        checkAndFireReady();
     }
 
     private void childAdded(DataSnapshot dataSnapshot) {
@@ -271,13 +327,50 @@ public class GeoQuery {
      *
      * @param listener The listener to add
      */
-    public synchronized void addGeoQueryEventListener(GeoQueryEventListener listener) {
+    public synchronized void addGeoQueryEventListener(final GeoQueryEventListener listener) {
         if (eventListeners.contains(listener)) {
             throw new IllegalArgumentException("Added the same listener twice to a GeoQuery!");
         }
         eventListeners.add(listener);
         if (this.queries == null) {
             this.setupQueries();
+        } else {
+            for (final Map.Entry<String, LocationInfo> entry: this.locationInfos.entrySet()) {
+                final String key = entry.getKey();
+                final LocationInfo info = entry.getValue();
+                if (info.inGeoQuery) {
+                    postEvent(new Runnable() {
+                        @Override
+                        public void run() {
+                            listener.onKeyEntered(key, info.latitude, info.longitude);
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+    /**
+     * Adds a GeoQueryReadyListener to this GeoQuery.
+     *
+     * @throws java.lang.IllegalArgumentException If the listener was already added
+     *
+     * @param listener The listener to add.
+     */
+    public synchronized void addGeoQueryReadyListener(final GeoQueryReadyListener listener) {
+        if (readyListeners.contains(listener)) {
+            throw new IllegalArgumentException("Added the same listener twice to a GeoQuery!");
+        }
+        readyListeners.add(listener);
+        if (this.queries == null) {
+            this.setupQueries();
+        } else if (this.canFireReady()) {
+            postEvent(new Runnable() {
+                @Override
+                public void run() {
+                    listener.onReady();
+                }
+            });
         }
     }
 
@@ -288,21 +381,39 @@ public class GeoQuery {
      *
      * @param listener The listener to remove
      */
-    public synchronized void removeEventListener(GeoQueryEventListener listener) {
+    public synchronized void removeGeoQueryEventListener(GeoQueryEventListener listener) {
         if (!eventListeners.contains(listener)) {
             throw new IllegalArgumentException("Trying to remove listener that was removed or not added!");
         }
         eventListeners.remove(listener);
-        if (eventListeners.size() == 0) {
+        if (!this.hasListeners()) {
             reset();
         }
     }
 
     /**
-     * Removes all event listeners for this GeoQuery
+     * Removes a ready listener
+     *
+     * @throws java.lang.IllegalArgumentException If the listener was removed already or never added
+     *
+     * @param listener The listener to remove
      */
-    public synchronized void removeAllEventListeners() {
+    public synchronized void removeGeoQueryReadyListener(GeoQueryReadyListener listener) {
+        if (!readyListeners.contains(listener)) {
+            throw new IllegalArgumentException("Trying to remove listener that was removed or not added!");
+        }
+        readyListeners.remove(listener);
+        if (!this.hasListeners()) {
+            reset();
+        }
+    }
+
+    /**
+     * Removes all listeners for this GeoQuery
+     */
+    public synchronized void removeAllListeners() {
         eventListeners.clear();
+        readyListeners.clear();
         reset();
     }
 
@@ -328,33 +439,31 @@ public class GeoQuery {
      * @param longitude The new longitude value of the center
      */
     public synchronized void setCenter(double latitude, double longitude) {
-        if (this.centerLatitude != latitude || this.centerLongitude != longitude) {
-            this.centerLatitude = latitude;
-            this.centerLongitude = longitude;
-            if (this.eventListeners.size() > 0) {
-                this.setupQueries();
-            }
+        this.centerLatitude = latitude;
+        this.centerLongitude = longitude;
+        if (this.hasListeners()) {
+            this.setupQueries();
         }
     }
 
     /**
-     * Returns the radius of the query in meters
-     * @return The radius of this query in meters
+     * Returns the radius of the query in kilometers
+     * @return The radius of this query in kilometers
      */
     public synchronized double getRadius() {
-        return radius;
+        // convert from meters
+        return radius / 1000;
     }
 
     /**
-     * Sets the radius of this query in meters and triggers new events if necessary
-     * @param radius The new radius value of this query in meters
+     * Sets the radius of this query in kilometers and triggers new events if necessary
+     * @param radius The new radius value of this query in kilometers
      */
     public synchronized void setRadius(double radius) {
-        if (radius != this.radius) {
-            this.radius = radius;
-            if (this.eventListeners.size() > 0) {
-                this.setupQueries();
-            }
+        // convert to meters
+        this.radius = radius * 1000;
+        if (this.hasListeners()) {
+            this.setupQueries();
         }
     }
 }

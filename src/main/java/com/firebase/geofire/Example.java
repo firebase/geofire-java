@@ -7,7 +7,7 @@ public class Example {
     public static void main(String[] args) throws InterruptedException {
         Firebase firebase = new Firebase("https://geofire-ios.firebaseio.com/geofire");
         GeoFire geoFire = new GeoFire(firebase);
-        GeoQuery query = geoFire.queryAtLocation(37.7, -122.4, 10000);
+        GeoQuery query = geoFire.queryAtLocation(37.7, -122.4, 10);
         query.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, double latitude, double longitude) {

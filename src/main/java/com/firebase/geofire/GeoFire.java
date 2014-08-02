@@ -43,6 +43,19 @@ import java.util.*;
 public class GeoFire {
 
     /**
+     * A listener that can be used to be notified about a successful write or an error on writing
+     */
+    public static interface CompletionListener {
+        /**
+         * Called once a location was successfully saved on the server or an error occurred. On success the parameter
+         * error will be null, in case of an error the error will be passed to this method.
+         * @param key The key for which the location was saved
+         * @param error The error or null if no error occurred.
+         */
+        public void onComplete(String key, FirebaseError error);
+    }
+
+    /**
      * A small wrapper class to forward any events to the LocationEventListener
      */
     private static class LocationValueEventListener implements ValueEventListener {
@@ -127,7 +140,7 @@ public class GeoFire {
      * @param completionListener A listener that is called once the location was successfully saved on the server or an
      *                           error occurred.
      */
-    public void setLocation(String key, double latitude, double longitude, Firebase.CompletionListener completionListener) {
+    public void setLocation(final String key, double latitude, double longitude, final CompletionListener completionListener) {
         if (key == null) {
             throw new NullPointerException();
         }
@@ -139,7 +152,18 @@ public class GeoFire {
         Map<String, Object> updates = new HashMap<String, Object>();
         updates.put("g", geoHash.getGeoHashString());
         updates.put("l", new double[]{latitude, longitude});
-        keyRef.setValue(updates, geoHash.getGeoHashString(), completionListener);
+        if (completionListener != null) {
+            keyRef.setValue(updates, geoHash.getGeoHashString(), new Firebase.CompletionListener() {
+                @Override
+                public void onComplete(FirebaseError error, Firebase firebase) {
+                    if (completionListener != null) {
+                        completionListener.onComplete(key, error);
+                    }
+                }
+            });
+        } else {
+            keyRef.setValue(updates, geoHash.getGeoHashString());
+        }
     }
 
     /**
@@ -156,12 +180,21 @@ public class GeoFire {
      * @param completionListener A completion listener that is called once the location is removed successfully removed
      *                           from the server or an error occurred
      */
-    public void removeLocation(String key, Firebase.CompletionListener completionListener) {
+    public void removeLocation(final String key, final CompletionListener completionListener) {
         if (key == null) {
             throw new NullPointerException();
         }
         Firebase keyRef = this.firebaseRefForKey(key);
-        keyRef.setValue(null, completionListener);
+        if (completionListener != null) {
+            keyRef.setValue(null, new Firebase.CompletionListener() {
+                @Override
+                public void onComplete(FirebaseError error, Firebase firebase) {
+                    completionListener.onComplete(key, error);
+                }
+            });
+        } else {
+            keyRef.setValue(null);
+        }
     }
 
     /**
@@ -242,7 +275,7 @@ public class GeoFire {
      * Returns a new Query object at the given position and radius
      * @param latitude The latitude of the query center in the range of [-90,90]
      * @param longitude The longitude of the query center in the range of [-180,180]
-     * @param radius The radius of the query in meters.
+     * @param radius The radius of the query in kilometers.
      * @return The new GeoQuery object
      */
     public GeoQuery queryAtLocation(double latitude, double longitude, double radius) {

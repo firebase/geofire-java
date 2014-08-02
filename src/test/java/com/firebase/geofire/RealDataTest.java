@@ -35,9 +35,9 @@ public class RealDataTest {
 
     protected void setLoc(GeoFire geoFire, String key, double latitude, double longitude, boolean wait) {
         final SimpleFuture<FirebaseError> futureError = new SimpleFuture<FirebaseError>();
-        geoFire.setLocation(key, latitude, longitude, new Firebase.CompletionListener() {
+        geoFire.setLocation(key, latitude, longitude, new GeoFire.CompletionListener() {
             @Override
-            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+            public void onComplete(String key, FirebaseError firebaseError) {
                 futureError.put(firebaseError);
             }
         });
@@ -56,9 +56,9 @@ public class RealDataTest {
 
     protected void removeLoc(GeoFire geoFire, String key, boolean wait) {
         final SimpleFuture<FirebaseError> futureError = new SimpleFuture<FirebaseError>();
-        geoFire.removeLocation(key, new Firebase.CompletionListener() {
+        geoFire.removeLocation(key, new GeoFire.CompletionListener() {
             @Override
-            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+            public void onComplete(String key, FirebaseError firebaseError) {
                 futureError.put(firebaseError);
             }
         });

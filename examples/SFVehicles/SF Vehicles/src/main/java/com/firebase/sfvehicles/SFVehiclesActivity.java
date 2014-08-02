@@ -48,7 +48,8 @@ public class SFVehiclesActivity extends FragmentActivity implements GeoQueryEven
 
         // setup GeoFire
         this.geoFire = new GeoFire(new Firebase(GEO_FIRE_REF));
-        this.geoQuery = this.geoFire.queryAtLocation(INITIAL_CENTER.latitude, INITIAL_CENTER.longitude, 1000);
+        // radius in km
+        this.geoQuery = this.geoFire.queryAtLocation(INITIAL_CENTER.latitude, INITIAL_CENTER.longitude, 1);
 
         // setup markers
         this.markers = new HashMap<String, Marker>();
@@ -58,7 +59,7 @@ public class SFVehiclesActivity extends FragmentActivity implements GeoQueryEven
     protected void onStop() {
         super.onStop();
         // remove all event listeners to stop updating in the background
-        this.geoQuery.removeAllEventListeners();
+        this.geoQuery.removeAllListeners();
         for (Marker marker: this.markers.values()) {
             marker.remove();
         }
@@ -137,6 +138,7 @@ public class SFVehiclesActivity extends FragmentActivity implements GeoQueryEven
         this.searchCircle.setCenter(center);
         this.searchCircle.setRadius(radius);
         this.geoQuery.setCenter(center.latitude, center.longitude);
-        this.geoQuery.setRadius(radius);
+        // radius in km
+        this.geoQuery.setRadius(radius/1000);
     }
 }
