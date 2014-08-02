@@ -72,7 +72,7 @@ geoFire.addLocationEventListener("firebase-hq", new LocationEventListener() {
 
     @Override
     public void onKeyRemoved(String key) {
-        System.err.println(String.format("The location for key %s was removed”, key));
+        System.err.println(String.format("The location for key %s was removed", key));
     }
 
     @Override
