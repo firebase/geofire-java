@@ -82,6 +82,15 @@ geoFire.addLocationEventListener("firebase-hq", new LocationEventListener() {
 });
 ```
 
+To stop receiving updates you can remove a single location listener or all
+location listeners
+
+```java
+geoFire.removeEventListener("firebase-hq", eventListener); // remove event listener for single key
+geoFire.removeEventListener(eventListener); // remove event listener for all keys
+geoFire.removeAllEventListeners(); // remove all event listeners
+```
+
 ### Geo Queries
 
 Locations can be queries with an `GeoQuery` object.
@@ -119,16 +128,49 @@ geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
 });
 ```
 
-To remove the listener call either `removeListener` to remove a single event listener, or `removeAllListeners` to remove all event listeners for a `GeoQuery`.
+To remove the listener call either `removeGeoQueryEventListener` to remove a
+single event listener, or `removeAllListeners` to remove all event listeners
+for a `GeoQuery`.
 
-#### Updating the search criteria
+#### Waiting for queries to be "ready"
+
+Sometimes it's necessary to know when all child added events have been fired for
+the current data (e.g. to hide a loading animation). This can be accomplished
+with a `GeoQueryReadyListener`.
+
+```java
+geoQuery.addGeoQueryReadyListener(new GeoQueryReadyListener() {
+    @Override
+    public void onReady() {
+        System.err.println("All initial child added events have been fired!");
+    }
+
+    @Override
+    public void onCancelled(FirebaseError error) {
+        System.err.println("There was an error with this query: " + error);
+    }
+});
+```
+
+The `onReady` method is called once all initial data was loaded from the server
+and all child added events were triggered. A ready event is triggered again
+each time the query criteria is updated. The `onCancelled` method is called if
+there was an error retrieving the data from the server, e.g. security rules
+prevented reading the data. Note that child moved and child removed events
+might still occur before the ready event was triggered.
+
+To remove a single ready listener call `removeGeoQueryReadyListener`, or
+`removeAllListeners` to remove all listeners on a `GeoQuery` object.
+
+#### Updating the query criteria
 
 The GeoQuery search area can be changed with `setCenter` and `setRadius` Key
 exited and key entered events will be triggered for keys moving in and out of
 the old and new search area respectively. No key moved events will be
 triggered.
 
-Updating the search area can be helpful for e.g. updating the query to the new visible map area after a user scrolls.
+Updating the search area can be helpful for e.g. updating the query to the new
+visible map area after a user scrolls.
 
 ## Contributing
 
