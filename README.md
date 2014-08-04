@@ -118,7 +118,7 @@ geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
 
     @Override
     public void onKeyExited(String key) {
-        System.err.println(String.format("Key %s is no longer in the search area”, key));
+        System.err.println(String.format("Key %s is no longer in the search area", key));
     }
 
     @Override
@@ -159,8 +159,8 @@ there was an error retrieving the data from the server, e.g. security rules
 prevented reading the data. Note that child moved and child removed events
 might still occur before the ready event was triggered.
 
-To remove a single ready listener call `removeGeoQueryReadyListener`, or
-`removeAllListeners` to remove all listeners on a `GeoQuery` object.
+To remove a single ready listener call `removeGeoQueryReadyListener`. All
+listeners can be removed with a call to `removeAllListeners`.
 
 #### Updating the query criteria
 
