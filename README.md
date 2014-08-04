@@ -104,9 +104,9 @@ GeoQuery geoQuery = geoFire.queryAtLocation(37.7832, -122.4056, 0.6);
 
 There are 3 kind of events that can occur with a geo query:
 
-1. **Key Entered**: The location of a key now matches the search criteria
-2. **Key Exited**: The location of a key does not match the search criteria any more
-3. **Key Moved**: The location of a key changed and the location still matches the search criteria
+1. **Key Entered**: The location of a key now matches the query criteria
+2. **Key Exited**: The location of a key does not match the query criteria any more
+3. **Key Moved**: The location of a key changed and the location still matches the query criteria
 
 To listen for events you must add a `GeoQueryEventListener` to the `GeoQuery`.
 ```java
@@ -134,7 +134,7 @@ for a `GeoQuery`.
 
 #### Waiting for queries to be "ready"
 
-Sometimes it's necessary to know when all child added events have been fired for
+Sometimes it's necessary to know when all key entered events have been fired for
 the current data (e.g. to hide a loading animation). This can be accomplished
 with a `GeoQueryReadyListener`.
 
@@ -142,7 +142,7 @@ with a `GeoQueryReadyListener`.
 geoQuery.addGeoQueryReadyListener(new GeoQueryReadyListener() {
     @Override
     public void onReady() {
-        System.err.println("All initial child added events have been fired!");
+        System.err.println("All initial key entered events have been fired!");
     }
 
     @Override
@@ -153,10 +153,10 @@ geoQuery.addGeoQueryReadyListener(new GeoQueryReadyListener() {
 ```
 
 The `onReady` method is called once all initial data was loaded from the server
-and all child added events were triggered. A ready event is triggered again
+and all key entered events were triggered. A ready event is triggered again
 each time the query criteria is updated. The `onCancelled` method is called if
 there was an error retrieving the data from the server, e.g. security rules
-prevented reading the data. Note that child moved and child removed events
+prevented reading the data. Note that key moved and key exited events
 might still occur before the ready event was triggered.
 
 To remove a single ready listener call `removeGeoQueryReadyListener`. All
@@ -167,7 +167,7 @@ listeners can be removed with a call to `removeAllListeners`.
 The GeoQuery search area can be changed with `setCenter` and `setRadius` Key
 exited and key entered events will be triggered for keys moving in and out of
 the old and new search area respectively. No key moved events will be
-triggered.
+triggered, however key moved events might occur independently.
 
 Updating the search area can be helpful for e.g. updating the query to the new
 visible map area after a user scrolls.
