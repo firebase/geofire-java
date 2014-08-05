@@ -9,6 +9,11 @@ just measure the distance between locations; *it selectively loads only the
 data near certain locations, keeping your applications light and responsive*,
 even with extremely large datasets.
 
+## GeoFire for Android/Java Beta
+
+GeoFire for Android/Java is still in an open beta. It will be ready for your
+production applications soon, but the API is subject to change until then.
+
 ## Downloading GeoFire for Android/Java
 
 In order to use GeoFire in your project, you need to [add the Firebase
