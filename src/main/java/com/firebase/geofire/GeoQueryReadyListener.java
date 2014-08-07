@@ -8,9 +8,10 @@ import com.firebase.client.FirebaseError;
 public interface GeoQueryReadyListener {
 
     /**
-     * This method is called after all child added events have been triggered for a query.
-     * It is called immediately if all events have been triggered before the listener was added.
-     * It is called again after all child added events have been triggered after changed the search criteria.
+     * This method is called after all initial key entered events have been fired for a query.
+     * It is called immediately if all events have been fired before the listener was added.
+     * After any search criteria is updated, it is called again once the new data was loaded from the server
+     * and all corresponding events have been fired.
      */
     public void onReady();
 
