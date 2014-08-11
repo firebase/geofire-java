@@ -35,7 +35,7 @@ at `/bars/<bar-id>`.
 GeoFire for Android/Java is still in an open beta. It will be ready for your
 production applications soon, but the API is subject to change until then.
 
-## Downloading GeoFire for Android/Java
+## Including GeoFire in your project Android/Java
 
 In order to use GeoFire in your project, you need to [add the Firebase
 SDK](https://www.firebase.com/docs/java-quickstart.html). There are then
@@ -45,13 +45,14 @@ multiple possibilities to use GeoFire in your project.
 *TODO: add to maven repository*
 
 ### Jar-File
-You can also directly add the jar file in the folder `dist` to your project.
-
-## API Reference
-
-[A full API reference is available here](https://geofire-java.firebaseapp.com/docs/).
+You can also download the jar file in the folder `dist` and add it directly to
+your project.
 
 ## Quick Start
+
+This is a quick start on how to use GeoFire's core features.  There is also a
+[full API reference available
+online](https://geofire-java.firebaseapp.com/docs/).
 
 ### GeoFire
 
@@ -79,6 +80,21 @@ string and the location as latitude and longitude doubles.
 geoFire.setLocation("firebase-hq", 37.7853889, -122.4056973);
 ```
 
+To check if a write was successfully saved on the server, you can add a
+`GeoFire.CompletionListener` to the `setLocation` call.
+```java
+geoFire.setLocation("firebase-hq", 37.7853889, -122.4056973, new GeoFire.CompletionListener() {
+    @Override
+    public void onComplete(String key, FirebaseError error) {
+        if (error != null) {
+            System.err.println("There was an error saving the location to GeoFire: " + error);
+        } else {
+            System.out.println("Location saved on server successfully!");
+        }
+    }
+});
+```
+
 To remove a location and delete it from Firebase simply call
 ```java
 geoFire.removeKey("firebase-hq");
@@ -95,16 +111,16 @@ is called.
 geoFire.addLocationEventListener("firebase-hq", new LocationEventListener() {
     @Override
     public void onLocationChanged(String key, double lat, double lng) {
-        System.err.println(String.format("The location for key %s changed to [%f,%f]", key, lat, lng));
+        System.out.println(String.format("The location for key %s changed to [%f,%f]", key, lat, lng));
     }
 
     @Override
     public void onKeyRemoved(String key) {
-        System.err.println(String.format("The location for key %s was removed", key));
+        System.out.println(String.format("The location for key %s was removed", key));
     }
 
     @Override
-    public void onCancelled(FirebaseError firebaseError) {
+    public void onCancelled(FirebaseError error) {
         System.err.println("There was an error reading data from Firebase: " + error);
     }
 });
@@ -148,17 +164,17 @@ To listen for events you must add a `GeoQueryEventListener` to the `GeoQuery`.
 geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
     @Override
     public void onKeyEntered(String key, double lat, double lng) {
-        System.err.println(String.format("Key %s entered the search area at [%f,%f]", key, lat, lng));
+        System.out.println(String.format("Key %s entered the search area at [%f,%f]", key, lat, lng));
     }
 
     @Override
     public void onKeyExited(String key) {
-        System.err.println(String.format("Key %s is no longer in the search area", key));
+        System.out.println(String.format("Key %s is no longer in the search area", key));
     }
 
     @Override
     public void onKeyMoved(String key, double lat, double lng) {
-        System.err.println(String.format("Key %s moved within the search area to [%f,%f]", key, lat, lng));
+        System.out.println(String.format("Key %s moved within the search area to [%f,%f]", key, lat, lng));
     }
 });
 ```
@@ -178,7 +194,7 @@ those ready events:
 geoQuery.addGeoQueryReadyListener(new GeoQueryReadyListener() {
     @Override
     public void onReady() {
-        System.err.println("All initial key entered events have been fired!");
+        System.out.println("All initial key entered events have been fired!");
     }
 
     @Override
@@ -206,6 +222,10 @@ fired, however key moved events might occur independently.
 
 Updating the search area can be helpful for e.g. updating the query to the new
 visible map area after a user scrolls.
+
+## API Reference
+
+[A full API reference is available here](https://geofire-java.firebaseapp.com/docs/).
 
 ## Contributing
 
