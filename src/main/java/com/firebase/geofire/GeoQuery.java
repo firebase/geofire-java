@@ -89,7 +89,6 @@ public class GeoQuery {
 
     private final GeoFire geoFire;
     private final Set<GeoQueryEventListener> eventListeners = new HashSet<GeoQueryEventListener>();
-    private final Set<GeoQueryReadyListener> readyListeners = new HashSet<GeoQueryReadyListener>();
     private final Map<GeoHashQuery, Query> firebaseQueries = new HashMap<GeoHashQuery, Query>();
     private final Set<GeoHashQuery> outstandingQueries = new HashSet<GeoHashQuery>();
     private final Map<String, LocationInfo> locationInfos = new HashMap<String, LocationInfo>();
@@ -184,7 +183,7 @@ public class GeoQuery {
     }
 
     private boolean hasListeners() {
-        return !this.eventListeners.isEmpty() || !this.readyListeners.isEmpty();
+        return !this.eventListeners.isEmpty();
     }
 
     private boolean canFireReady() {
@@ -193,11 +192,11 @@ public class GeoQuery {
 
     private void checkAndFireReady() {
         if (canFireReady()) {
-            for (final GeoQueryReadyListener listener: this.readyListeners) {
+            for (final GeoQueryEventListener listener: this.eventListeners) {
                 postEvent(new Runnable() {
                     @Override
                     public void run() {
-                        listener.onReady();
+                        listener.onGeoQueryReady();
                     }
                 });
             }
@@ -217,11 +216,11 @@ public class GeoQuery {
             @Override
             public void onCancelled(final FirebaseError firebaseError) {
                 synchronized (GeoQuery.this) {
-                    for (final GeoQueryReadyListener listener : GeoQuery.this.readyListeners) {
+                    for (final GeoQueryEventListener listener : GeoQuery.this.eventListeners) {
                         postEvent(new Runnable() {
                             @Override
                             public void run() {
-                                listener.onCancelled(firebaseError);
+                                listener.onGeoQueryError(firebaseError);
                             }
                         });
                     }
@@ -347,30 +346,14 @@ public class GeoQuery {
                     });
                 }
             }
-        }
-    }
-
-    /**
-     * Adds a GeoQueryReadyListener to this GeoQuery.
-     *
-     * @throws java.lang.IllegalArgumentException If the listener was already added
-     *
-     * @param listener The listener to add.
-     */
-    public synchronized void addGeoQueryReadyListener(final GeoQueryReadyListener listener) {
-        if (readyListeners.contains(listener)) {
-            throw new IllegalArgumentException("Added the same listener twice to a GeoQuery!");
-        }
-        readyListeners.add(listener);
-        if (this.queries == null) {
-            this.setupQueries();
-        } else if (this.canFireReady()) {
-            postEvent(new Runnable() {
-                @Override
-                public void run() {
-                    listener.onReady();
-                }
-            });
+            if (this.canFireReady()) {
+                postEvent(new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.onGeoQueryReady();
+                    }
+                });
+            }
         }
     }
 
@@ -392,28 +375,10 @@ public class GeoQuery {
     }
 
     /**
-     * Removes a ready listener
-     *
-     * @throws java.lang.IllegalArgumentException If the listener was removed already or never added
-     *
-     * @param listener The listener to remove
-     */
-    public synchronized void removeGeoQueryReadyListener(GeoQueryReadyListener listener) {
-        if (!readyListeners.contains(listener)) {
-            throw new IllegalArgumentException("Trying to remove listener that was removed or not added!");
-        }
-        readyListeners.remove(listener);
-        if (!this.hasListeners()) {
-            reset();
-        }
-    }
-
-    /**
      * Removes all listeners for this GeoQuery
      */
     public synchronized void removeAllListeners() {
         eventListeners.clear();
-        readyListeners.clear();
         reset();
     }
 

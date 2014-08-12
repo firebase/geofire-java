@@ -1,5 +1,6 @@
 package com.firebase.sfvehicles;
 
+import android.app.AlertDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,6 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
@@ -23,7 +25,7 @@ public class SFVehiclesActivity extends FragmentActivity implements GeoQueryEven
 
     private static final LatLng INITIAL_CENTER = new LatLng(37.7789, -122.4017);
     private static final int INITIAL_ZOOM_LEVEL = 14;
-    private static final String GEO_FIRE_REF = "https://geofire-ios.firebaseio.com/geofire";
+    private static final String GEO_FIRE_REF = "https://geofire-v3.firebaseio.com/geofire";
 
     private GoogleMap map;
     private Circle searchCircle;
@@ -97,6 +99,20 @@ public class SFVehiclesActivity extends FragmentActivity implements GeoQueryEven
         if (marker != null) {
             this.animateMarkerTo(marker, lat, lng);
         }
+    }
+
+    @Override
+    public void onGeoQueryReady() {
+    }
+
+    @Override
+    public void onGeoQueryError(FirebaseError error) {
+        new AlertDialog.Builder(this)
+                .setTitle("Error")
+                .setMessage("There was an unexpected error querying GeoFire: " + error.getMessage())
+                .setPositiveButton(android.R.string.ok, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
     // Animation handler for old APIs without animation support

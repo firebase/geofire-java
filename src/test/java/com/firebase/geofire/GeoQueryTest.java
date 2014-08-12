@@ -132,7 +132,7 @@ public class GeoQueryTest extends RealDataTest {
     }
 
     @Test
-    public void testRemoveSingleObserver() throws InterruptedException {
+    public void removeSingleObserver() throws InterruptedException {
         GeoFire geoFire = newTestGeoFire();
         setLoc(geoFire, "0", 0, 0);
         setLoc(geoFire, "1", 37.0000, -122.0000);
@@ -172,7 +172,7 @@ public class GeoQueryTest extends RealDataTest {
     }
 
     @Test
-    public void testRemoveAllObservers() throws InterruptedException {
+    public void removeAllObservers() throws InterruptedException {
         GeoFire geoFire = newTestGeoFire();
         setLoc(geoFire, "0", 0, 0);
         setLoc(geoFire, "1", 37.0000, -122.0000);
@@ -208,7 +208,7 @@ public class GeoQueryTest extends RealDataTest {
     }
 
     @Test
-    public void testReadyListener() throws InterruptedException {
+    public void readyListener() throws InterruptedException {
         GeoFire geoFire = newTestGeoFire();
         setLoc(geoFire, "0", 0, 0);
         setLoc(geoFire, "1", 37.0000, -122.0000);
@@ -219,6 +219,7 @@ public class GeoQueryTest extends RealDataTest {
         GeoQuery query = geoFire.queryAtLocation(37.0, -122, 1);
         final boolean[] done = new boolean[1];
         final boolean[] failed = new boolean[1];
+        final Semaphore semaphore = new Semaphore(0);
         query.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, double latitude, double longitude) {
@@ -234,18 +235,15 @@ public class GeoQueryTest extends RealDataTest {
             @Override
             public void onKeyMoved(String key, double latitude, double longitude) {
             }
-        });
 
-        final Semaphore semaphore = new Semaphore(0);
-        query.addGeoQueryReadyListener(new GeoQueryReadyListener() {
             @Override
-            public void onReady() {
+            public void onGeoQueryReady() {
                 semaphore.release();
                 done[0] = true;
             }
 
             @Override
-            public void onCancelled(FirebaseError error) {
+            public void onGeoQueryError(FirebaseError error) {
             }
         });
 
@@ -257,7 +255,7 @@ public class GeoQueryTest extends RealDataTest {
     }
 
     @Test
-    public void testReadyListenerAfterReady() throws InterruptedException {
+    public void readyListenerAfterReady() throws InterruptedException {
         GeoFire geoFire = newTestGeoFire();
         setLoc(geoFire, "0", 0, 0);
         setLoc(geoFire, "1", 37.0000, -122.0000);
@@ -268,34 +266,58 @@ public class GeoQueryTest extends RealDataTest {
         GeoQuery query = geoFire.queryAtLocation(37.0, -122, 1);
 
         final Semaphore semaphore = new Semaphore(0);
-        query.addGeoQueryReadyListener(new GeoQueryReadyListener() {
+        query.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
-            public void onReady() {
+            public void onKeyEntered(String key, double latitude, double longitude) {
+            }
+
+            @Override
+            public void onKeyExited(String key) {
+            }
+
+            @Override
+            public void onKeyMoved(String key, double latitude, double longitude) {
+            }
+
+            @Override
+            public void onGeoQueryReady() {
                 semaphore.release();
             }
 
             @Override
-            public void onCancelled(FirebaseError error) {
+            public void onGeoQueryError(FirebaseError error) {
             }
         });
 
         Assert.assertTrue(semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
 
-        query.addGeoQueryReadyListener(new GeoQueryReadyListener() {
+        query.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
-            public void onReady() {
+            public void onKeyEntered(String key, double latitude, double longitude) {
+            }
+
+            @Override
+            public void onKeyExited(String key) {
+            }
+
+            @Override
+            public void onKeyMoved(String key, double latitude, double longitude) {
+            }
+
+            @Override
+            public void onGeoQueryReady() {
                 semaphore.release();
             }
 
             @Override
-            public void onCancelled(FirebaseError error) {
+            public void onGeoQueryError(FirebaseError error) {
             }
         });
         Assert.assertTrue(semaphore.tryAcquire(10, TimeUnit.MILLISECONDS));
     }
 
     @Test
-    public void testReadyAfterUpdateCriteria() throws InterruptedException {
+    public void readyAfterUpdateCriteria() throws InterruptedException {
         GeoFire geoFire = newTestGeoFire();
         setLoc(geoFire, "0", 0, 0);
         setLoc(geoFire, "1", 37.0000, -122.0000);
@@ -305,6 +327,8 @@ public class GeoQueryTest extends RealDataTest {
 
         GeoQuery query = geoFire.queryAtLocation(37.0, -122, 1);
         final boolean[] done = new boolean[1];
+        final Semaphore semaphore = new Semaphore(0);
+        final int[] readyCount = new int[1];
         query.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, double latitude, double longitude) {
@@ -320,19 +344,16 @@ public class GeoQueryTest extends RealDataTest {
             @Override
             public void onKeyMoved(String key, double latitude, double longitude) {
             }
-        });
 
-        final Semaphore semaphore = new Semaphore(0);
-        final int[] readyCount = new int[1];
-        query.addGeoQueryReadyListener(new GeoQueryReadyListener() {
             @Override
-            public void onReady() {
+            public void onGeoQueryReady() {
                 semaphore.release();
                 readyCount[0]++;
             }
 
             @Override
-            public void onCancelled(FirebaseError error) {
+            public void onGeoQueryError(FirebaseError error) {
+
             }
         });
 

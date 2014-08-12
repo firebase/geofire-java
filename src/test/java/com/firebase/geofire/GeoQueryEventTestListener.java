@@ -1,5 +1,7 @@
 package com.firebase.geofire;
 
+import com.firebase.client.FirebaseError;
+
 public class GeoQueryEventTestListener extends TestListener implements GeoQueryEventListener {
 
     private final boolean recordEntered;
@@ -47,5 +49,13 @@ public class GeoQueryEventTestListener extends TestListener implements GeoQueryE
         if (recordMoved) {
             this.addEvent(keyMoved(key, latitude, longitude));
         }
+    }
+
+    @Override
+    public void onGeoQueryReady() {
+    }
+
+    @Override
+    public void onGeoQueryError(FirebaseError error) {
     }
 }

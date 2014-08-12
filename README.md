@@ -149,15 +149,27 @@ GeoQuery geoQuery = geoFire.queryAtLocation(37.7832, -122.4056, 0.6);
 
 #### Receiving events for geo queries
 
-There are 3 kind of events that can occur with a geo query:
+There are 5 kind of events that can occur with a geo query:
 
 1. **Key Entered**: The location of a key now matches the query criteria
 2. **Key Exited**: The location of a key does not match the query criteria any more
 3. **Key Moved**: The location of a key changed and the location still matches the query criteria
+4. **Query Ready**: All current data has been loaded from the server and all
+   initial events have been fired
+5. **Query Error**: There was an error while performing this query, e.g. a
+   violation of security rules.
 
 Key entered events will be fired for all keys initially matching the query. Key
 moved and key exited events are guaranteed to be preceded by a key entered
 event.
+
+The ready event is fired once the current data has been loaded from the server
+and the initial key entered events for all keys currently within the query have
+been fired. Note that locations might change while loading the data and key
+moved and key exited events might therefor still occur before the ready event
+was fired.  If the query criteria is updated, the ready event will be fired
+again once all events for the new query criteria have been fired. This includes
+key exited events for keys that no longer match the query.
 
 To listen for events you must add a `GeoQueryEventListener` to the `GeoQuery`.
 ```java
@@ -176,42 +188,22 @@ geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
     public void onKeyMoved(String key, double lat, double lng) {
         System.out.println(String.format("Key %s moved within the search area to [%f,%f]", key, lat, lng));
     }
+
+    @Override
+    public void onGeoQueryReady() {
+        System.out.println("All initial key entered events have been fired!");
+    }
+
+    @Override
+    public void onGeoQueryError(FirebaseError error) {
+        System.err.println("There was an error with this query: " + error);
+    }
 });
 ```
 
 To remove the listener call either `removeGeoQueryEventListener` to remove a
 single event listener, or `removeAllListeners` to remove all event listeners
 for a `GeoQuery`.
-
-#### Waiting for queries to be "ready"
-
-Sometimes it's necessary to know when all keys matching a query have been loaded
-from the server and all the corresponding key entered events have been fired
-(e.g. to hide a loading animation). `GeoQuery` offers a method to listen for
-those ready events:
-
-```java
-geoQuery.addGeoQueryReadyListener(new GeoQueryReadyListener() {
-    @Override
-    public void onReady() {
-        System.out.println("All initial key entered events have been fired!");
-    }
-
-    @Override
-    public void onCancelled(FirebaseError error) {
-        System.err.println("There was an error with this query: " + error);
-    }
-});
-```
-
-Note that locations might change while loading the data and key moved and key
-exited events might therefor still occur before the ready event was fired.  If
-the query criteria is updated, the new data is loaded from the server and the
-ready event is fired again once all events for the updated query have been
-fired. This includes key exited events for keys that no longer match the query.
-
-To remove a single ready listener call `removeGeoQueryReadyListener`, to remove
-all listeners call `removeAllListeners`.
 
 #### Updating the query criteria
 
