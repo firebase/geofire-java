@@ -8,7 +8,7 @@ benefit however, is the possibility of querying keys within a given geographic
 area - all in realtime.
 
 GeoFire uses [Firebase](https://www.firebase.com/) for data storage, allowing
-query results to be updated in realtime as they change.  GeoFire *selectively
+query results to be updated in realtime as they change. GeoFire *selectively
 loads only the data near certain locations, keeping your applications light and
 responsive*, even with extremely large datasets.
 
@@ -22,7 +22,7 @@ without modifying your existing data.
 
 #### Example
 Assume you are building an app to rate bars and you store all information for a
-bar, e.g. name, business hours and price range, at `/bars/<bar-id>`.  Later, you
+bar, e.g. name, business hours and price range, at `/bars/<bar-id>`. Later, you
 want to add the possibility for users to search for bars in their vicinity. This
 is where GeoFire comes in. You can store the location for each bar using
 GeoFire, using the bar IDs as GeoFire keys. GeoFire then allows you to easily
@@ -50,7 +50,7 @@ your project.
 
 ## Quick Start
 
-This is a quick start on how to use GeoFire's core features.  There is also a
+This is a quick start on how to use GeoFire's core features. There is also a
 [full API reference available
 online](https://geofire-java.firebaseapp.com/docs/).
 
@@ -72,9 +72,9 @@ forget to [setup security rules for
 GeoFire](https://github.com/firebase/geofire/blob/master/examples/securityRules/rules.json).
 
 #### Setting location data
-In GeoFire you can set and query locations by key. To set a location for a key
-simply call the `setLocation` method. The location method is passed a key as
-string and the location as latitude and longitude doubles.
+In GeoFire you can set and query locations by string keys. To set a location for
+a key simply call the `setLocation` method. The location method is passed a key
+as string and the location as latitude and longitude doubles.
 
 ```java
 geoFire.setLocation("firebase-hq", 37.7853889, -122.4056973);
@@ -101,8 +101,8 @@ geoFire.removeKey("firebase-hq");
 ```
 
 #### Retrieving a location
-Retrieving locations happens with listeners.  Like that, your app can always
-stay up-to-date automatically.  Like with any Firebase reference, the listener
+Retrieving locations happens with listeners. Like that, your app can always
+stay up-to-date automatically. Like with any Firebase listener, the listener
 is called once for the initial position and then for every update of the
 location. If the key is not present (or is removed from GeoFire) `onKeyRemoved`
 is called.
@@ -166,8 +166,8 @@ event.
 The ready event is fired once the current data has been loaded from the server
 and the initial key entered events for all keys currently within the query have
 been fired. Note that locations might change while loading the data and key
-moved and key exited events might therefor still occur before the ready event
-was fired.  If the query criteria is updated, the ready event will be fired
+moved and key exited events might therefore still occur before the ready event
+was fired. If the query criteria is updated, the ready event will be fired
 again once all events for the new query criteria have been fired. This includes
 key exited events for keys that no longer match the query.
 
@@ -210,7 +210,7 @@ for a `GeoQuery`.
 The GeoQuery search area can be changed with `setCenter` and `setRadius` Key
 exited and key entered events will be fired for keys moving in and out of
 the old and new search area respectively. No key moved events will be
-fired, however key moved events might occur independently.
+fired, however, key moved events might occur independently.
 
 Updating the search area can be helpful for e.g. updating the query to the new
 visible map area after a user scrolls.
