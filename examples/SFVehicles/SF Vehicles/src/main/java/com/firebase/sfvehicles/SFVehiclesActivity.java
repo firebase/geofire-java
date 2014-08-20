@@ -25,7 +25,7 @@ public class SFVehiclesActivity extends FragmentActivity implements GeoQueryEven
 
     private static final LatLng INITIAL_CENTER = new LatLng(37.7789, -122.4017);
     private static final int INITIAL_ZOOM_LEVEL = 14;
-    private static final String GEO_FIRE_REF = "https://geofire-v3.firebaseio.com/geofire";
+    private static final String GEO_FIRE_REF = "https://publicdata-transit.firebaseio.com/_geofire";
 
     private GoogleMap map;
     private Circle searchCircle;
