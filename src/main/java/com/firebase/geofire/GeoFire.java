@@ -28,10 +28,7 @@
 
 package com.firebase.geofire;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+import com.firebase.client.*;
 import com.firebase.geofire.core.GeoHash;
 import com.firebase.geofire.util.GeoUtils;
 
@@ -60,37 +57,44 @@ public class GeoFire {
      */
     private static class LocationValueEventListener implements ValueEventListener {
 
-        private final LocationEventListener eventListener;
+        private final LocationCallback callback;
 
-        LocationValueEventListener(LocationEventListener eventListener) {
-            this.eventListener = eventListener;
+        LocationValueEventListener(LocationCallback callback) {
+            this.callback = callback;
         }
 
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-            double[] location = GeoFire.getLocationValue(dataSnapshot);
-            if (location != null) {
-                this.eventListener.onLocationChanged(dataSnapshot.getName(), location[0], location[1]);
+            if (dataSnapshot.getValue() == null) {
+                this.callback.onLocationResult(dataSnapshot.getName(), false, Double.MIN_VALUE, Double.MIN_VALUE);
             } else {
-                this.eventListener.onKeyRemoved(dataSnapshot.getName());
+                double[] location = GeoFire.getLocationValue(dataSnapshot);
+                if (location != null) {
+                    this.callback.onLocationResult(dataSnapshot.getName(), true, location[0], location[1]);
+                } else {
+                    String message = "GeoFire data has invalid format: " + dataSnapshot.getValue();
+                    this.callback.onCancelled(new FirebaseError(FirebaseError.UNKNOWN_ERROR, message));
+                }
             }
         }
 
         @Override
         public void onCancelled(FirebaseError firebaseError) {
-            this.eventListener.onCancelled(firebaseError);
+            this.callback.onCancelled(firebaseError);
         }
     }
 
     static double[] getLocationValue(DataSnapshot dataSnapshot) {
         try {
             Map data = dataSnapshot.getValue(Map.class);
-            List<Double> location = (List<Double>)data.get("l");
+            List<Double> location = (List<Double>) data.get("l");
             if (location.size() == 2 && GeoUtils.coordinatesValid(location.get(0), location.get(1))) {
-                return new double[]{ location.get(0), location.get(1) };
+                return new double[]{location.get(0), location.get(1)};
             } else {
                 return null;
             }
+        } catch (FirebaseException e) {
+            return null;
         } catch (NullPointerException e) {
             return null;
         } catch (ClassCastException e) {
@@ -99,9 +103,6 @@ public class GeoFire {
     }
 
     private final Firebase firebase;
-
-    private final Map<LocationEventListener, Map<String, LocationValueEventListener>> eventMapping =
-            new IdentityHashMap<LocationEventListener, Map<String, LocationValueEventListener>>();
 
     /**
      * Creates a new GeoFire instance at the given Firebase reference.
@@ -198,77 +199,15 @@ public class GeoFire {
     }
 
     /**
-     * Adds a location event listener to a key which is triggered once initially and for every further location update
-     * of the key.
+     * Gets the current location for a key and calls the callback with the current value.
      *
-     * @throws java.lang.IllegalArgumentException If the listener has previously added to the same key.
-     *
-     * @param key The key to listen on
-     * @param listener The listener for the callbacks
+     * @param key The key for which to get the location
+     * @param callback The callback that is called once the location is retrieved
      */
-    public void addLocationEventListener(String key, LocationEventListener listener) {
-        synchronized (this.eventMapping) {
-            Firebase keyFirebase = this.firebaseRefForKey(key);
-            Map<String, LocationValueEventListener> keysForListener = this.eventMapping.get(key);
-            if (keysForListener == null) {
-                keysForListener = new HashMap<String, LocationValueEventListener>();
-                this.eventMapping.put(listener, keysForListener);
-            }
-            if (keysForListener.containsKey(key)) {
-                throw new IllegalArgumentException("Added the same LocationEventListener for the same key twice!");
-            }
-            LocationValueEventListener valueListener = new LocationValueEventListener(listener);
-            keysForListener.put(key, valueListener);
-            keyFirebase.addValueEventListener(valueListener);
-        }
-    }
-
-    /**
-     * Removes a LocationEventListener for a key
-     * @param key The key to remove this LocationEventListener from
-     * @param listener The LocationEventListener to remove
-     */
-    public void removeEventListener(String key, LocationEventListener listener) {
-        synchronized (this.eventMapping) {
-            Map<String, LocationValueEventListener> listeners = this.eventMapping.get(listener);
-            if (listeners == null || listeners.containsKey(key)) {
-                throw new IllegalArgumentException("Did not previously add or already removed listener");
-            }
-            LocationValueEventListener valueListener = listeners.get(key);
-            this.firebaseRefForKey(key).removeEventListener(valueListener);
-            listeners.remove(key);
-            if (listeners.size() == 0) {
-                this.eventMapping.remove(listener);
-            }
-        }
-    }
-
-    /**
-     * Removes LocationEventListener for all keys
-     * @param listener The LocationEventListener to remove
-     */
-    public void removeEventListener(LocationEventListener listener) {
-        synchronized (this.eventMapping) {
-            Map<String, LocationValueEventListener> listeners = this.eventMapping.get(listener);
-            if (listeners == null) {
-                throw new IllegalArgumentException("Did not previously add or already removed listener");
-            }
-            for (Map.Entry<String, LocationValueEventListener> entry: listeners.entrySet()) {
-                this.firebaseRefForKey(entry.getKey()).removeEventListener(entry.getValue());
-            }
-            this.eventMapping.remove(listener);
-        }
-    }
-
-    /**
-     * Removes all LocationEventListener's associated with this GeoFire instance
-     */
-    public void removeAllEventListeners() {
-        synchronized (this.eventMapping) {
-            for (LocationEventListener listener : new HashSet<LocationEventListener>(this.eventMapping.keySet())) {
-                this.removeEventListener(listener);
-            }
-        }
+    public void getLocation(String key, LocationCallback callback) {
+        Firebase keyFirebase = this.firebaseRefForKey(key);
+        LocationValueEventListener valueListener = new LocationValueEventListener(callback);
+        keyFirebase.addListenerForSingleValueEvent(valueListener);
     }
 
     /**

@@ -101,38 +101,24 @@ geoFire.removeKey("firebase-hq");
 ```
 
 #### Retrieving a location
-Retrieving locations happens with listeners. Like that, your app can always
-stay up-to-date automatically. Like with any Firebase listener, the listener
-is called once for the initial position and then for every update of the
-location. If the key is not present (or is removed from GeoFire) `onKeyRemoved`
-is called.
+Retrieving a location for a single key in GeoFire happens with callbacks:
 
 ```java
-geoFire.addLocationEventListener("firebase-hq", new LocationEventListener() {
+geoFire.getLocation("firebase-hq", new LocationCallback() {
     @Override
-    public void onLocationChanged(String key, double lat, double lng) {
-        System.out.println(String.format("The location for key %s changed to [%f,%f]", key, lat, lng));
+    public void onLocationResult(String key, boolean hasLocation, double latitude, double longitude) {
+        if (hasLocation) {
+            System.out.println(String.format("The location for key %s is [%f,%f]", key, latitude, longitude));
+        } else {
+            System.out.println(String.format("There is no location for key %s in GeoFire", key));
+        }
     }
 
     @Override
-    public void onKeyRemoved(String key) {
-        System.out.println(String.format("The location for key %s was removed", key));
-    }
-
-    @Override
-    public void onCancelled(FirebaseError error) {
-        System.err.println("There was an error reading data from Firebase: " + error);
+    public void onCancelled(FirebaseError firebaseError) {
+        System.err.println("There was an error getting the GeoFire location: " + firebaseError);
     }
 });
-```
-
-To stop receiving updates you can remove a single location listener or all
-location listeners
-
-```java
-geoFire.removeEventListener("firebase-hq", eventListener); // remove event listener for single key
-geoFire.removeEventListener(eventListener); // remove event listener for all keys
-geoFire.removeAllEventListeners(); // remove all event listeners
 ```
 
 ### Geo Queries

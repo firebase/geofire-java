@@ -10,11 +10,10 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.*;
 
 @RunWith(JUnit4.class)
 public class GeoFireTest extends RealDataTest {
@@ -47,120 +46,70 @@ public class GeoFireTest extends RealDataTest {
     }
 
     @Test
-    public void locationListenerFires() throws InterruptedException, ExecutionException, TimeoutException {
+    public void getLocationReturnsCorrectLocation() throws InterruptedException, ExecutionException, TimeoutException {
         GeoFire geoFire = newTestGeoFire();
-        LocationEventTestListener testListener = new LocationEventTestListener();
-        geoFire.addLocationEventListener("loc1", testListener);
-        setLoc(geoFire, "loc1", 0, 0, true); // should fire
-        setLoc(geoFire, "loc1", 0, 0, true); // should not fire
-        setLoc(geoFire, "loc2", 1, 1, true); // should not fire
-        setLoc(geoFire, "loc1", 2, 1, true); // should fire
-        setLoc(geoFire, "loc1", 0, 0, true); // should fire
-        removeLoc(geoFire, "loc1", true); // should fire
-        setLoc(geoFire, "loc1", 0, 0, true); // should fire
 
-        List<String> expected = new ArrayList<String>();
-        expected.add(LocationEventTestListener.locationChanged("loc1", 0, 0));
-        expected.add(LocationEventTestListener.locationChanged("loc1", 2, 1));
-        expected.add(LocationEventTestListener.locationChanged("loc1", 0, 0));
-        expected.add(LocationEventTestListener.locationRemoved("loc1"));
-        expected.add(LocationEventTestListener.locationChanged("loc1", 0, 0));
-        testListener.expectEvents(expected);
+        TestCallback testCallback1 = new TestCallback();
+        geoFire.getLocation("loc1", testCallback1);
+        Assert.assertEquals(TestCallback.noLocation("loc1"), testCallback1.getCallbackValue());
+
+        TestCallback testCallback2 = new TestCallback();
+        geoFire.getLocation("loc1", testCallback2);
+        setLoc(geoFire, "loc1", 0, 0, true);
+        Assert.assertEquals(TestCallback.location("loc1", 0, 0), testCallback2.getCallbackValue());
+
+        TestCallback testCallback3 = new TestCallback();
+        setLoc(geoFire, "loc2", 1, 1, true);
+        geoFire.getLocation("loc2", testCallback3);
+        Assert.assertEquals(TestCallback.location("loc2", 1, 1), testCallback3.getCallbackValue());
+
+        TestCallback testCallback4 = new TestCallback();
+        setLoc(geoFire, "loc1", 5, 5, true);
+        geoFire.getLocation("loc1", testCallback4);
+        Assert.assertEquals(TestCallback.location("loc1", 5, 5), testCallback4.getCallbackValue());
+
+        TestCallback testCallback5 = new TestCallback();
+        removeLoc(geoFire, "loc1");
+        geoFire.getLocation("loc1", testCallback5);
+        Assert.assertEquals(TestCallback.noLocation("loc1"), testCallback5.getCallbackValue());
     }
 
     @Test
-    public void removeSingleListener() throws InterruptedException, ExecutionException, TimeoutException {
+    public void getLocationOnWrongDataReturnsError() throws InterruptedException {
         GeoFire geoFire = newTestGeoFire();
-        LocationEventTestListener testListener1a = new LocationEventTestListener();
-        LocationEventTestListener testListener1b = new LocationEventTestListener();
-        LocationEventTestListener testListener2 = new LocationEventTestListener();
+        setValueAndWait(geoFire.firebaseRefForKey("loc1"), "NaN");
 
-        setLoc(geoFire, "loc1", 1, 2); // should not fire
-        setLoc(geoFire, "loc2", 2, 1, true); // should not fire
+        final Semaphore semaphore = new Semaphore(0);
+        geoFire.getLocation("loc1", new LocationCallback() {
+            @Override
+            public void onLocationResult(String key, boolean hasLocation, double latitude, double longitude) {
+                Assert.fail("This should not be a valid location!");
+            }
 
-        List<String> initial1 = new ArrayList<String>();
-        initial1.add(LocationEventTestListener.locationChanged("loc1", 1, 2));
-        List<String> initial2 = new ArrayList<String>();
-        initial2.add(LocationEventTestListener.locationChanged("loc2", 2, 1));
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                semaphore.release();
+            }
+        });
+        semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS);
 
-        geoFire.addLocationEventListener("loc1", testListener1a);
-        geoFire.addLocationEventListener("loc1", testListener1b);
-        geoFire.addLocationEventListener("loc2", testListener2);
+        setValueAndWait(geoFire.firebaseRefForKey("loc2"), new HashMap<String, Object>() {{
+           put("l", 10);
+           put("g", "abc");
+        }});
 
-        // wait for initial events to fire
-        testListener1a.expectEvents(initial1);
-        testListener1b.expectEvents(initial1);
-        testListener2.expectEvents(initial2);
+        geoFire.getLocation("loc2", new LocationCallback() {
+            @Override
+            public void onLocationResult(String key, boolean hasLocation, double latitude, double longitude) {
+                Assert.fail("This should not be a valid location!");
+            }
 
-        setLoc(geoFire, "loc1", 0, 0, true); // should not fire
-        setLoc(geoFire, "loc2", 1, 1, true); // should not fire
-        setLoc(geoFire, "loc1", 2, 1, true); // should fire
-        geoFire.removeEventListener(testListener1a);
-        geoFire.removeEventListener(testListener2);
-
-        setLoc(geoFire, "loc1", 0, 0, true); // should fire
-        setLoc(geoFire, "loc2", 2, 3, true); // should fire
-        removeLoc(geoFire, "loc1", true); // should fire
-        removeLoc(geoFire, "loc2", true); // should fire
-
-        List<String> expected1a = new ArrayList<String>(initial1);
-        expected1a.add(LocationEventTestListener.locationChanged("loc1", 0, 0));
-        expected1a.add(LocationEventTestListener.locationChanged("loc1", 2, 1));
-        List<String> expected1b = new ArrayList<String>(expected1a);
-        expected1b.add(LocationEventTestListener.locationChanged("loc1", 0, 0));
-        expected1b.add(LocationEventTestListener.locationRemoved("loc1"));
-        List<String> expected2 = new ArrayList<String>(initial2);
-        expected2.add(LocationEventTestListener.locationChanged("loc2", 1, 1));
-
-        testListener1a.expectEvents(expected1a);
-        testListener1b.expectEvents(expected1b);
-        testListener2.expectEvents(expected2);
-    }
-
-    @Test
-    public void removeAllListeners() throws InterruptedException, ExecutionException, TimeoutException {
-        GeoFire geoFire = newTestGeoFire();
-        LocationEventTestListener testListener1a = new LocationEventTestListener();
-        LocationEventTestListener testListener1b = new LocationEventTestListener();
-        LocationEventTestListener testListener2 = new LocationEventTestListener();
-
-        setLoc(geoFire, "loc1", 1, 2); // should not fire
-        setLoc(geoFire, "loc2", 2, 1, true); // should not fire
-
-        List<String> initial1 = new ArrayList<String>();
-        initial1.add(LocationEventTestListener.locationChanged("loc1", 1, 2));
-        List<String> initial2 = new ArrayList<String>();
-        initial2.add(LocationEventTestListener.locationChanged("loc2", 2, 1));
-
-        geoFire.addLocationEventListener("loc1", testListener1a);
-        geoFire.addLocationEventListener("loc1", testListener1b);
-        geoFire.addLocationEventListener("loc2", testListener2);
-
-        // wait for initial events to fire
-        testListener1a.expectEvents(initial1);
-        testListener1b.expectEvents(initial1);
-        testListener2.expectEvents(initial2);
-
-        setLoc(geoFire, "loc1", 0, 0, true); // should not fire
-        setLoc(geoFire, "loc2", 1, 1, true); // should not fire
-        setLoc(geoFire, "loc1", 2, 1, true); // should fire
-        geoFire.removeAllEventListeners();
-
-
-        setLoc(geoFire, "loc1", 0, 0, true); // should fire
-        setLoc(geoFire, "loc2", 2, 3, true); // should fire
-        removeLoc(geoFire, "loc1", true); // should fire
-        removeLoc(geoFire, "loc2", true); // should fire
-
-        List<String> expected1 = new ArrayList<String>(initial1);
-        expected1.add(LocationEventTestListener.locationChanged("loc1", 0, 0));
-        expected1.add(LocationEventTestListener.locationChanged("loc1", 2, 1));
-        List<String> expected2 = new ArrayList<String>(initial2);
-        expected2.add(LocationEventTestListener.locationChanged("loc2", 1, 1));
-
-        testListener1a.expectEvents(expected1);
-        testListener1b.expectEvents(expected1);
-        testListener2.expectEvents(expected2);
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                semaphore.release();
+            }
+        });
+        semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 
     @Test

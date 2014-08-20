@@ -9,7 +9,10 @@ import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Before;
 
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class RealDataTest {
 
@@ -31,6 +34,25 @@ public class RealDataTest {
 
     protected void removeLoc(GeoFire geoFire, String key) {
         removeLoc(geoFire, key, false);
+    }
+
+    protected void setValueAndWait(Firebase firebase, Object value) {
+        final SimpleFuture<FirebaseError> futureError = new SimpleFuture<FirebaseError>();
+        firebase.setValue(value, new Firebase.CompletionListener() {
+            @Override
+            public void onComplete(FirebaseError error, Firebase firebase) {
+                futureError.put(error);
+            }
+        });
+        try {
+            Assert.assertNull(futureError.get(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (TimeoutException e) {
+            Assert.fail("Timeout occured!");
+        }
     }
 
     protected void setLoc(GeoFire geoFire, String key, double latitude, double longitude, boolean wait) {

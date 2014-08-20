@@ -31,27 +31,23 @@ package com.firebase.geofire;
 import com.firebase.client.FirebaseError;
 
 /**
- * Classes implementing this interface can be used to get notified about updates to locations for keys.
+ * Classes implementing this interface can be used to receive the locations stored in GeoFire
  */
-public interface LocationEventListener {
+public interface LocationCallback {
 
     /**
-     * This method is called once after adding the listener and for every subsequent update of the location
-     * @param key The key for which the location changed
-     * @param latitude The current latitude for the key
-     * @param longitude The current longitude for the key
+     * This method is called with the current location of the key. hasLocation will be false if the key currently
+     * has no location and the latitude and longitude will be arbitrary.
+     * @param key The key for which this location
+     * @param hasLocation Is true if and only if this key has a location
+     * @param latitude The current latitude for the key, if hasLocation is true
+     * @param longitude The current longitude for the key, if hasLocation is true
      */
-    public void onLocationChanged(String key, double latitude, double longitude);
+    public void onLocationResult(String key, boolean hasLocation, double latitude, double longitude);
 
     /**
-     * Called if a key is removed from GeoFire.
-     * @param key The key that was removed from GeoFire
-     */
-    public void onKeyRemoved(String key);
-
-    /**
-     * Called if the listener could not be added due to failure on the server or security rules.
-     * @param firebaseError The error that occured
+     * Called if the callback could not be added due to failure on the server or security rules.
+     * @param firebaseError The error that occurred
      */
     public void onCancelled(FirebaseError firebaseError);
 
