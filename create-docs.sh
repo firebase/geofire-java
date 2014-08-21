@@ -1,11 +1,13 @@
 #!/bin/bash
 set -e
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DIR=$(dirname "${BASH_SOURCE[0]}")
+pushd $DIR
 
 echo "Generating javadocs..."
 mvn javadoc:javadoc
 
 echo "Renaming output folder"
-rm -rf "$DIR/site/docs"
-mv "$DIR/target/site/apidocs" "$DIR/site/docs"
+rm -rf site/docs
+mv target/site/apidocs site/docs
+popd
