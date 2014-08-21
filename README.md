@@ -12,6 +12,9 @@ data storage, allowing query results to be updated in realtime as they change.
 GeoFire *selectively loads only the data near certain locations, keeping your
 applications light and responsive*, even with extremely large datasets.
 
+A compatible GeoFire client is also available for [Objective-C](https://github.com/firebase/geofire-objc)
+and [JavaScript](https://github.com/firebase/geofire-js).
+
 ### Integrating GeoFire with your data
 
 GeoFire is designed as a lightweight add-on to Firebase. However, to keep things
