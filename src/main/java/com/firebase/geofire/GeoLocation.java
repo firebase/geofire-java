@@ -28,6 +28,9 @@
 
 package com.firebase.geofire;
 
+/**
+ * A wrapper class for location coordinates
+ */
 public final class GeoLocation {
 
     /** The latitude of this location in the range of [-90, 90] */
