@@ -16,7 +16,6 @@
     <connection>scm:git:git@github.com:firebase/geofire-java.git</connection>
     <developerConnection>scm:git:git@github.com:firebase/geofire-java.git</developerConnection>
     <url>https://github.com/firebase/geofire-java</url>
-    <tag>Java-v1.0.17</tag>
   </scm>
   <parent>
     <groupId>org.sonatype.oss</groupId>
