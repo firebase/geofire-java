@@ -40,20 +40,20 @@ import java.util.*;
 public class GeoFire {
 
     /**
-     * A listener that can be used to be notified about a successful write or an error on writing
+     * A listener that can be used to be notified about a successful write or an error on writing.
      */
     public static interface CompletionListener {
         /**
-         * Called once a location was successfully saved on the server or an error occurred. On success the parameter
-         * error will be null, in case of an error the error will be passed to this method.
-         * @param key The key for which the location was saved
-         * @param error The error or null if no error occurred.
+         * Called once a location was successfully saved on the server or an error occurred. On success, the parameter
+         * error will be null; in case of an error, the error will be passed to this method.
+         * @param key The key whose location was saved
+         * @param error The error or null if no error occurred
          */
         public void onComplete(String key, FirebaseError error);
     }
 
     /**
-     * A small wrapper class to forward any events to the LocationEventListener
+     * A small wrapper class to forward any events to the LocationEventListener.
      */
     private static class LocationValueEventListener implements ValueEventListener {
 
@@ -128,7 +128,7 @@ public class GeoFire {
     }
 
     /**
-     * Sets the location for a given key
+     * Sets the location for a given key.
      * @param key The key to save the location for
      * @param location The location of this key
      */
@@ -137,11 +137,11 @@ public class GeoFire {
     }
 
     /**
-     * Sets the location for a given key
+     * Sets the location for a given key.
      * @param key The key to save the location for
      * @param location The location of this key
      * @param completionListener A listener that is called once the location was successfully saved on the server or an
-     *                           error occurred.
+     *                           error occurred
      */
     public void setLocation(final String key, final GeoLocation location, final CompletionListener completionListener) {
         if (key == null) {
@@ -167,7 +167,7 @@ public class GeoFire {
     }
 
     /**
-     * Removes the location for a key from this GeoFire
+     * Removes the location for a key from this GeoFire.
      * @param key The key to remove from this GeoFire
      */
     public void removeLocation(String key) {
@@ -175,9 +175,9 @@ public class GeoFire {
     }
 
     /**
-     * Removes the location for a key from this GeoFire
+     * Removes the location for a key from this GeoFire.
      * @param key The key to remove from this GeoFire
-     * @param completionListener A completion listener that is called once the location is removed successfully removed
+     * @param completionListener A completion listener that is called once the location is successfully removed
      *                           from the server or an error occurred
      */
     public void removeLocation(final String key, final CompletionListener completionListener) {
@@ -200,7 +200,7 @@ public class GeoFire {
     /**
      * Gets the current location for a key and calls the callback with the current value.
      *
-     * @param key The key for which to get the location
+     * @param key The key whose location to get
      * @param callback The callback that is called once the location is retrieved
      */
     public void getLocation(String key, LocationCallback callback) {
@@ -210,9 +210,9 @@ public class GeoFire {
     }
 
     /**
-     * Returns a new Query object at the given position and radius
+     * Returns a new Query object centered at the given location and with the given radius.
      * @param center The center of the query
-     * @param radius The radius of the query in kilometers.
+     * @param radius The radius of the query, in kilometers
      * @return The new GeoQuery object
      */
     public GeoQuery queryAtLocation(GeoLocation center, double radius) {

@@ -29,7 +29,7 @@
 package com.firebase.geofire;
 
 /**
- * A wrapper class for location coordinates
+ * A wrapper class for location coordinates.
  */
 public final class GeoLocation {
 
@@ -40,7 +40,7 @@ public final class GeoLocation {
     public final double longitude;
 
     /**
-     * Creates a new GeoLocation with the given latitude and longitude
+     * Creates a new GeoLocation with the given latitude and longitude.
      *
      * @throws java.lang.IllegalArgumentException If the coordinates are not valid geo coordinates
      * @param latitude The latitude in the range of [-90, 90]
@@ -55,7 +55,7 @@ public final class GeoLocation {
     }
 
     /**
-     * Checks if these coordinates are valid geo coordinates
+     * Checks if these coordinates are valid geo coordinates.
      * @param latitude The latitude must be in the range [-90, 90]
      * @param longitude The longitude must be in the range [-180, 180]
      * @return True if these are valid geo coordinates

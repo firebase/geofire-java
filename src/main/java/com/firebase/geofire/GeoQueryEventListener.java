@@ -31,7 +31,7 @@ package com.firebase.geofire;
 import com.firebase.client.FirebaseError;
 
 /**
- * GeoQuery notifies listeners with this interface about keys that entered, exited or moved within the query
+ * GeoQuery notifies listeners with this interface about keys that entered, exited, or moved within the query.
  */
 public interface GeoQueryEventListener {
 
@@ -39,10 +39,10 @@ public interface GeoQueryEventListener {
      * Called if a key entered the search area of the GeoQuery. This method is called for every key currently in the
      * search area at the time of adding the listener.
      *
-     * This method is once per key, and is only called again if onKeyExited was called in the mean time.
+     * This method is once per key, and is only called again if onKeyExited was called in the meantime.
      *
      * @param key The key that entered the search area
-     * @param location The location for this key as latitude-longitude coordinates
+     * @param location The location for this key as a GeoLocation object
      */
     public void onKeyEntered(String key, GeoLocation location);
 
@@ -57,18 +57,17 @@ public interface GeoQueryEventListener {
     /**
      * Called if a key moved within the search area.
      *
-     * This method can be called multiple times
+     * This method can be called multiple times.
      *
      * @param key The key that moved within the search area
-     * @param location The location for this key as latitude-longitude coordinates
+     * @param location The location for this key as a GeoLocation object
      */
     public void onKeyMoved(String key, GeoLocation location);
 
     /**
-     * This method is called after all initial key entered events have been fired for a query.
-     * It is called immediately if all events have been fired before the listener was added.
-     * After any search criteria is updated, it is called again once the new data was loaded from the server
-     * and all corresponding events have been fired.
+     * Called once all initial GeoFire data has been loaded and the relevant events have been fired for this query.
+     * Every time the query criteria is updated, this observer will be called after the updated query has fired the
+     * appropriate key entered or key exited events.
      */
     public void onGeoQueryReady();
 
