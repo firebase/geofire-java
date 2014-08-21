@@ -226,7 +226,7 @@ public class GeoQuery {
 
     private void setupQueries() {
         Set<GeoHashQuery> oldQueries = (this.queries == null) ? new HashSet<GeoHashQuery>() : this.queries;
-        Set<GeoHashQuery> newQueries = GeoHashQuery.queriesAtLocation(center.latitude, center.longitude, radius);
+        Set<GeoHashQuery> newQueries = GeoHashQuery.queriesAtLocation(center, radius);
         this.queries = newQueries;
         for (GeoHashQuery query: oldQueries) {
             if (!newQueries.contains(query)) {
@@ -387,7 +387,7 @@ public class GeoQuery {
 
     /**
      * Sets the new center of this query and triggers new events if necessary
-     * @param center The new the center
+     * @param center The new center
      */
     public synchronized void setCenter(GeoLocation center) {
         this.center = center;

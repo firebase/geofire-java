@@ -1,5 +1,6 @@
 package com.firebase.geofire.core;
 
+import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.util.Base32Utils;
 import com.firebase.geofire.util.Constants;
 import com.firebase.geofire.util.GeoUtils;
@@ -20,10 +21,10 @@ public class GeoHashQuery {
             return (Math.abs(degrees) > 0) ? Math.max(1, Math.log(360/degrees)/Math.log(2)) : 1;
         }
 
-        public static int bitsForBoundingBox(double latitude, double longitude, double size) {
+        public static int bitsForBoundingBox(GeoLocation location, double size) {
             double latitudeDegreesDelta = GeoUtils.distanceToLatitudeDegrees(size);
-            double latitudeNorth = Math.min(90, latitude + latitudeDegreesDelta);
-            double latitudeSouth = Math.max(-90, latitude - latitudeDegreesDelta);
+            double latitudeNorth = Math.min(90, location.latitude + latitudeDegreesDelta);
+            double latitudeSouth = Math.max(-90, location.latitude - latitudeDegreesDelta);
             int bitsLatitude = ((int)Math.floor(Utils.bitsLatitude(size)))*2;
             int bitsLongitudeNorth = ((int)Math.floor(Utils.bitsLongitude(size, latitudeNorth)))*2 - 1;
             int bitsLongitudeSouth = ((int)Math.floor(Utils.bitsLongitude(size, latitudeSouth)))*2 - 1;
@@ -63,9 +64,12 @@ public class GeoHashQuery {
         return new GeoHashQuery(startHash, endHash);
     }
 
-    public static Set<GeoHashQuery> queriesAtLocation(double latitude, double longitude, double radius) {
-        int queryBits = Math.max(1, Utils.bitsForBoundingBox(latitude, longitude, radius));
+    public static Set<GeoHashQuery> queriesAtLocation(GeoLocation location, double radius) {
+        int queryBits = Math.max(1, Utils.bitsForBoundingBox(location, radius));
         int geoHashPrecision = (int)(Math.ceil(queryBits/Base32Utils.BITS_PER_BASE32_CHAR));
+
+        double latitude = location.latitude;
+        double longitude = location.longitude;
         double latitudeDegrees = radius/Constants.METERS_PER_DEGREE_LATITUDE;
         double latitudeNorth = Math.min(90, latitude + latitudeDegrees);
         double latitudeSouth = Math.max(-90, latitude - latitudeDegrees);

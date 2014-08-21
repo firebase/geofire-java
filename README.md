@@ -193,7 +193,7 @@ for a `GeoQuery`.
 
 #### Updating the query criteria
 
-The GeoQuery search area can be changed with `setCenter` and `setRadius` key
+The GeoQuery search area can be changed with `setCenter` and `setRadius`. Key
 exited and key entered events will be fired for keys moving in and out of
 the old and new search area respectively. No key moved events will be
 fired, however, key moved events might occur independently.

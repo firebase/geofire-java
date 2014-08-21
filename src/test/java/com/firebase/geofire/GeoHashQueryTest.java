@@ -36,7 +36,7 @@ public class GeoHashQueryTest {
             double centerLong = Math.random()*360 - 180;
             double radius = Math.random()*100000;
             double radiusDegrees = GeoUtils.distanceToLatitudeDegrees(radius);
-            Set<GeoHashQuery> queries = GeoHashQuery.queriesAtLocation(centerLat, centerLong, radius);
+            Set<GeoHashQuery> queries = GeoHashQuery.queriesAtLocation(new GeoLocation(centerLat, centerLong), radius);
             for (int j = 0; j < 1000; j++) {
                 double pointLat = Math.max(-89.9, Math.min(89.9, centerLat + Math.random()*radiusDegrees));
                 double pointLong = GeoUtils.wrapLongitude(centerLong + Math.random()*radiusDegrees);
