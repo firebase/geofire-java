@@ -31,7 +31,7 @@ package com.firebase.geofire;
 import com.firebase.client.FirebaseError;
 
 /**
- * Classes implementing this interface can be used to receive the locations stored in GeoFire
+ * Classes implementing this interface can be used to receive the locations stored in GeoFire.
  */
 public interface LocationCallback {
 

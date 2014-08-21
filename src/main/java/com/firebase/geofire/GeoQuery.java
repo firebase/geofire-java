@@ -95,10 +95,10 @@ public class GeoQuery {
     private Set<GeoHashQuery> queries;
 
     /**
-     * Creates a new GeoQuery with the given GeoFire at the given center and radius
+     * Creates a new GeoQuery object centered at the given location and with the given radius.
      * @param geoFire The GeoFire object this GeoQuery uses
      * @param center The center of this query
-     * @param radius The radius of this query in kilometers
+     * @param radius The radius of this query, in kilometers
      */
     GeoQuery(GeoFire geoFire, GeoLocation center, double radius) {
         this.geoFire = geoFire;
@@ -315,7 +315,7 @@ public class GeoQuery {
     }
 
     /**
-     * Adds a new GeoQueryEventListener to this GeoQuery
+     * Adds a new GeoQueryEventListener to this GeoQuery.
      *
      * @throws java.lang.IllegalArgumentException If this listener was already added
      *
@@ -353,7 +353,7 @@ public class GeoQuery {
     }
 
     /**
-     * Removes an event listener
+     * Removes an event listener.
      *
      * @throws java.lang.IllegalArgumentException If the listener was removed already or never added
      *
@@ -370,7 +370,7 @@ public class GeoQuery {
     }
 
     /**
-     * Removes all listeners for this GeoQuery
+     * Removes all event listeners from this GeoQuery.
      */
     public synchronized void removeAllListeners() {
         eventListeners.clear();
@@ -378,7 +378,7 @@ public class GeoQuery {
     }
 
     /**
-     * Returns the current center of this query
+     * Returns the current center of this query.
      * @return The current center
      */
     public synchronized GeoLocation getCenter() {
@@ -386,7 +386,7 @@ public class GeoQuery {
     }
 
     /**
-     * Sets the new center of this query and triggers new events if necessary
+     * Sets the new center of this query and triggers new events if necessary.
      * @param center The new center
      */
     public synchronized void setCenter(GeoLocation center) {
@@ -397,8 +397,8 @@ public class GeoQuery {
     }
 
     /**
-     * Returns the radius of the query in kilometers
-     * @return The radius of this query in kilometers
+     * Returns the radius of the query, in kilometers.
+     * @return The radius of this query, in kilometers
      */
     public synchronized double getRadius() {
         // convert from meters
@@ -406,7 +406,7 @@ public class GeoQuery {
     }
 
     /**
-     * Sets the radius of this query in kilometers and triggers new events if necessary
+     * Sets the radius of this query, in kilometers, and triggers new events if necessary.
      * @param radius The new radius value of this query in kilometers
      */
     public synchronized void setRadius(double radius) {
