@@ -23,7 +23,7 @@ fi
 #  VALIDATE CLIENT VERSIONS  #
 ##############################
 
-VERSION =$(grep version pom.xml |head -2|tail -1|awk -F '>' '{print $2}'|awk -F '<' '{print $1}'|awk -F '-' '{print $1}')
+VERSION=$(grep version pom.xml |head -2|tail -1|awk -F '>' '{print $2}'|awk -F '<' '{print $1}'|awk -F '-' '{print $1}')
 read -p "We are releasing $VERSION, is this correct? (press enter to continue) " DERP
 if [[ ! -z $DERP ]]; then
   echo "Cancelling release, please update pom.xml to desired version"
