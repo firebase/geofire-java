@@ -1,6 +1,12 @@
 package com.firebase.geofire.util;
 
+import com.firebase.geofire.GeoLocation;
+
 public class GeoUtils {
+
+    public static double distance(GeoLocation location1, GeoLocation location2) {
+        return distance(location1.latitude, location1.longitude, location2.latitude, location2.longitude);
+    }
 
     public static double distance(double lat1, double long1, double lat2, double long2) {
         // Earth's mean radius in meters
@@ -42,13 +48,4 @@ public class GeoUtils {
         }
     }
 
-    public static boolean coordinatesValid(double latitude, double longitude) {
-        return (latitude >= -90 && latitude <= 90 && longitude >= -180 && longitude <= 180);
-    }
-
-    public static void checkCoordinates(double latitude, double longitude) {
-        if (!GeoUtils.coordinatesValid(latitude, longitude)) {
-            throw new IllegalArgumentException("Not a valid geo location: " + latitude + ", " + longitude);
-        }
-    }
 }

@@ -57,7 +57,7 @@ public class RealDataTest {
 
     protected void setLoc(GeoFire geoFire, String key, double latitude, double longitude, boolean wait) {
         final SimpleFuture<FirebaseError> futureError = new SimpleFuture<FirebaseError>();
-        geoFire.setLocation(key, latitude, longitude, new GeoFire.CompletionListener() {
+        geoFire.setLocation(key, new GeoLocation(latitude, longitude), new GeoFire.CompletionListener() {
             @Override
             public void onComplete(String key, FirebaseError firebaseError) {
                 futureError.put(firebaseError);

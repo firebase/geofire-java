@@ -41,16 +41,14 @@ import java.util.*;
 public class GeoQuery {
 
     private static class LocationInfo {
-        final double latitude;
-        final double longitude;
+        final GeoLocation location;
         final boolean inGeoQuery;
         final GeoHash geoHash;
 
-        public LocationInfo(double latitude, double longitude, boolean inGeoQuery) {
-            this.latitude = latitude;
-            this.longitude = longitude;
+        public LocationInfo(GeoLocation location, boolean inGeoQuery) {
+            this.location = location;
             this.inGeoQuery = inGeoQuery;
-            this.geoHash = new GeoHash(latitude, longitude);
+            this.geoHash = new GeoHash(location);
         }
     }
 
@@ -92,28 +90,25 @@ public class GeoQuery {
     private final Map<GeoHashQuery, Query> firebaseQueries = new HashMap<GeoHashQuery, Query>();
     private final Set<GeoHashQuery> outstandingQueries = new HashSet<GeoHashQuery>();
     private final Map<String, LocationInfo> locationInfos = new HashMap<String, LocationInfo>();
-    private double centerLatitude;
-    private double centerLongitude;
+    private GeoLocation center;
     private double radius;
     private Set<GeoHashQuery> queries;
 
     /**
      * Creates a new GeoQuery with the given GeoFire at the given center and radius
      * @param geoFire The GeoFire object this GeoQuery uses
-     * @param latitude The latitude of the center of this query in the range of [-90,90]
-     * @param longitude The longitude of the center of this query in the range of [-180,180]
+     * @param center The latitude of the center of this query in the range of [-90,90]
      * @param radius The radius of this query in kilometers
      */
-    GeoQuery(GeoFire geoFire, double latitude, double longitude, double radius) {
+    GeoQuery(GeoFire geoFire, GeoLocation center, double radius) {
         this.geoFire = geoFire;
-        this.centerLatitude = latitude;
-        this.centerLongitude = longitude;
+        this.center = center;
         // convert from kilometers to meters
         this.radius = radius * 1000;
     }
 
-    private boolean locationIsInQuery(double latitude, double longitude) {
-        return GeoUtils.distance(latitude, longitude, centerLatitude, centerLongitude) <= this.radius;
+    private boolean locationIsInQuery(GeoLocation location) {
+        return GeoUtils.distance(location, center) <= this.radius;
     }
 
     private void postEvent(Runnable r) {
@@ -121,19 +116,19 @@ public class GeoQuery {
         target.postEvent(r);
     }
 
-    private void updateLocationInfo(final String key, final double latitude, final double longitude) {
+    private void updateLocationInfo(final String key, final GeoLocation location) {
         LocationInfo oldInfo = this.locationInfos.get(key);
         boolean isNew = (oldInfo == null);
-        boolean changedLocation = (oldInfo != null && (oldInfo.latitude != latitude || oldInfo.longitude != longitude));
+        boolean changedLocation = (oldInfo != null && !oldInfo.location.equals(location));
         boolean wasInQuery = (oldInfo != null && oldInfo.inGeoQuery);
 
-        boolean isInQuery = this.locationIsInQuery(latitude, longitude);
+        boolean isInQuery = this.locationIsInQuery(location);
         if ((isNew || !wasInQuery) && isInQuery) {
             for (final GeoQueryEventListener listener: this.eventListeners) {
                 postEvent(new Runnable() {
                     @Override
                     public void run() {
-                        listener.onKeyEntered(key, latitude, longitude);
+                        listener.onKeyEntered(key, location);
                     }
                 });
             }
@@ -142,7 +137,7 @@ public class GeoQuery {
                 postEvent(new Runnable() {
                     @Override
                     public void run() {
-                        listener.onKeyMoved(key, latitude, longitude);
+                        listener.onKeyMoved(key, location);
                     }
                 });
             }
@@ -156,7 +151,7 @@ public class GeoQuery {
                 });
             }
         }
-        LocationInfo newInfo = new LocationInfo(latitude, longitude, this.locationIsInQuery(latitude, longitude));
+        LocationInfo newInfo = new LocationInfo(location, this.locationIsInQuery(location));
         this.locationInfos.put(key, newInfo);
     }
 
@@ -231,7 +226,7 @@ public class GeoQuery {
 
     private void setupQueries() {
         Set<GeoHashQuery> oldQueries = (this.queries == null) ? new HashSet<GeoHashQuery>() : this.queries;
-        Set<GeoHashQuery> newQueries = GeoHashQuery.queriesAtLocation(centerLatitude, centerLongitude, radius);
+        Set<GeoHashQuery> newQueries = GeoHashQuery.queriesAtLocation(center.latitude, center.longitude, radius);
         this.queries = newQueries;
         for (GeoHashQuery query: oldQueries) {
             if (!newQueries.contains(query)) {
@@ -252,7 +247,7 @@ public class GeoQuery {
         }
         for(Map.Entry<String, LocationInfo> info: this.locationInfos.entrySet()) {
             LocationInfo oldLocationInfo = info.getValue();
-            this.updateLocationInfo(info.getKey(), oldLocationInfo.latitude, oldLocationInfo.longitude);
+            this.updateLocationInfo(info.getKey(), oldLocationInfo.location);
         }
         // remove locations that are not part of the geo query anymore
         Iterator<Map.Entry<String, LocationInfo>> it = this.locationInfos.entrySet().iterator();
@@ -267,18 +262,18 @@ public class GeoQuery {
     }
 
     private void childAdded(DataSnapshot dataSnapshot) {
-        double[] location = GeoFire.getLocationValue(dataSnapshot);
+        GeoLocation location = GeoFire.getLocationValue(dataSnapshot);
         if (location != null) {
-            this.updateLocationInfo(dataSnapshot.getName(), location[0], location[1]);
+            this.updateLocationInfo(dataSnapshot.getName(), location);
         } else {
             // throw an error in future?
         }
     }
 
     private void childChanged(DataSnapshot dataSnapshot) {
-        double[] location = GeoFire.getLocationValue(dataSnapshot);
+        GeoLocation location = GeoFire.getLocationValue(dataSnapshot);
         if (location != null) {
-            this.updateLocationInfo(dataSnapshot.getName(), location[0], location[1]);
+            this.updateLocationInfo(dataSnapshot.getName(), location);
         } else {
             // throw an error in future?
         }
@@ -292,8 +287,8 @@ public class GeoQuery {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     synchronized(GeoQuery.this) {
-                        double[] location = GeoFire.getLocationValue(dataSnapshot);
-                        GeoHash hash = (location != null) ? new GeoHash(location[0], location[1]) : null;
+                        GeoLocation location = GeoFire.getLocationValue(dataSnapshot);
+                        GeoHash hash = (location != null) ? new GeoHash(location) : null;
                         if (hash == null || !GeoQuery.this.geoHashQueriesContainGeoHash(hash)) {
                             final LocationInfo info = GeoQuery.this.locationInfos.get(key);
                             GeoQuery.this.locationInfos.remove(key);
@@ -341,7 +336,7 @@ public class GeoQuery {
                     postEvent(new Runnable() {
                         @Override
                         public void run() {
-                            listener.onKeyEntered(key, info.latitude, info.longitude);
+                            listener.onKeyEntered(key, info.location);
                         }
                     });
                 }
@@ -383,29 +378,19 @@ public class GeoQuery {
     }
 
     /**
-     * Returns the latitude value of the current center of this query
-     * @return The latitude value
+     * Returns the current center of this query
+     * @return The current center
      */
-    public synchronized double getCenterLatitude() {
-        return centerLatitude;
-    }
-
-    /**
-     * Returns the longitude value of the current center of this query
-     * @return The longitude value
-     */
-    public synchronized double getCenterLongitude() {
-        return centerLongitude;
+    public synchronized GeoLocation getCenter() {
+        return center;
     }
 
     /**
      * Sets the new center of this query and triggers new events if necessary
-     * @param latitude The new latitude value of the center
-     * @param longitude The new longitude value of the center
+     * @param center The new the center
      */
-    public synchronized void setCenter(double latitude, double longitude) {
-        this.centerLatitude = latitude;
-        this.centerLongitude = longitude;
+    public synchronized void setCenter(GeoLocation center) {
+        this.center = center;
         if (this.hasListeners()) {
             this.setupQueries();
         }

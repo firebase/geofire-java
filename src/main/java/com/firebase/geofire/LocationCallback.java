@@ -36,14 +36,12 @@ import com.firebase.client.FirebaseError;
 public interface LocationCallback {
 
     /**
-     * This method is called with the current location of the key. hasLocation will be false if the key currently
-     * has no location and the latitude and longitude will be arbitrary.
+     * This method is called with the current location of the key. location will be null if there is no location
+     * stored in GeoFire for the key.
      * @param key The key for which this location
-     * @param hasLocation Is true if and only if this key has a location
-     * @param latitude The current latitude for the key, if hasLocation is true
-     * @param longitude The current longitude for the key, if hasLocation is true
+     * @param location The location of the key
      */
-    public void onLocationResult(String key, boolean hasLocation, double latitude, double longitude);
+    public void onLocationResult(String key, GeoLocation location);
 
     /**
      * Called if the callback could not be added due to failure on the server or security rules.

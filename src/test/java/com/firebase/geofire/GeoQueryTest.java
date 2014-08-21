@@ -22,7 +22,7 @@ public class GeoQueryTest extends RealDataTest {
         setLoc(geoFire, "3", 37.1000, -122.0000);
         setLoc(geoFire, "4", 37.0002, -121.9998, true);
 
-        GeoQuery query = geoFire.queryAtLocation(37, -122, 0.5);
+        GeoQuery query = geoFire.queryAtLocation(new GeoLocation(37, -122), 0.5);
 
         GeoQueryEventTestListener testListener = new GeoQueryEventTestListener();
         query.addGeoQueryEventListener(testListener);
@@ -48,7 +48,7 @@ public class GeoQueryTest extends RealDataTest {
         setLoc(geoFire, "3", 37.1000, -122.0000);
         setLoc(geoFire, "4", 37.0002, -121.9998, true);
 
-        GeoQuery query = geoFire.queryAtLocation(37, -122, 0.5);
+        GeoQuery query = geoFire.queryAtLocation(new GeoLocation(37, -122), 0.5);
         GeoQueryEventTestListener testListener = new GeoQueryEventTestListener(false, false, true);
         query.addGeoQueryEventListener(testListener);
 
@@ -78,7 +78,7 @@ public class GeoQueryTest extends RealDataTest {
         setLoc(geoFire, "3", 37.1000, -122.0000);
         setLoc(geoFire, "4", 37.0002, -121.9998, true);
 
-        GeoQuery query = geoFire.queryAtLocation(37, -122, 0.5);
+        GeoQuery query = geoFire.queryAtLocation(new GeoLocation(37, -122), 0.5);
 
         GeoQueryEventTestListener testListener = new GeoQueryEventTestListener(false, true, false);
         query.addGeoQueryEventListener(testListener);
@@ -115,7 +115,7 @@ public class GeoQueryTest extends RealDataTest {
         setLoc(geoFire, "0", 1, 1, true);
         setLoc(geoFire, "1", -1, -1, true);
 
-        GeoQuery query = geoFire.queryAtLocation(0, 0, 1000);
+        GeoQuery query = geoFire.queryAtLocation(new GeoLocation(0, 0), 1000);
         GeoQueryEventTestListener testListener = new GeoQueryEventTestListener(false, true, true);
         query.addGeoQueryEventListener(testListener);
 
@@ -140,7 +140,7 @@ public class GeoQueryTest extends RealDataTest {
         setLoc(geoFire, "3", 37.1000, -122.0000);
         setLoc(geoFire, "4", 37.0002, -121.9998, true);
 
-        GeoQuery query = geoFire.queryAtLocation(37.0, -122, 1);
+        GeoQuery query = geoFire.queryAtLocation(new GeoLocation(37.0, -122), 1);
 
         GeoQueryEventTestListener testListenerRemoved = new GeoQueryEventTestListener(true, true, true);
         query.addGeoQueryEventListener(testListenerRemoved);
@@ -180,7 +180,7 @@ public class GeoQueryTest extends RealDataTest {
         setLoc(geoFire, "3", 37.1000, -122.0000);
         setLoc(geoFire, "4", 37.0002, -121.9998, true);
 
-        GeoQuery query = geoFire.queryAtLocation(37.0, -122, 1);
+        GeoQuery query = geoFire.queryAtLocation(new GeoLocation(37.0, -122), 1);
 
         GeoQueryEventTestListener testListenerRemoved = new GeoQueryEventTestListener(true, true, true);
         query.addGeoQueryEventListener(testListenerRemoved);
@@ -216,13 +216,13 @@ public class GeoQueryTest extends RealDataTest {
         setLoc(geoFire, "3", 37.1000, -122.0000);
         setLoc(geoFire, "4", 37.0002, -121.9998, true);
 
-        GeoQuery query = geoFire.queryAtLocation(37.0, -122, 1);
+        GeoQuery query = geoFire.queryAtLocation(new GeoLocation(37.0, -122), 1);
         final boolean[] done = new boolean[1];
         final boolean[] failed = new boolean[1];
         final Semaphore semaphore = new Semaphore(0);
         query.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
-            public void onKeyEntered(String key, double latitude, double longitude) {
+            public void onKeyEntered(String key, GeoLocation location) {
                 if (done[0]) {
                     failed[0] = true;
                 }
@@ -233,7 +233,7 @@ public class GeoQueryTest extends RealDataTest {
             }
 
             @Override
-            public void onKeyMoved(String key, double latitude, double longitude) {
+            public void onKeyMoved(String key, GeoLocation location) {
             }
 
             @Override
@@ -263,12 +263,12 @@ public class GeoQueryTest extends RealDataTest {
         setLoc(geoFire, "3", 37.1000, -122.0000);
         setLoc(geoFire, "4", 37.0002, -121.9998, true);
 
-        GeoQuery query = geoFire.queryAtLocation(37.0, -122, 1);
+        GeoQuery query = geoFire.queryAtLocation(new GeoLocation(37.0, -122), 1);
 
         final Semaphore semaphore = new Semaphore(0);
         query.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
-            public void onKeyEntered(String key, double latitude, double longitude) {
+            public void onKeyEntered(String key, GeoLocation location) {
             }
 
             @Override
@@ -276,7 +276,7 @@ public class GeoQueryTest extends RealDataTest {
             }
 
             @Override
-            public void onKeyMoved(String key, double latitude, double longitude) {
+            public void onKeyMoved(String key, GeoLocation location) {
             }
 
             @Override
@@ -293,7 +293,7 @@ public class GeoQueryTest extends RealDataTest {
 
         query.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
-            public void onKeyEntered(String key, double latitude, double longitude) {
+            public void onKeyEntered(String key, GeoLocation location) {
             }
 
             @Override
@@ -301,7 +301,7 @@ public class GeoQueryTest extends RealDataTest {
             }
 
             @Override
-            public void onKeyMoved(String key, double latitude, double longitude) {
+            public void onKeyMoved(String key, GeoLocation location) {
             }
 
             @Override
@@ -325,13 +325,13 @@ public class GeoQueryTest extends RealDataTest {
         setLoc(geoFire, "3", 37.1000, -122.0000);
         setLoc(geoFire, "4", 37.0002, -121.9998, true);
 
-        GeoQuery query = geoFire.queryAtLocation(37.0, -122, 1);
+        GeoQuery query = geoFire.queryAtLocation(new GeoLocation(37.0, -122), 1);
         final boolean[] done = new boolean[1];
         final Semaphore semaphore = new Semaphore(0);
         final int[] readyCount = new int[1];
         query.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
-            public void onKeyEntered(String key, double latitude, double longitude) {
+            public void onKeyEntered(String key, GeoLocation location) {
                 if (key.equals("0")) {
                     done[0] = true;
                 }
@@ -342,7 +342,7 @@ public class GeoQueryTest extends RealDataTest {
             }
 
             @Override
-            public void onKeyMoved(String key, double latitude, double longitude) {
+            public void onKeyMoved(String key, GeoLocation location) {
             }
 
             @Override
@@ -358,7 +358,7 @@ public class GeoQueryTest extends RealDataTest {
         });
 
         Assert.assertTrue(semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
-        query.setCenter(0,0);
+        query.setCenter(new GeoLocation(0,0));
         Assert.assertTrue(semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
         Assert.assertTrue(done[0]);
     }

@@ -66,11 +66,11 @@ public class GeoFire {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             if (dataSnapshot.getValue() == null) {
-                this.callback.onLocationResult(dataSnapshot.getName(), false, Double.MIN_VALUE, Double.MIN_VALUE);
+                this.callback.onLocationResult(dataSnapshot.getName(), null);
             } else {
-                double[] location = GeoFire.getLocationValue(dataSnapshot);
+                GeoLocation location = GeoFire.getLocationValue(dataSnapshot);
                 if (location != null) {
-                    this.callback.onLocationResult(dataSnapshot.getName(), true, location[0], location[1]);
+                    this.callback.onLocationResult(dataSnapshot.getName(), location);
                 } else {
                     String message = "GeoFire data has invalid format: " + dataSnapshot.getValue();
                     this.callback.onCancelled(new FirebaseError(FirebaseError.UNKNOWN_ERROR, message));
@@ -84,12 +84,16 @@ public class GeoFire {
         }
     }
 
-    static double[] getLocationValue(DataSnapshot dataSnapshot) {
+    static GeoLocation getLocationValue(DataSnapshot dataSnapshot) {
         try {
             Map data = dataSnapshot.getValue(Map.class);
-            List<Double> location = (List<Double>) data.get("l");
-            if (location.size() == 2 && GeoUtils.coordinatesValid(location.get(0), location.get(1))) {
-                return new double[]{location.get(0), location.get(1)};
+            List<?> location = (List<?>) data.get("l");
+            Number latitudeObj = (Number)location.get(0);
+            Number longitudeObj = (Number)location.get(1);
+            double latitude = latitudeObj.doubleValue();
+            double longitude = longitudeObj.doubleValue();
+            if (location.size() == 2 && GeoLocation.coordinatesValid(latitude, longitude)) {
+                return new GeoLocation(latitude, longitude);
             } else {
                 return null;
             }
@@ -126,33 +130,28 @@ public class GeoFire {
     /**
      * Sets the location for a given key
      * @param key The key to save the location for
-     * @param latitude The latitude of the location in the range of [-90,90]
-     * @param longitude The longitude of the location in the range of [-180,180]
+     * @param location The location of this key
      */
-    public void setLocation(String key, double latitude, double longitude) {
-        this.setLocation(key, latitude, longitude, null);
+    public void setLocation(String key, GeoLocation location) {
+        this.setLocation(key, location, null);
     }
 
     /**
      * Sets the location for a given key
      * @param key The key to save the location for
-     * @param latitude The latitude of the location in the range of [-90,90]
-     * @param longitude The longitude of the location in the range of [-180,180]
+     * @param location The location of this key
      * @param completionListener A listener that is called once the location was successfully saved on the server or an
      *                           error occurred.
      */
-    public void setLocation(final String key, double latitude, double longitude, final CompletionListener completionListener) {
+    public void setLocation(final String key, final GeoLocation location, final CompletionListener completionListener) {
         if (key == null) {
             throw new NullPointerException();
         }
-        if (!GeoUtils.coordinatesValid(latitude, longitude)) {
-            throw new IllegalArgumentException(String.format("Not a valid geo coordinate: [%f,%f]", latitude, longitude));
-        }
         Firebase keyRef = this.firebaseRefForKey(key);
-        GeoHash geoHash = new GeoHash(latitude, longitude);
+        GeoHash geoHash = new GeoHash(location);
         Map<String, Object> updates = new HashMap<String, Object>();
         updates.put("g", geoHash.getGeoHashString());
-        updates.put("l", new double[]{latitude, longitude});
+        updates.put("l", new double[]{location.latitude, location.longitude});
         if (completionListener != null) {
             keyRef.setValue(updates, geoHash.getGeoHashString(), new Firebase.CompletionListener() {
                 @Override
@@ -212,12 +211,11 @@ public class GeoFire {
 
     /**
      * Returns a new Query object at the given position and radius
-     * @param latitude The latitude of the query center in the range of [-90,90]
-     * @param longitude The longitude of the query center in the range of [-180,180]
+     * @param center The center of the query
      * @param radius The radius of the query in kilometers.
      * @return The new GeoQuery object
      */
-    public GeoQuery queryAtLocation(double latitude, double longitude, double radius) {
-        return new GeoQuery(this, latitude, longitude, radius);
+    public GeoQuery queryAtLocation(GeoLocation center, double radius) {
+        return new GeoQuery(this, center, radius);
     }
 }

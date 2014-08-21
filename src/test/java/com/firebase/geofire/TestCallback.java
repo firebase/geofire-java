@@ -25,12 +25,12 @@ public class TestCallback implements LocationCallback {
     }
 
     @Override
-    public void onLocationResult(String key, boolean hasLocation, double latitude, double longitude) {
+    public void onLocationResult(String key, GeoLocation location) {
         if (future.isDone()) {
             throw new IllegalStateException("Already received callback");
         }
-        if (hasLocation) {
-            future.put(location(key, latitude, longitude));
+        if (location != null) {
+            future.put(location(key, location.latitude, location.longitude));
         } else {
             future.put(noLocation(key));
         }

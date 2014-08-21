@@ -1,6 +1,7 @@
 package com.firebase.geofire;
 
 import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.geofire.util.ReadFuture;
 import org.junit.Assert;
@@ -82,7 +83,7 @@ public class GeoFireTest extends RealDataTest {
         final Semaphore semaphore = new Semaphore(0);
         geoFire.getLocation("loc1", new LocationCallback() {
             @Override
-            public void onLocationResult(String key, boolean hasLocation, double latitude, double longitude) {
+            public void onLocationResult(String key, GeoLocation location) {
                 Assert.fail("This should not be a valid location!");
             }
 
@@ -100,7 +101,7 @@ public class GeoFireTest extends RealDataTest {
 
         geoFire.getLocation("loc2", new LocationCallback() {
             @Override
-            public void onLocationResult(String key, boolean hasLocation, double latitude, double longitude) {
+            public void onLocationResult(String key, GeoLocation location) {
                 Assert.fail("This should not be a valid location!");
             }
 
@@ -116,19 +117,41 @@ public class GeoFireTest extends RealDataTest {
     public void invalidCoordinatesThrowException() {
         GeoFire geoFire = newTestGeoFire();
         try {
-            geoFire.setLocation("test", -91, 90);
+            geoFire.setLocation("test", new GeoLocation(-91, 90));
             Assert.fail("Did not throw illegal argument exception!");
         } catch (IllegalArgumentException e) {
         }
         try {
-            geoFire.setLocation("test", 0, -180.1);
+            geoFire.setLocation("test", new GeoLocation(0, -180.1));
             Assert.fail("Did not throw illegal argument exception!");
         } catch (IllegalArgumentException e) {
         }
         try {
-            geoFire.setLocation("test", 0, 181.1);
+            geoFire.setLocation("test", new GeoLocation(0, 181.1));
             Assert.fail("Did not throw illegal argument exception!");
         } catch (IllegalArgumentException e) {
         }
+    }
+
+    @Test
+    public void locationWorksWithLongs() throws InterruptedException, ExecutionException, TimeoutException {
+        GeoFire geoFire = newTestGeoFire();
+        Firebase firebase = geoFire.firebaseRefForKey("loc");
+
+        final Semaphore semaphore = new Semaphore(0);
+        firebase.setValue(new HashMap<String, Object>() {{
+            put("l", Arrays.asList(1L, 2L));
+            put("g", "7zzzzzzzzz"); // this is wrong but we don't care in this test
+        }}, "7zzzzzzzzz", new Firebase.CompletionListener() {
+            @Override
+            public void onComplete(FirebaseError error, Firebase firebase) {
+                semaphore.release();
+            }
+        });
+        semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS);
+
+        TestCallback testCallback = new TestCallback();
+        geoFire.getLocation("loc", testCallback);
+        Assert.assertEquals(TestCallback.location("loc", 1, 2), testCallback.getCallbackValue());
     }
 }
