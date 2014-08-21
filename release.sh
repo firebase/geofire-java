@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e
 
-STANDALONE_STUB="geofire-java"
-
 cd $(dirname $0)
 
 ###########################
@@ -32,6 +30,7 @@ if [[ ! -z $DERP ]]; then
 fi
 
 # Ensure there is not an existing git tag for the new version
+# XXX this is wrong; needs to be semver sorted as my other scripts are
 LAST_GIT_TAG="$(git tag --list | tail -1 | awk -F 'v' '{print $2}')"
 if [[ $VERSION == $LAST_GIT_TAG ]]; then
   echo "Error: git tag v${VERSION} already exists. Make sure you are not releasing an already-released version."
