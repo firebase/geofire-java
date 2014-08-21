@@ -38,7 +38,13 @@ There are then multiple possibilities to use GeoFire in your project.
 
 ### Maven
 
-*TODO: add to maven repository*
+Add GeoFire to your Maven enabled projects with a new dependency:
+
+    <dependency>
+      <groupId>com.firebase</groupId>
+      <artifactId>geofire</artifactId>
+      <version>[1.0.0,)</version>
+    </dependency>
 
 ### Jar-File
 
