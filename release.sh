@@ -37,19 +37,6 @@ if [[ $VERSION == $LAST_GIT_TAG ]]; then
   exit 1
 fi
 
-#####################
-# BUILD THE LIBRARY #
-#####################
-
-# Kick off standalone build
-echo "Building artifact"
-mvn -DskipTests clean install
-
-if [[ $? -ne 0 ]]; then
-  echo "Error building artifact."
-  exit 1
-fi
-
 # Create docs
 ./create-docs.sh
 if [[ $? -ne 0 ]]; then
