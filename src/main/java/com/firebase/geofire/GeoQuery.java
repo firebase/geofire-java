@@ -97,7 +97,7 @@ public class GeoQuery {
     /**
      * Creates a new GeoQuery with the given GeoFire at the given center and radius
      * @param geoFire The GeoFire object this GeoQuery uses
-     * @param center The latitude of the center of this query in the range of [-90,90]
+     * @param center The center of this query
      * @param radius The radius of this query in kilometers
      */
     GeoQuery(GeoFire geoFire, GeoLocation center, double radius) {
