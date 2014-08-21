@@ -31,9 +31,9 @@ public class GeoQueryEventTestListener extends TestListener implements GeoQueryE
     }
 
     @Override
-    public void onKeyEntered(String key, double latitude, double longitude) {
+    public void onKeyEntered(String key, GeoLocation location) {
         if (recordEntered) {
-            this.addEvent(keyEntered(key, latitude, longitude));
+            this.addEvent(keyEntered(key, location.latitude, location.longitude));
         }
     }
 
@@ -45,9 +45,9 @@ public class GeoQueryEventTestListener extends TestListener implements GeoQueryE
     }
 
     @Override
-    public void onKeyMoved(String key, double latitude, double longitude) {
+    public void onKeyMoved(String key, GeoLocation location) {
         if (recordMoved) {
-            this.addEvent(keyMoved(key, latitude, longitude));
+            this.addEvent(keyMoved(key, location.latitude, location.longitude));
         }
     }
 

@@ -77,13 +77,13 @@ a key simply call the `setLocation` method. The location method is passed a key
 as string and the location as latitude and longitude doubles.
 
 ```java
-geoFire.setLocation("firebase-hq", 37.7853889, -122.4056973);
+geoFire.setLocation("firebase-hq", new GeoLocation(37.7853889, -122.4056973));
 ```
 
 To check if a write was successfully saved on the server, you can add a
 `GeoFire.CompletionListener` to the `setLocation` call.
 ```java
-geoFire.setLocation("firebase-hq", 37.7853889, -122.4056973, new GeoFire.CompletionListener() {
+geoFire.setLocation("firebase-hq", new GeoLocation(37.7853889, -122.4056973), new GeoFire.CompletionListener() {
     @Override
     public void onComplete(String key, FirebaseError error) {
         if (error != null) {
@@ -101,38 +101,24 @@ geoFire.removeKey("firebase-hq");
 ```
 
 #### Retrieving a location
-Retrieving locations happens with listeners. Like that, your app can always
-stay up-to-date automatically. Like with any Firebase listener, the listener
-is called once for the initial position and then for every update of the
-location. If the key is not present (or is removed from GeoFire) `onKeyRemoved`
-is called.
+Retrieving a location for a single key in GeoFire happens with callbacks:
 
 ```java
-geoFire.addLocationEventListener("firebase-hq", new LocationEventListener() {
+geoFire.getLocation("firebase-hq", new LocationCallback() {
     @Override
-    public void onLocationChanged(String key, double lat, double lng) {
-        System.out.println(String.format("The location for key %s changed to [%f,%f]", key, lat, lng));
+    public void onLocationResult(String key, GeoLocation location) {
+        if (location != null) {
+            System.out.println(String.format("The location for key %s is [%f,%f]", key, location.latitude, location.longitude));
+        } else {
+            System.out.println(String.format("There is no location for key %s in GeoFire", key));
+        }
     }
 
     @Override
-    public void onKeyRemoved(String key) {
-        System.out.println(String.format("The location for key %s was removed", key));
-    }
-
-    @Override
-    public void onCancelled(FirebaseError error) {
-        System.err.println("There was an error reading data from Firebase: " + error);
+    public void onCancelled(FirebaseError firebaseError) {
+        System.err.println("There was an error getting the GeoFire location: " + firebaseError);
     }
 });
-```
-
-To stop receiving updates you can remove a single location listener or all
-location listeners
-
-```java
-geoFire.removeEventListener("firebase-hq", eventListener); // remove event listener for single key
-geoFire.removeEventListener(eventListener); // remove event listener for all keys
-geoFire.removeAllEventListeners(); // remove all event listeners
 ```
 
 ### Geo Queries
@@ -144,7 +130,7 @@ later to change the area that is queried.
 
 ```java
 // creates a new query around [37.7832, -122.4056] with a radius of 0.6 kilometers
-GeoQuery geoQuery = geoFire.queryAtLocation(37.7832, -122.4056, 0.6);
+GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(37.7832, -122.4056), 0.6);
 ```
 
 #### Receiving events for geo queries
@@ -175,8 +161,8 @@ To listen for events you must add a `GeoQueryEventListener` to the `GeoQuery`.
 ```java
 geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
     @Override
-    public void onKeyEntered(String key, double lat, double lng) {
-        System.out.println(String.format("Key %s entered the search area at [%f,%f]", key, lat, lng));
+    public void onKeyEntered(String key, GeoLocation location) {
+        System.out.println(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
     }
 
     @Override
@@ -185,8 +171,8 @@ geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
     }
 
     @Override
-    public void onKeyMoved(String key, double lat, double lng) {
-        System.out.println(String.format("Key %s moved within the search area to [%f,%f]", key, lat, lng));
+    public void onKeyMoved(String key, GeoLocation location) {
+        System.out.println(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
     }
 
     @Override
@@ -207,7 +193,7 @@ for a `GeoQuery`.
 
 #### Updating the query criteria
 
-The GeoQuery search area can be changed with `setCenter` and `setRadius` Key
+The GeoQuery search area can be changed with `setCenter` and `setRadius`. Key
 exited and key entered events will be fired for keys moving in and out of
 the old and new search area respectively. No key moved events will be
 fired, however, key moved events might occur independently.

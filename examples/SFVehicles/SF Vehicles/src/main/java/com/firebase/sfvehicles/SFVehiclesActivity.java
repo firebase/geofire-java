@@ -11,6 +11,7 @@ import android.view.animation.Interpolator;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -23,7 +24,7 @@ import java.util.Map;
 
 public class SFVehiclesActivity extends FragmentActivity implements GeoQueryEventListener, GoogleMap.OnCameraChangeListener {
 
-    private static final LatLng INITIAL_CENTER = new LatLng(37.7789, -122.4017);
+    private static final GeoLocation INITIAL_CENTER = new GeoLocation(37.7789, -122.4017);
     private static final int INITIAL_ZOOM_LEVEL = 14;
     private static final String GEO_FIRE_REF = "https://publicdata-transit.firebaseio.com/_geofire";
 
@@ -42,16 +43,17 @@ public class SFVehiclesActivity extends FragmentActivity implements GeoQueryEven
         // setup map and camera position
         SupportMapFragment mapFragment = (SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map);
         this.map = mapFragment.getMap();
-        this.searchCircle = this.map.addCircle(new CircleOptions().center(INITIAL_CENTER).radius(1000));
+        LatLng latLngCenter = new LatLng(INITIAL_CENTER.latitude, INITIAL_CENTER.longitude);
+        this.searchCircle = this.map.addCircle(new CircleOptions().center(latLngCenter).radius(1000));
         this.searchCircle.setFillColor(Color.argb(66, 255, 0, 255));
         this.searchCircle.setStrokeColor(Color.argb(66, 0, 0, 0));
-        this.map.moveCamera(CameraUpdateFactory.newLatLngZoom(INITIAL_CENTER, INITIAL_ZOOM_LEVEL));
+        this.map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngCenter, INITIAL_ZOOM_LEVEL));
         this.map.setOnCameraChangeListener(this);
 
         // setup GeoFire
         this.geoFire = new GeoFire(new Firebase(GEO_FIRE_REF));
         // radius in km
-        this.geoQuery = this.geoFire.queryAtLocation(INITIAL_CENTER.latitude, INITIAL_CENTER.longitude, 1);
+        this.geoQuery = this.geoFire.queryAtLocation(INITIAL_CENTER, 1);
 
         // setup markers
         this.markers = new HashMap<String, Marker>();
@@ -76,9 +78,9 @@ public class SFVehiclesActivity extends FragmentActivity implements GeoQueryEven
     }
 
     @Override
-    public void onKeyEntered(String key, double lat, double lng) {
+    public void onKeyEntered(String key, GeoLocation location) {
         // Add a new marker to the map
-        Marker marker = this.map.addMarker(new MarkerOptions().position(new LatLng(lat, lng)));
+        Marker marker = this.map.addMarker(new MarkerOptions().position(new LatLng(location.latitude, location.longitude)));
         this.markers.put(key, marker);
     }
 
@@ -93,11 +95,11 @@ public class SFVehiclesActivity extends FragmentActivity implements GeoQueryEven
     }
 
     @Override
-    public void onKeyMoved(String key, double lat, double lng) {
+    public void onKeyMoved(String key, GeoLocation location) {
         // Move the marker
         Marker marker = this.markers.get(key);
         if (marker != null) {
-            this.animateMarkerTo(marker, lat, lng);
+            this.animateMarkerTo(marker, location.latitude, location.longitude);
         }
     }
 
@@ -153,7 +155,7 @@ public class SFVehiclesActivity extends FragmentActivity implements GeoQueryEven
         double radius = zoomLevelToRadius(cameraPosition.zoom);
         this.searchCircle.setCenter(center);
         this.searchCircle.setRadius(radius);
-        this.geoQuery.setCenter(center.latitude, center.longitude);
+        this.geoQuery.setCenter(new GeoLocation(center.latitude, center.longitude));
         // radius in km
         this.geoQuery.setRadius(radius/1000);
     }

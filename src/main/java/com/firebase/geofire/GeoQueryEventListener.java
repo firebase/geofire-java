@@ -42,10 +42,9 @@ public interface GeoQueryEventListener {
      * This method is once per key, and is only called again if onKeyExited was called in the mean time.
      *
      * @param key The key that entered the search area
-     * @param latitude The latitude of the current position in the range of [-90,90]
-     * @param longitude The longitude of the current position in the range of [-180,180]
+     * @param location The location for this key as latitude-longitude coordinates
      */
-    public void onKeyEntered(String key, double latitude, double longitude);
+    public void onKeyEntered(String key, GeoLocation location);
 
     /**
      * Called if a key exited the search area of the GeoQuery. This is method is only called if onKeyEntered was called
@@ -61,10 +60,9 @@ public interface GeoQueryEventListener {
      * This method can be called multiple times
      *
      * @param key The key that moved within the search area
-     * @param latitude The latitude of the current position in the range of [-90,90]
-     * @param longitude The longitude of the current position in the range of [-180,180]
+     * @param location The location for this key as latitude-longitude coordinates
      */
-    public void onKeyMoved(String key, double latitude, double longitude);
+    public void onKeyMoved(String key, GeoLocation location);
 
     /**
      * This method is called after all initial key entered events have been fired for a query.
