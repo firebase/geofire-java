@@ -57,12 +57,6 @@ if [[ $? -ne 0 ]]; then
   exit 1
 fi
 
-STANDALONE_SRC="target/geofire-${VER}-SNAPSHOT.jar"
-if [[ ! -e $STANDALONE_SRC ]]; then
-  echo "Source artifact not found. Check $STANDALONE_SRC"
-  exit 1
-fi
-
 ###################
 # DEPLOY TO MAVEN #
 ###################
