@@ -43,16 +43,28 @@ There are then multiple possibilities to use GeoFire in your project.
 
 Add GeoFire to your Maven enabled projects with a new dependency:
 
-    <dependency>
-      <groupId>com.firebase</groupId>
-      <artifactId>geofire</artifactId>
-      <version>[1.0.0,)</version>
-    </dependency>
+```xml
+<dependency>
+  <groupId>com.firebase</groupId>
+  <artifactId>geofire</artifactId>
+  <version>[1.0.0,)</version>
+</dependency>
+```
+
+### Gradle
+
+Likewise, you can add a dependency to your `gradle.build` file:
+
+```groovy
+dependencies {
+    compile 'com.firebase:geofire:1.0.0+'
+}
+```
 
 ### Jar-File
 
-You can also download the jar file in the folder `dist` and add it directly to
-your project.
+You can also download the jar file from the latest release on the [releases
+page](https://github.com/firebase/geofire-java/releases).
 
 ## Getting Started with Firebase
 
