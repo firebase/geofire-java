@@ -79,8 +79,10 @@
   <dependencies>
     <dependency>
       <groupId>com.firebase</groupId>
-      <artifactId>firebase-client</artifactId>
-      <version>[1.0.17,)</version>
+      <!-- The jvm artifact is a dependency of the android artifact as well, so
+           we can just use that to work on both platforms -->
+      <artifactId>firebase-client-jvm</artifactId>
+      <version>[1.1.1,)</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
