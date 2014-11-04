@@ -66,11 +66,11 @@ public class GeoFire {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             if (dataSnapshot.getValue() == null) {
-                this.callback.onLocationResult(dataSnapshot.getName(), null);
+                this.callback.onLocationResult(dataSnapshot.getKey(), null);
             } else {
                 GeoLocation location = GeoFire.getLocationValue(dataSnapshot);
                 if (location != null) {
-                    this.callback.onLocationResult(dataSnapshot.getName(), location);
+                    this.callback.onLocationResult(dataSnapshot.getKey(), location);
                 } else {
                     String message = "GeoFire data has invalid format: " + dataSnapshot.getValue();
                     this.callback.onCancelled(new FirebaseError(FirebaseError.UNKNOWN_ERROR, message));

@@ -264,7 +264,7 @@ public class GeoQuery {
     private void childAdded(DataSnapshot dataSnapshot) {
         GeoLocation location = GeoFire.getLocationValue(dataSnapshot);
         if (location != null) {
-            this.updateLocationInfo(dataSnapshot.getName(), location);
+            this.updateLocationInfo(dataSnapshot.getKey(), location);
         } else {
             // throw an error in future?
         }
@@ -273,14 +273,14 @@ public class GeoQuery {
     private void childChanged(DataSnapshot dataSnapshot) {
         GeoLocation location = GeoFire.getLocationValue(dataSnapshot);
         if (location != null) {
-            this.updateLocationInfo(dataSnapshot.getName(), location);
+            this.updateLocationInfo(dataSnapshot.getKey(), location);
         } else {
             // throw an error in future?
         }
     }
 
     private void childRemoved(DataSnapshot dataSnapshot) {
-        final String key = dataSnapshot.getName();
+        final String key = dataSnapshot.getKey();
         final LocationInfo info = this.locationInfos.get(key);
         if (info != null) {
             this.geoFire.firebaseRefForKey(key).addListenerForSingleValueEvent(new ValueEventListener() {
