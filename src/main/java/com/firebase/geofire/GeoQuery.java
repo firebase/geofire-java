@@ -239,7 +239,7 @@ public class GeoQuery {
             if (!oldQueries.contains(query)) {
                 outstandingQueries.add(query);
                 Firebase firebase = this.geoFire.getFirebase();
-                Query firebaseQuery = firebase.startAt(query.getStartValue()).endAt(query.getEndValue());
+                Query firebaseQuery = firebase.orderByChild("g").startAt(query.getStartValue()).endAt(query.getEndValue());
                 firebaseQuery.addChildEventListener(this.childEventLister);
                 addValueToReadyListener(firebaseQuery, query);
                 firebaseQueries.put(query, firebaseQuery);
