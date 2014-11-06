@@ -44,7 +44,7 @@ dependencies {
     // You must install or update the Google Repository through the SDK manager to use this dependency.
     compile 'com.google.android.gms:play-services:5.0.77'
     // Firebase
-    compile 'com.firebase:firebase-client:1.0.17'
+    compile 'com.firebase:firebase-client-android:2.0.+'
     // GeoFire
     compile 'com.firebase:geofire:1.0-SNAPSHOT'
 }

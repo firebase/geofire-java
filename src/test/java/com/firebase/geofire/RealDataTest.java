@@ -1,9 +1,6 @@
 package com.firebase.geofire;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+import com.firebase.client.*;
 import com.firebase.geofire.core.SimpleFuture;
 import junit.framework.Assert;
 import org.junit.After;
@@ -20,6 +17,10 @@ public class RealDataTest {
 
     @Before
     public void setup() {
+        Config cfg = Firebase.getDefaultConfig();
+        if (!cfg.isFrozen()) {
+            cfg.setLogLevel(Logger.Level.DEBUG);
+        }
         this.firebase = new Firebase(String.format("https://%s.firebaseio-demo.com",
                 TestHelpers.randomAlphaNumericString(16)));
     }

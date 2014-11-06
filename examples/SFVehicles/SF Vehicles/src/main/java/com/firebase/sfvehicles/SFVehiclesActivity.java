@@ -50,6 +50,8 @@ public class SFVehiclesActivity extends FragmentActivity implements GeoQueryEven
         this.map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngCenter, INITIAL_ZOOM_LEVEL));
         this.map.setOnCameraChangeListener(this);
 
+        Firebase.setAndroidContext(this);
+
         // setup GeoFire
         this.geoFire = new GeoFire(new Firebase(GEO_FIRE_REF));
         // radius in km
