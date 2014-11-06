@@ -23,7 +23,8 @@ your Firebase. This allows your existing data format and security rules to
 remain unchanged and for you to add GeoFire as an easy solution for geo queries
 without modifying your existing data.
 
-### Example
+### Example Usage
+
 Assume you are building an app to rate bars and you store all information for a
 bar, e.g. name, business hours and price range, at `/bars/<bar-id>`. Later, you
 want to add the possibility for users to search for bars in their vicinity. This
@@ -32,6 +33,19 @@ GeoFire, using the bar IDs as GeoFire keys. GeoFire then allows you to easily
 query which bar IDs (the keys) are nearby. To display any additional information
 about the bars, you can load the information for each bar returned by the query
 at `/bars/<bar-id>`.
+
+
+## Upgrading GeoFire
+
+### Upgrading from GeoFire 1.0.x to 1.1.x
+
+With the release of GeoFire for Android/Java 1.1.0, this library now uses [the new query
+functionality found in Firebase 2.0.0](https://www.firebase.com/blog/2014-11-04-firebase-realtime-queries.html).
+As a result, you will need to upgrade to Firebase 2.x.x and add a new `.indexOn` rule to your
+Security and Firebase Rules to get the best performance. You can view [the updated rules
+here](https://github.com/firebase/geofire-js/blob/master/examples/securityRules/rules.json)
+and [read our docs for more information about indexing your data](https://www.firebase.com/docs/security/guide/indexing-data.html).
+
 
 ## Including GeoFire in your project Android/Java
 
@@ -66,15 +80,17 @@ dependencies {
 You can also download the jar file from the latest release on the [releases
 page](https://github.com/firebase/geofire-java/releases).
 
+
 ## Getting Started with Firebase
 
-GeoFire requires Firebase in order to store location data. You can [sign up here](https://www.firebase.com/signup/?utm_source=geofire-java) for a free account.
+GeoFire requires Firebase in order to store location data. You can [sign up here for a free
+account](https://www.firebase.com/signup/?utm_source=geofire-java).
+
 
 ## Quickstart
 
 This is a quickstart on how to use GeoFire's core features. There is also a
-[full API reference available
-online](https://geofire-java.firebaseapp.com/docs/).
+[full API reference available online](https://geofire-java.firebaseapp.com/docs/).
 
 ### GeoFire
 
@@ -88,7 +104,7 @@ GeoFire geoFire = new GeoFire(new Firebase("https://<your-firebase>.firebaseio.c
 
 Note that you can point your reference to anywhere in your Firebase, but don't
 forget to [setup security rules for
-GeoFire](https://github.com/firebase/geofire/blob/master/examples/securityRules/rules.json).
+GeoFire](https://github.com/firebase/geofire-js/blob/master/examples/securityRules/rules.json).
 
 #### Setting location data
 
@@ -229,9 +245,11 @@ fired; however, key moved events might occur independently.
 Updating the search area can be helpful in cases such as when you need to update
 the query to the new visible map area after a user scrolls.
 
+
 ## API Reference
 
 [A full API reference is available here](https://geofire-java.firebaseapp.com/docs/).
+
 
 ## Contributing
 
