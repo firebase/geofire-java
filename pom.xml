@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.firebase</groupId>
   <artifactId>geofire</artifactId>
-  <version>1.1.0</version>
+  <version>1.1.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>geofire</name>
   <description>GeoFire is an open-source library for Android/Java that allows you to store and query a set of keys based on their geographic location.</description>
