@@ -49,7 +49,7 @@ fi
 ###################
 read -p "Next, make sure this repo is clean and up to date. We will be kicking off a deploy to maven." DERP
 mvn clean
-mvn release:clean release:prepare release:perform
+mvn release:clean release:prepare release:perform -Dtag=v$VERSION
 
 if [[ $? -ne 0 ]]; then
   echo "error: Error building and releasing to maven."
@@ -60,14 +60,7 @@ fi
 # UPDATE GIT #
 ##############
 
-# Create a git tag for the new version
-git tag v$VERSION
-if [[ $? -ne 0 ]]; then
-  echo "Error: Failed to do 'git tag' from geofire repo."
-  exit 1
-fi
-
-# Push the new git tag
+# Push the new git tag created by Maven
 git push --tags
 if [[ $? -ne 0 ]]; then
   echo "Error: Failed to do 'git push --tags' from geofire repo."
@@ -81,7 +74,8 @@ fi
 echo "Manual steps:"
 echo "  1) release maven repo at http://oss.sonatype.org/"
 echo "  2) Deply new docs: $> firebase deploy"
-echo "  3) Update the release notes for GeoFire version ${VERSION} on GitHub and jars as download"
-echo "  4) Tweet @FirebaseRelease: 'v${VERSION} of GeoFire for Java is available https://github.com/firebase/geofire-java"
+echo "  3) Update the release notes for GeoFire version ${VERSION} on GitHub and add jars for downloading"
+echo "  4) Update firebase-versions.json in the firebase-clients repo with the changelog information"
+echo "  5) Tweet @FirebaseRelease: 'v${VERSION} of @Firebase GeoFire for Java is available https://github.com/firebase/geofire-java"
 echo ---
 echo "Done! Woo!"
