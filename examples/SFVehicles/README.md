@@ -3,20 +3,20 @@
 ### Setup
 
 The SF Vehicles example is based on Gradle. You can use Android Studio to import
-the project.
-
-#### Installing GeoFire to the local maven repository
-
-The build script assumes GeoFire is installed in your local maven respository.
-Install GeoFire from the source code by running
-
-```sh
-$> mvn -DskipTests clean install
-```
-in the root directory of GeoFire.
+the project. You will also need to register for and add a Google Maps API key.
 
 #### Adding Google Maps API key
 
 Follow the instructions for [setting up Google Maps for
 Android](https://developers.google.com/maps/documentation/android/start#get_an_android_certificate_and_the_google_maps_api_key).
-You need to obtain an API key and add it to the AndroidManifest.xml.
+You need to obtain an API key and add it to the [AndroidManifest.xml](https://github.com/firebase/geofire-java/blob/master/examples/SFVehicles/SF%20Vehicles/src/main/AndroidManifest.xml).
+
+
+### About this sample
+
+SF Vehicles loads realtime transit data from a
+[transit open data](https://www.firebase.com/docs/open-data/transit.html) set maintained by [Firebase](https://firebase.com).
+
+This sample loads its Firebase and GeoFire dependencies from Maven Central.
+If you modify and build GeoFire locally make sure to update to modify the gradle file to load GeoFire
+either directly or from your local maven repo.
