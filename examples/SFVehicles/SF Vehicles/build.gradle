@@ -3,10 +3,10 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.9.+'
+        classpath 'com.android.tools.build:gradle:1.0.0'
     }
 }
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 repositories {
     mavenCentral()
@@ -15,7 +15,7 @@ repositories {
 
 android {
     compileSdkVersion 20
-    buildToolsVersion "20.0.0"
+    buildToolsVersion "21.1.1"
 
     defaultConfig {
         minSdkVersion 9
@@ -25,7 +25,7 @@ android {
     }
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
@@ -42,10 +42,10 @@ dependencies {
     // You must install or update the Support Repository through the SDK manager to use this dependency.
     compile 'com.android.support:appcompat-v7:20.+'
     // You must install or update the Google Repository through the SDK manager to use this dependency.
-    compile 'com.google.android.gms:play-services:5.0.77'
+    compile 'com.google.android.gms:play-services:6.1.+'
     // Firebase
     compile 'com.firebase:firebase-client-android:2.0.+'
     // GeoFire
-    compile 'com.firebase:geofire:1.0-SNAPSHOT'
+    compile 'com.firebase:geofire:1.1.+'
 }
 

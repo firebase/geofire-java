@@ -15,6 +15,10 @@ applications light and responsive*, even with extremely large datasets.
 A compatible GeoFire client is also available for [Objective-C](https://github.com/firebase/geofire-objc)
 and [JavaScript](https://github.com/firebase/geofire-js).
 
+For a full example of an application using GeoFire to display realtime transit data, see the
+[SFVehicles](https://github.com/firebase/geofire-java/tree/master/examples/SFVehicles) example in
+Android app in this repo.
+
 ### Integrating GeoFire with your data
 
 GeoFire is designed as a lightweight add-on to Firebase. However, to keep things
@@ -61,7 +65,7 @@ Add GeoFire to your Maven enabled projects with a new dependency:
 <dependency>
   <groupId>com.firebase</groupId>
   <artifactId>geofire</artifactId>
-  <version>[1.0.0,)</version>
+  <version>[1.1.0,)</version>
 </dependency>
 ```
 
@@ -71,7 +75,7 @@ Likewise, you can add a dependency to your `gradle.build` file:
 
 ```groovy
 dependencies {
-    compile 'com.firebase:geofire:1.0.0+'
+    compile 'com.firebase:geofire:1.1.0+'
 }
 ```
 

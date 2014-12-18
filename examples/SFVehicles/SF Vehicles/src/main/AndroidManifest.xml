@@ -20,7 +20,7 @@
 
         <meta-data
                 android:name="com.google.android.maps.v2.API_KEY"
-                android:value="YOUR-API-KEY"/>
+                android:value="YOUR-GOOGLE-MAPS-API-KEY"/>
 
         <activity
             android:name=".SFVehiclesActivity"
