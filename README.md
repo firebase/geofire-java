@@ -136,10 +136,10 @@ geoFire.setLocation("firebase-hq", new GeoLocation(37.7853889, -122.4056973), ne
 });
 ```
 
-To remove a location and delete it from Firebase simply pass the location's key to `removeKey`:
+To remove a location and delete it from Firebase simply pass the location's key to `removeLocation`:
 
 ```java
-geoFire.removeKey("firebase-hq");
+geoFire.removeLocation("firebase-hq");
 ```
 
 #### Retrieving a location
