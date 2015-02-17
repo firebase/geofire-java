@@ -15,12 +15,12 @@ public class ExampleRadiusFinder {
         GeoFire geoFire = new GeoFire(firebase);
         GeoFireRadiusFinder radiusFinder=new GeoFireRadiusFinder(geoFire);
         
-        GeoLocation center = new GeoLocation(37.7, -122.4);
+        GeoLocation center = new GeoLocation(52.7, -122.4);
         
-		int minResults = 150;
+		int minResults = 20;
 		Integer radius=radiusFinder.radiusWithResults(minResults , 1, center );
 		System.out.println("radius with at least " + minResults + " is " + radius + " (or max radius reached)");
-        		
+				
         GeoQuery query = geoFire.queryAtLocation(center, radius);
         query.addGeoQueryEventListener(new GeoQueryEventListener() {
         	int counter=0;
@@ -51,6 +51,15 @@ public class ExampleRadiusFinder {
             }
         });
         // run for another 60 seconds
+        
+        try {
+        	Integer radius2=radiusFinder.radiusWithResults(minResults , 1, 1.5, center );
+        } catch (Exception e) {
+        	System.out.println("Exception " + e.getMessage() );
+        }
+        
+        Integer radius3=radiusFinder.radiusWithResults(minResults , 2, 1.5, center );
+        
         Thread.sleep(60000);
     }
 }

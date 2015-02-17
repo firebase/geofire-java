@@ -4,7 +4,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 public class GeoFireRadiusFinder {
-    private static final Integer MAX_RADIUS = 2400;
+    
 	private GeoFire geoFire;
 
     public GeoFireRadiusFinder(GeoFire geoFire) {
@@ -16,7 +16,11 @@ public class GeoFireRadiusFinder {
     }
     
     public Integer radiusWithResults(Integer minResults, Integer startRadius, Double growFactor, GeoLocation current ) {
-        Integer currentRadius = startRadius;
+    	if( ((int)(startRadius*growFactor)) <= startRadius)
+        	throw new IllegalArgumentException("check startRadius and growFatcor such that (int)(startRadius*growFactor)) > startRadius");
+    	
+        Integer currentRadius  = startRadius;
+        Integer previousRadius = null;
 
         BlockingQueue<Boolean> results= new ArrayBlockingQueue<Boolean>(minResults);
         Integer totalResults;
@@ -25,7 +29,15 @@ public class GeoFireRadiusFinder {
             totalResults=0;
             results.clear();
             GeoQuery query = geoFire.queryAtLocation(current, currentRadius);
-            query.addGeoQueryEventListener( new GeoQueryEventListenerCounter(results) );
+            try {
+            	query.addGeoQueryEventListener( new GeoQueryEventListenerCounter(results) );
+            } catch (IllegalArgumentException exc) {
+            	System.out.println("IllegalArgumentException " + exc.getMessage() );
+            	if(previousRadius!=null)
+            		return previousRadius;
+            	else
+            		throw new IllegalArgumentException(exc.getMessage());
+            }
 
             Boolean result;
             do {
@@ -41,10 +53,11 @@ public class GeoFireRadiusFinder {
             query.removeAllListeners();
             System.out.println("currentRadius=" + currentRadius + " totalResults=" + totalResults);
             
-            if(totalResults>=minResults || currentRadius >=MAX_RADIUS)
+            if(totalResults>=minResults)
             	break;
 
-            currentRadius = Math.min( (int) (currentRadius * growFactor) , MAX_RADIUS );
+            previousRadius = currentRadius;
+            currentRadius  = (int) (currentRadius * growFactor);
 
         } while( true );
 
