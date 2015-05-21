@@ -7,7 +7,7 @@ At its heart, GeoFire simply stores locations with string keys. Its main
 benefit however, is the possibility of querying keys within a given geographic
 area - all in realtime.
 
-GeoFire uses [Firebase](https://www.firebase.com/?utm_source=geofire-java) for
+GeoFire uses the [Firebase](https://www.firebase.com/?utm_source=geofire-java) database for
 data storage, allowing query results to be updated in realtime as they change.
 GeoFire *selectively loads only the data near certain locations, keeping your
 applications light and responsive*, even with extremely large datasets.
@@ -23,7 +23,7 @@ Android app in this repo.
 
 GeoFire is designed as a lightweight add-on to Firebase. However, to keep things
 simple, GeoFire stores data in its own format and its own location within
-your Firebase. This allows your existing data format and security rules to
+your Firebase database. This allows your existing data format and security rules to
 remain unchanged and for you to add GeoFire as an easy solution for geo queries
 without modifying your existing data.
 
@@ -87,7 +87,7 @@ page](https://github.com/firebase/geofire-java/releases).
 
 ## Getting Started with Firebase
 
-GeoFire requires Firebase in order to store location data. You can [sign up here for a free
+GeoFire requires the Firebase database in order to store location data. You can [sign up here for a free
 account](https://www.firebase.com/signup/?utm_source=geofire-java).
 
 
@@ -99,14 +99,14 @@ This is a quickstart on how to use GeoFire's core features. There is also a
 ### GeoFire
 
 A `GeoFire` object is used to read and write geo location data to your Firebase
-and to create queries. To create a new `GeoFire` instance you need to attach it to a Firebase
+database and to create queries. To create a new `GeoFire` instance you need to attach it to a Firebase database
 reference.
 
 ```java
 GeoFire geoFire = new GeoFire(new Firebase("https://<your-firebase>.firebaseio.com/"));
 ```
 
-Note that you can point your reference to anywhere in your Firebase, but don't
+Note that you can point your reference to anywhere in your Firebase database, but don't
 forget to [setup security rules for
 GeoFire](https://github.com/firebase/geofire-js/blob/master/examples/securityRules/rules.json).
 
@@ -136,7 +136,7 @@ geoFire.setLocation("firebase-hq", new GeoLocation(37.7853889, -122.4056973), ne
 });
 ```
 
-To remove a location and delete it from Firebase simply pass the location's key to `removeLocation`:
+To remove a location and delete it from the database simply pass the location's key to `removeLocation`:
 
 ```java
 geoFire.removeLocation("firebase-hq");
