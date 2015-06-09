@@ -108,7 +108,7 @@ GeoFire geoFire = new GeoFire(new Firebase("https://<your-firebase>.firebaseio.c
 
 Note that you can point your reference to anywhere in your Firebase database, but don't
 forget to [setup security rules for
-GeoFire](https://github.com/firebase/geofire-js/blob/master/examples/securityRules/rules.json).
+GeoFire](https://github.com/firebase/geofire-js/blob/master/examples/securityRules).
 
 #### Setting location data
 
