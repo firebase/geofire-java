@@ -55,8 +55,8 @@ public class GeoFireTest extends RealDataTest {
         Assert.assertEquals(TestCallback.noLocation("loc1"), testCallback1.getCallbackValue());
 
         TestCallback testCallback2 = new TestCallback();
-        geoFire.getLocation("loc1", testCallback2);
         setLoc(geoFire, "loc1", 0, 0, true);
+        geoFire.getLocation("loc1", testCallback2);
         Assert.assertEquals(TestCallback.location("loc1", 0, 0), testCallback2.getCallbackValue());
 
         TestCallback testCallback3 = new TestCallback();
