@@ -250,6 +250,14 @@ Updating the search area can be helpful in cases such as when you need to update
 the query to the new visible map area after a user scrolls.
 
 
+## Deployment
+- log onto the build box
+- checkout and update the master branch
+- `./release.sh` to build the client and update maven
+- close/release the repository from sonatype
+- Update [firebase-versions](https://github.com/firebase/firebase-clients/blob/master/versions/firebase-versions.json) with the changelog from this version
+- tweet the release
+
 ## API Reference
 
 [A full API reference is available here](https://geofire-java.firebaseapp.com/docs/).
