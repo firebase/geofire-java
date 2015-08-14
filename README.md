@@ -167,7 +167,7 @@ geoFire.getLocation("firebase-hq", new LocationCallback() {
 ### Geo Queries
 
 GeoFire allows you to query all keys within a geographic area using `GeoQuery`
-objects. As the locations for keys change, the query is updated in ealtime and fires events
+objects. As the locations for keys change, the query is updated in realtime and fires events
 letting you know if any relevant keys have moved. `GeoQuery` parameters can be updated
 later to change the size and center of the queried area.
 
