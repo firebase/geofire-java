@@ -28,9 +28,11 @@
 
 package com.firebase.geofire;
 
-import com.firebase.client.*;
 import com.firebase.geofire.core.GeoHash;
-import com.firebase.geofire.util.GeoUtils;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.*;
 
@@ -46,10 +48,11 @@ public class GeoFire {
         /**
          * Called once a location was successfully saved on the server or an error occurred. On success, the parameter
          * error will be null; in case of an error, the error will be passed to this method.
-         * @param key The key whose location was saved
+         *
+         * @param key   The key whose location was saved
          * @param error The error or null if no error occurred
          */
-        public void onComplete(String key, FirebaseError error);
+        public void onComplete(String key, DatabaseError error);
     }
 
     /**
@@ -73,14 +76,14 @@ public class GeoFire {
                     this.callback.onLocationResult(dataSnapshot.getKey(), location);
                 } else {
                     String message = "GeoFire data has invalid format: " + dataSnapshot.getValue();
-                    this.callback.onCancelled(new FirebaseError(FirebaseError.UNKNOWN_ERROR, message));
+                    this.callback.onCancelled(DatabaseError.fromStatus(message));
                 }
             }
         }
 
         @Override
-        public void onCancelled(FirebaseError firebaseError) {
-            this.callback.onCancelled(firebaseError);
+        public void onCancelled(DatabaseError databaseError) {
+            this.callback.onCancelled(databaseError);
         }
     }
 
@@ -88,8 +91,8 @@ public class GeoFire {
         try {
             Map data = dataSnapshot.getValue(Map.class);
             List<?> location = (List<?>) data.get("l");
-            Number latitudeObj = (Number)location.get(0);
-            Number longitudeObj = (Number)location.get(1);
+            Number latitudeObj = (Number) location.get(0);
+            Number longitudeObj = (Number) location.get(1);
             double latitude = latitudeObj.doubleValue();
             double longitude = longitudeObj.doubleValue();
             if (location.size() == 2 && GeoLocation.coordinatesValid(latitude, longitude)) {
@@ -97,8 +100,6 @@ public class GeoFire {
             } else {
                 return null;
             }
-        } catch (FirebaseException e) {
-            return null;
         } catch (NullPointerException e) {
             return null;
         } catch (ClassCastException e) {
@@ -106,30 +107,32 @@ public class GeoFire {
         }
     }
 
-    private final Firebase firebase;
+    private final DatabaseReference databaseReference;
 
     /**
      * Creates a new GeoFire instance at the given Firebase reference.
-     * @param firebase The Firebase reference this GeoFire instance uses
+     *
+     * @param databaseReference The Firebase reference this GeoFire instance uses
      */
-    public GeoFire(Firebase firebase) {
-        this.firebase = firebase;
+    public GeoFire(DatabaseReference databaseReference) {
+        this.databaseReference = databaseReference;
     }
 
     /**
      * @return The Firebase reference this GeoFire instance uses
      */
-    public Firebase getFirebase() {
-        return this.firebase;
+    public DatabaseReference getDatabaseReference() {
+        return this.databaseReference;
     }
 
-    Firebase firebaseRefForKey(String key) {
-        return this.firebase.child(key);
+    DatabaseReference getDatabaseRefForKey(String key) {
+        return this.databaseReference.child(key);
     }
 
     /**
      * Sets the location for a given key.
-     * @param key The key to save the location for
+     *
+     * @param key      The key to save the location for
      * @param location The location of this key
      */
     public void setLocation(String key, GeoLocation location) {
@@ -138,8 +141,9 @@ public class GeoFire {
 
     /**
      * Sets the location for a given key.
-     * @param key The key to save the location for
-     * @param location The location of this key
+     *
+     * @param key                The key to save the location for
+     * @param location           The location of this key
      * @param completionListener A listener that is called once the location was successfully saved on the server or an
      *                           error occurred
      */
@@ -147,18 +151,16 @@ public class GeoFire {
         if (key == null) {
             throw new NullPointerException();
         }
-        Firebase keyRef = this.firebaseRefForKey(key);
+        DatabaseReference keyRef = this.getDatabaseRefForKey(key);
         GeoHash geoHash = new GeoHash(location);
         Map<String, Object> updates = new HashMap<String, Object>();
         updates.put("g", geoHash.getGeoHashString());
         updates.put("l", new double[]{location.latitude, location.longitude});
         if (completionListener != null) {
-            keyRef.setValue(updates, geoHash.getGeoHashString(), new Firebase.CompletionListener() {
+            keyRef.setValue(updates, geoHash.getGeoHashString(), new DatabaseReference.CompletionListener() {
                 @Override
-                public void onComplete(FirebaseError error, Firebase firebase) {
-                    if (completionListener != null) {
-                        completionListener.onComplete(key, error);
-                    }
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                    completionListener.onComplete(key, databaseError);
                 }
             });
         } else {
@@ -168,6 +170,7 @@ public class GeoFire {
 
     /**
      * Removes the location for a key from this GeoFire.
+     *
      * @param key The key to remove from this GeoFire
      */
     public void removeLocation(String key) {
@@ -176,7 +179,8 @@ public class GeoFire {
 
     /**
      * Removes the location for a key from this GeoFire.
-     * @param key The key to remove from this GeoFire
+     *
+     * @param key                The key to remove from this GeoFire
      * @param completionListener A completion listener that is called once the location is successfully removed
      *                           from the server or an error occurred
      */
@@ -184,12 +188,12 @@ public class GeoFire {
         if (key == null) {
             throw new NullPointerException();
         }
-        Firebase keyRef = this.firebaseRefForKey(key);
+        DatabaseReference keyRef = this.getDatabaseRefForKey(key);
         if (completionListener != null) {
-            keyRef.setValue(null, new Firebase.CompletionListener() {
+            keyRef.setValue(null, new DatabaseReference.CompletionListener() {
                 @Override
-                public void onComplete(FirebaseError error, Firebase firebase) {
-                    completionListener.onComplete(key, error);
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                    completionListener.onComplete(key, databaseError);
                 }
             });
         } else {
@@ -200,17 +204,18 @@ public class GeoFire {
     /**
      * Gets the current location for a key and calls the callback with the current value.
      *
-     * @param key The key whose location to get
+     * @param key      The key whose location to get
      * @param callback The callback that is called once the location is retrieved
      */
     public void getLocation(String key, LocationCallback callback) {
-        Firebase keyFirebase = this.firebaseRefForKey(key);
+        DatabaseReference keyRef = this.getDatabaseRefForKey(key);
         LocationValueEventListener valueListener = new LocationValueEventListener(callback);
-        keyFirebase.addListenerForSingleValueEvent(valueListener);
+        keyRef.addListenerForSingleValueEvent(valueListener);
     }
 
     /**
      * Returns a new Query object centered at the given location and with the given radius.
+     *
      * @param center The center of the query
      * @param radius The radius of the query, in kilometers
      * @return The new GeoQuery object

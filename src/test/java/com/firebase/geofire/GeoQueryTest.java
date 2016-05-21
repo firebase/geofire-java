@@ -1,6 +1,6 @@
 package com.firebase.geofire;
 
-import com.firebase.client.FirebaseError;
+import com.google.firebase.database.DatabaseError;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -243,7 +243,7 @@ public class GeoQueryTest extends RealDataTest {
             }
 
             @Override
-            public void onGeoQueryError(FirebaseError error) {
+            public void onGeoQueryError(DatabaseError error) {
             }
         });
 
@@ -285,7 +285,7 @@ public class GeoQueryTest extends RealDataTest {
             }
 
             @Override
-            public void onGeoQueryError(FirebaseError error) {
+            public void onGeoQueryError(DatabaseError error) {
             }
         });
 
@@ -310,7 +310,7 @@ public class GeoQueryTest extends RealDataTest {
             }
 
             @Override
-            public void onGeoQueryError(FirebaseError error) {
+            public void onGeoQueryError(DatabaseError error) {
             }
         });
         Assert.assertTrue(semaphore.tryAcquire(10, TimeUnit.MILLISECONDS));
@@ -352,7 +352,7 @@ public class GeoQueryTest extends RealDataTest {
             }
 
             @Override
-            public void onGeoQueryError(FirebaseError error) {
+            public void onGeoQueryError(DatabaseError error) {
 
             }
         });

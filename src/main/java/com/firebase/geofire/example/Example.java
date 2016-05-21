@@ -1,16 +1,17 @@
 package com.firebase.geofire.example;
 
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class Example {
 
     public static void main(String[] args) throws InterruptedException {
-        Firebase firebase = new Firebase("https://geofire-v3.firebaseio.com/geofire");
+        DatabaseReference firebase = FirebaseDatabase.getInstance().getReferenceFromUrl("https://geofire-v3.firebaseio.com/geofire");
         GeoFire geoFire = new GeoFire(firebase);
         GeoQuery query = geoFire.queryAtLocation(new GeoLocation(37.7, -122.4), 10);
         query.addGeoQueryEventListener(new GeoQueryEventListener() {
@@ -35,7 +36,7 @@ public class Example {
             }
 
             @Override
-            public void onGeoQueryError(FirebaseError error) {
+            public void onGeoQueryError(DatabaseError error) {
                 System.err.println("There was an error querying locations: " + error.getMessage());
             }
         });

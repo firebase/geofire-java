@@ -1,4 +1,5 @@
 {
+  "project_id": "geofire-java",
   "firebase": "geofire-java",
   "public": "site",
   "ignore": [

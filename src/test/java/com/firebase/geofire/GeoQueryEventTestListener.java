@@ -1,6 +1,6 @@
 package com.firebase.geofire;
 
-import com.firebase.client.FirebaseError;
+import com.google.firebase.database.DatabaseError;
 
 public class GeoQueryEventTestListener extends TestListener implements GeoQueryEventListener {
 
@@ -56,6 +56,6 @@ public class GeoQueryEventTestListener extends TestListener implements GeoQueryE
     }
 
     @Override
-    public void onGeoQueryError(FirebaseError error) {
+    public void onGeoQueryError(DatabaseError error) {
     }
 }

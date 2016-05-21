@@ -28,7 +28,7 @@
 
 package com.firebase.geofire;
 
-import com.firebase.client.FirebaseError;
+import com.google.firebase.database.DatabaseError;
 
 /**
  * Classes implementing this interface can be used to receive the locations stored in GeoFire.
@@ -45,8 +45,8 @@ public interface LocationCallback {
 
     /**
      * Called if the callback could not be added due to failure on the server or security rules.
-     * @param firebaseError The error that occurred
+     * @param databaseError The error that occurred
      */
-    public void onCancelled(FirebaseError firebaseError);
+    public void onCancelled(DatabaseError databaseError);
 
 }

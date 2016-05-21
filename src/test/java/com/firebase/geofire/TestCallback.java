@@ -1,7 +1,7 @@
 package com.firebase.geofire;
 
-import com.firebase.client.FirebaseError;
 import com.firebase.geofire.core.SimpleFuture;
+import com.google.firebase.database.DatabaseError;
 import org.junit.Assert;
 
 import java.util.concurrent.ExecutionException;
@@ -37,7 +37,7 @@ public class TestCallback implements LocationCallback {
     }
 
     @Override
-    public void onCancelled(FirebaseError firebaseError) {
+    public void onCancelled(DatabaseError firebaseError) {
         Assert.fail("Firebase synchronization failed: " + firebaseError);
     }
 }
