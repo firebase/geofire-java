@@ -11,6 +11,9 @@ import java.util.Set;
 public class GeoHashQuery {
 
     public static class Utils {
+
+        private Utils() {}
+
         public static double bitsLatitude(double resolution) {
             return Math.min(Math.log(Constants.EARTH_MERIDIONAL_CIRCUMFERENCE/2/resolution)/Math.log(2),
                     GeoHash.MAX_PRECISION_BITS);

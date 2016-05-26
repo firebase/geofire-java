@@ -4,6 +4,8 @@ import com.firebase.geofire.GeoLocation;
 
 public class GeoUtils {
 
+    private GeoUtils() {}
+
     public static double distance(GeoLocation location1, GeoLocation location2) {
         return distance(location1.latitude, location1.longitude, location2.latitude, location2.longitude);
     }

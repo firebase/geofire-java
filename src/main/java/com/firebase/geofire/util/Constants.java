@@ -25,4 +25,6 @@ public class Constants {
 
     // Cutoff for floating point calculations
     public static final double EPSILON = 1e-12;
+
+    private Constants() {}
 }
