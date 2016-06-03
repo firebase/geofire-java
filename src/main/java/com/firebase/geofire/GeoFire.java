@@ -155,7 +155,7 @@ public class GeoFire {
         GeoHash geoHash = new GeoHash(location);
         Map<String, Object> updates = new HashMap<String, Object>();
         updates.put("g", geoHash.getGeoHashString());
-        updates.put("l", new double[]{location.latitude, location.longitude});
+        updates.put("l", Arrays.asList(location.latitude, location.longitude));
         if (completionListener != null) {
             keyRef.setValue(updates, geoHash.getGeoHashString(), new DatabaseReference.CompletionListener() {
                 @Override
