@@ -33,6 +33,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.GenericTypeIndicator;
 
 import java.util.*;
 
@@ -89,7 +90,8 @@ public class GeoFire {
 
     static GeoLocation getLocationValue(DataSnapshot dataSnapshot) {
         try {
-            Map data = dataSnapshot.getValue(Map.class);
+            GenericTypeIndicator<Map<String, Object>> typeIndicator = new GenericTypeIndicator<Map<String, Object>>() {};
+            Map<String, Object> data = dataSnapshot.getValue(typeIndicator);
             List<?> location = (List<?>) data.get("l");
             Number latitudeObj = (Number) location.get(0);
             Number longitudeObj = (Number) location.get(1);
