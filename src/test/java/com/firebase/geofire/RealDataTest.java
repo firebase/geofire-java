@@ -19,21 +19,22 @@ import java.util.concurrent.TimeoutException;
 
 public class RealDataTest {
 
+    private static final String DATABASE_URL = "https://databaseName.firebaseio.com/";
+    private static final String SERVICE_ACCOUNT_CREDENTIALS = "path/to/serviceAccountCredentials.json";
+
     DatabaseReference databaseReference;
 
     @Before
     public void setup() throws FileNotFoundException {
-        String databaseUrl = String.format("https://%s.firebaseio-demo.com", TestHelpers.randomAlphaNumericString(16));
-        FirebaseOptions firebaseOptions = new FirebaseOptions.Builder()
-                .setDatabaseUrl(databaseUrl)
-                .setServiceAccount(new FileInputStream("firebase.json"))
-                .build();
-        FirebaseApp.initializeApp(firebaseOptions);
-        this.databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl(databaseUrl);
-        Repo repo= databaseReference.getRepo();
-        if (repo != null) {
+        if (FirebaseApp.getApps().isEmpty()) {
+            FirebaseOptions firebaseOptions = new FirebaseOptions.Builder()
+                    .setDatabaseUrl(DATABASE_URL)
+                    .setServiceAccount(new FileInputStream(SERVICE_ACCOUNT_CREDENTIALS))
+                    .build();
+            FirebaseApp.initializeApp(firebaseOptions);
             FirebaseDatabase.getInstance().setLogLevel(Logger.Level.DEBUG);
         }
+        this.databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl(DATABASE_URL);
     }
 
     public GeoFire newTestGeoFire() {

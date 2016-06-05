@@ -24,23 +24,23 @@ public class GeoFireTest extends RealDataTest {
     @Test
     public void geoFireSetsLocations() throws InterruptedException, ExecutionException, TimeoutException {
         GeoFire geoFire = newTestGeoFire();
-        setLoc(geoFire, "loc1", 0, 0);
-        setLoc(geoFire, "loc2", 50, 50);
-        setLoc(geoFire, "loc3", -90, -90, true);
+        setLoc(geoFire, "loc1", 0.1, 0.1);
+        setLoc(geoFire, "loc2", 50.1, 50.1);
+        setLoc(geoFire, "loc3", -89.1, -89.1, true);
 
         Future<Object> future = new ReadFuture(geoFire.getDatabaseReference());
-        Map<String, Object> expected = new HashMap<String, Object>();
+        Map<String, Object> expected = new HashMap<>();
         expected.put("loc1", new HashMap<String, Object>() {{
-            put("l", Arrays.asList(0.0, 0.0));
-            put("g", "7zzzzzzzzz");
+            put("l", Arrays.asList(0.1, 0.1));
+            put("g", "s000d60yd1");
         }});
         expected.put("loc2", new HashMap<String, Object>() {{
-            put("l", Arrays.asList(50.0, 50.0));
-            put("g", "v0gs3y0zh7");
+            put("l", Arrays.asList(50.1, 50.1));
+            put("g", "v0gth03tws");
         }});
         expected.put("loc3", new HashMap<String, Object>() {{
-            put("l", Arrays.asList(-90.0, -90.0));
-            put("g", "1bpbpbpbpb");
+            put("l", Arrays.asList(-89.1, -89.1));
+            put("g", "400th7z6gs");
         }});
         Object result = future.get(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS);
         Assert.assertEquals(expected, ((DataSnapshot)result).getValue());
