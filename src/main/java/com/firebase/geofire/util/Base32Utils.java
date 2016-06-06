@@ -7,6 +7,8 @@ public class Base32Utils {
 
     private static final String BASE32_CHARS = "0123456789bcdefghjkmnpqrstuvwxyz";
 
+    private Base32Utils() {}
+
     public static char valueToBase32Char(int value) {
         if (value < 0 || value >= BASE32_CHARS.length()) {
             throw new IllegalArgumentException("Not a valid base32 value: " + value);
