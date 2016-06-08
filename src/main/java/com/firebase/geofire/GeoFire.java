@@ -110,6 +110,7 @@ public class GeoFire {
     }
 
     private final DatabaseReference databaseReference;
+    private final EventRaiser eventRaiser;
 
     /**
      * Creates a new GeoFire instance at the given Firebase reference.
@@ -118,6 +119,14 @@ public class GeoFire {
      */
     public GeoFire(DatabaseReference databaseReference) {
         this.databaseReference = databaseReference;
+        EventRaiser eventRaiser;
+        try {
+            eventRaiser = new AndroidEventRaiser();
+        } catch (Throwable e) {
+            // We're not on Android, use the ThreadEventRaiser
+            eventRaiser = new ThreadEventRaiser();
+        }
+        this.eventRaiser = eventRaiser;
     }
 
     /**
@@ -224,5 +233,9 @@ public class GeoFire {
      */
     public GeoQuery queryAtLocation(GeoLocation center, double radius) {
         return new GeoQuery(this, center, radius);
+    }
+
+    void raiseEvent(Runnable r) {
+        this.eventRaiser.raiseEvent(r);
     }
 }
