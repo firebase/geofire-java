@@ -28,7 +28,7 @@
 
 package com.firebase.geofire;
 
-import com.firebase.client.FirebaseError;
+import com.google.firebase.database.DatabaseError;
 
 /**
  * GeoQuery notifies listeners with this interface about keys that entered, exited, or moved within the query.
@@ -75,6 +75,6 @@ public interface GeoQueryEventListener {
      * Called in case an error occurred while retrieving locations for a query, e.g. violating security rules.
      * @param error The error that occurred while retrieving the query
      */
-    public void onGeoQueryError(FirebaseError error);
+    public void onGeoQueryError(DatabaseError error);
 
 }

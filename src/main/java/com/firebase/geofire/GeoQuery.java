@@ -28,10 +28,13 @@
 
 package com.firebase.geofire;
 
-import com.firebase.client.*;
 import com.firebase.geofire.core.GeoHash;
 import com.firebase.geofire.core.GeoHashQuery;
 import com.firebase.geofire.util.GeoUtils;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.*;
+import com.google.firebase.database.core.EventTarget;
+import com.google.firebase.database.core.Repo;
 
 import java.util.*;
 
@@ -80,7 +83,7 @@ public class GeoQuery {
         }
 
         @Override
-        public synchronized void onCancelled(FirebaseError firebaseError) {
+        public synchronized void onCancelled(DatabaseError databaseError) {
             // ignore, our API does not support onCancelled
         }
     };
@@ -112,8 +115,8 @@ public class GeoQuery {
     }
 
     private void postEvent(Runnable r) {
-        EventTarget target = Firebase.getDefaultConfig().getEventTarget();
-        target.postEvent(r);
+        Repo repo = geoFire.getDatabaseReference().getRepo();
+        repo.postEvent(r);
     }
 
     private void updateLocationInfo(final String key, final GeoLocation location) {
@@ -209,13 +212,13 @@ public class GeoQuery {
             }
 
             @Override
-            public void onCancelled(final FirebaseError firebaseError) {
+            public void onCancelled(final DatabaseError databaseError) {
                 synchronized (GeoQuery.this) {
                     for (final GeoQueryEventListener listener : GeoQuery.this.eventListeners) {
                         postEvent(new Runnable() {
                             @Override
                             public void run() {
-                                listener.onGeoQueryError(firebaseError);
+                                listener.onGeoQueryError(databaseError);
                             }
                         });
                     }
@@ -238,8 +241,8 @@ public class GeoQuery {
         for (final GeoHashQuery query: newQueries) {
             if (!oldQueries.contains(query)) {
                 outstandingQueries.add(query);
-                Firebase firebase = this.geoFire.getFirebase();
-                Query firebaseQuery = firebase.orderByChild("g").startAt(query.getStartValue()).endAt(query.getEndValue());
+                DatabaseReference databaseReference = this.geoFire.getDatabaseReference();
+                Query firebaseQuery = databaseReference.orderByChild("g").startAt(query.getStartValue()).endAt(query.getEndValue());
                 firebaseQuery.addChildEventListener(this.childEventLister);
                 addValueToReadyListener(firebaseQuery, query);
                 firebaseQueries.put(query, firebaseQuery);
@@ -283,7 +286,7 @@ public class GeoQuery {
         final String key = dataSnapshot.getKey();
         final LocationInfo info = this.locationInfos.get(key);
         if (info != null) {
-            this.geoFire.firebaseRefForKey(key).addListenerForSingleValueEvent(new ValueEventListener() {
+            this.geoFire.getDatabaseRefForKey(key).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     synchronized(GeoQuery.this) {
@@ -307,7 +310,7 @@ public class GeoQuery {
                 }
 
                 @Override
-                public void onCancelled(FirebaseError firebaseError) {
+                public void onCancelled(DatabaseError databaseError) {
                     // tough luck
                 }
             });

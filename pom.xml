@@ -78,14 +78,9 @@
   </build>
   <dependencies>
     <dependency>
-      <groupId>com.firebase</groupId>
-      <!-- Use the plain java artifact here so there are no Android specific API
-           calls -->
-      <artifactId>firebase-client-jvm</artifactId>
-      <version>[2.0.0,)</version>
-      <!-- Since there are two artifacts (jvm and android) we only want to make
-           sure it compiles agains the API and then let people include the
-           version they want -->
+      <groupId>com.google.firebase</groupId>
+      <artifactId>firebase-server-sdk</artifactId>
+      <version>[3.0.0,)</version>
       <scope>provided</scope>
     </dependency>
     <dependency>

@@ -1,9 +1,9 @@
 package com.firebase.geofire;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
 import com.firebase.geofire.util.ReadFuture;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -24,23 +24,23 @@ public class GeoFireTest extends RealDataTest {
     @Test
     public void geoFireSetsLocations() throws InterruptedException, ExecutionException, TimeoutException {
         GeoFire geoFire = newTestGeoFire();
-        setLoc(geoFire, "loc1", 0, 0);
-        setLoc(geoFire, "loc2", 50, 50);
-        setLoc(geoFire, "loc3", -90, -90, true);
+        setLoc(geoFire, "loc1", 0.1, 0.1);
+        setLoc(geoFire, "loc2", 50.1, 50.1);
+        setLoc(geoFire, "loc3", -89.1, -89.1, true);
 
-        Future<Object> future = new ReadFuture(geoFire.getFirebase());
-        Map<String, Object> expected = new HashMap<String, Object>();
+        Future<Object> future = new ReadFuture(geoFire.getDatabaseReference());
+        Map<String, Object> expected = new HashMap<>();
         expected.put("loc1", new HashMap<String, Object>() {{
-            put("l", Arrays.asList(0.0, 0.0));
-            put("g", "7zzzzzzzzz");
+            put("l", Arrays.asList(0.1, 0.1));
+            put("g", "s000d60yd1");
         }});
         expected.put("loc2", new HashMap<String, Object>() {{
-            put("l", Arrays.asList(50.0, 50.0));
-            put("g", "v0gs3y0zh7");
+            put("l", Arrays.asList(50.1, 50.1));
+            put("g", "v0gth03tws");
         }});
         expected.put("loc3", new HashMap<String, Object>() {{
-            put("l", Arrays.asList(-90.0, -90.0));
-            put("g", "1bpbpbpbpb");
+            put("l", Arrays.asList(-89.1, -89.1));
+            put("g", "400th7z6gs");
         }});
         Object result = future.get(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS);
         Assert.assertEquals(expected, ((DataSnapshot)result).getValue());
@@ -78,7 +78,7 @@ public class GeoFireTest extends RealDataTest {
     @Test
     public void getLocationOnWrongDataReturnsError() throws InterruptedException {
         GeoFire geoFire = newTestGeoFire();
-        setValueAndWait(geoFire.firebaseRefForKey("loc1"), "NaN");
+        setValueAndWait(geoFire.getDatabaseRefForKey("loc1"), "NaN");
 
         final Semaphore semaphore = new Semaphore(0);
         geoFire.getLocation("loc1", new LocationCallback() {
@@ -88,13 +88,13 @@ public class GeoFireTest extends RealDataTest {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError databaseError) {
                 semaphore.release();
             }
         });
         semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS);
 
-        setValueAndWait(geoFire.firebaseRefForKey("loc2"), new HashMap<String, Object>() {{
+        setValueAndWait(geoFire.getDatabaseRefForKey("loc2"), new HashMap<String, Object>() {{
            put("l", 10);
            put("g", "abc");
         }});
@@ -106,7 +106,7 @@ public class GeoFireTest extends RealDataTest {
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            public void onCancelled(DatabaseError databaseError) {
                 semaphore.release();
             }
         });
@@ -136,15 +136,15 @@ public class GeoFireTest extends RealDataTest {
     @Test
     public void locationWorksWithLongs() throws InterruptedException, ExecutionException, TimeoutException {
         GeoFire geoFire = newTestGeoFire();
-        Firebase firebase = geoFire.firebaseRefForKey("loc");
+        DatabaseReference databaseReference = geoFire.getDatabaseRefForKey("loc");
 
         final Semaphore semaphore = new Semaphore(0);
-        firebase.setValue(new HashMap<String, Object>() {{
+        databaseReference.setValue(new HashMap<String, Object>() {{
             put("l", Arrays.asList(1L, 2L));
             put("g", "7zzzzzzzzz"); // this is wrong but we don't care in this test
-        }}, "7zzzzzzzzz", new Firebase.CompletionListener() {
+        }}, "7zzzzzzzzz", new DatabaseReference.CompletionListener() {
             @Override
-            public void onComplete(FirebaseError error, Firebase firebase) {
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 semaphore.release();
             }
         });
