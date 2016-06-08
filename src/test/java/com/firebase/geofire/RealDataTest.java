@@ -4,8 +4,6 @@ import com.firebase.geofire.core.SimpleFuture;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.*;
-import com.google.firebase.database.core.Repo;
-import com.oracle.javafx.jmx.json.JSONException;
 import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Before;
