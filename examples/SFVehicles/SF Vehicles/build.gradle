@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.0'
+        classpath 'com.android.tools.build:gradle:2.2.0-alpha1'
     }
 }
 apply plugin: 'com.android.application'
@@ -14,12 +14,12 @@ repositories {
 }
 
 android {
-    compileSdkVersion 20
-    buildToolsVersion "21.1.1"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
 
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 20
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
     }
@@ -38,14 +38,16 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     // You must install or update the Support Repository through the SDK manager to use this dependency.
-    compile 'com.android.support:support-v4:20.+'
+    compile 'com.android.support:support-v4:23.+'
     // You must install or update the Support Repository through the SDK manager to use this dependency.
-    compile 'com.android.support:appcompat-v7:20.+'
+    compile 'com.android.support:appcompat-v7:23.+'
     // You must install or update the Google Repository through the SDK manager to use this dependency.
-    compile 'com.google.android.gms:play-services:6.1.+'
-    // Firebase
-    compile 'com.firebase:firebase-client-android:2.0.+'
+    // Includes Firebase
+    compile 'com.google.android.gms:play-services:9.0.2'
+    // Firebase can also be included with:
+    //compile 'com.google.firebase:firebase-core:9.0.2'
+    //compile 'com.google.firebase:firebase-database:9.0.2'
     // GeoFire
-    compile 'com.firebase:geofire:1.1.+'
+    compile 'com.firebase:geofire:2.0.+'
 }
 
