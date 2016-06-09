@@ -21,7 +21,7 @@ Android app in this repo.
 
 ### Integrating GeoFire with your data
 
-GeoFire is designed as a lightweight add-on to the Firebase database. However, to keep things
+GeoFire is designed as a lightweight add-on to the Firebase Realtime Database. However, to keep things
 simple, GeoFire stores data in its own format and its own location within
 your Firebase database. This allows your existing data format and security rules to
 remain unchanged and for you to add GeoFire as an easy solution for geo queries
@@ -93,7 +93,7 @@ page](https://github.com/firebase/geofire-java/releases).
 ## Getting Started with Firebase
 
 GeoFire requires the Firebase database in order to store location data. You can [sign up here for a free
-account](https://firebase.google.com/console/).
+account](https://console.firebase.google.com/).
 
 
 ## Quickstart
