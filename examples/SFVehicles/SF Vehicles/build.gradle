@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.0-alpha1'
+        classpath 'com.android.tools.build:gradle:2.1.0'
     }
 }
 apply plugin: 'com.android.application'
@@ -18,6 +18,7 @@ android {
     buildToolsVersion "23.0.3"
 
     defaultConfig {
+        applicationId 'com.firebase.sfvehicles'
         minSdkVersion 9
         targetSdkVersion 23
         versionCode 1
@@ -38,16 +39,16 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     // You must install or update the Support Repository through the SDK manager to use this dependency.
-    compile 'com.android.support:support-v4:23.+'
+    compile 'com.android.support:support-v4:23.4.0'
     // You must install or update the Support Repository through the SDK manager to use this dependency.
-    compile 'com.android.support:appcompat-v7:23.+'
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    // You must install or update the Support Repository through the SDK manager to use this dependency.
+    compile 'com.google.android.gms:play-services-maps:9.0.2'
     // You must install or update the Google Repository through the SDK manager to use this dependency.
-    // Includes Firebase
-    compile 'com.google.android.gms:play-services:9.0.2'
-    // Firebase can also be included with:
-    //compile 'com.google.firebase:firebase-core:9.0.2'
-    //compile 'com.google.firebase:firebase-database:9.0.2'
+    compile 'com.google.firebase:firebase-core:9.0.2'
+    compile 'com.google.firebase:firebase-database:9.0.2'
+
     // GeoFire
-    compile 'com.firebase:geofire:2.0.+'
+    compile 'com.firebase:geofire:2.0.0'
 }
 

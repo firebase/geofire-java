@@ -67,7 +67,7 @@ Add a dependency for GeoFire to your `gradle.build` file:
 
 ```groovy
 dependencies {
-    compile 'com.firebase:geofire:2.0.0+'
+    compile 'com.firebase:geofire:2.0.0'
 }
 ```
 
@@ -79,7 +79,7 @@ GeoFire also works with Maven:
 <dependency>
   <groupId>com.firebase</groupId>
   <artifactId>geofire</artifactId>
-  <version>[2.0.0,)</version>
+  <version>2.0.0</version>
 </dependency>
 ```
 
