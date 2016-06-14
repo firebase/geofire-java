@@ -31,6 +31,7 @@ package com.firebase.geofire;
 import com.firebase.geofire.core.GeoHash;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.GenericTypeIndicator;
@@ -76,8 +77,9 @@ public class GeoFire {
                 if (location != null) {
                     this.callback.onLocationResult(dataSnapshot.getKey(), location);
                 } else {
-                    String message = "GeoFire data has invalid format: " + dataSnapshot.getValue();
-                    this.callback.onCancelled(DatabaseError.fromStatus(message));
+                    String message = "GeoFire data has invalid format: " + dataSnapshot.getValue()
+                    DatabaseException exception = new DatabaseException(message);
+                    this.callback.onCancelled(DatabaseError.fromException(exception));
                 }
             }
         }
