@@ -1,0 +1,7 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.firebase.geofire">
+  <uses-sdk
+    android:minSdkVersion="9"
+    android:targetSdkVersion="24" />
+
+  <uses-permission android:name="android.permission.INTERNET" />
+</manifest>

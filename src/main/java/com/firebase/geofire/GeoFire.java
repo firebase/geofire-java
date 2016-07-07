@@ -35,6 +35,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.GenericTypeIndicator;
 
+import java.lang.Throwable;
 import java.util.*;
 
 /**
@@ -77,7 +78,7 @@ public class GeoFire {
                     this.callback.onLocationResult(dataSnapshot.getKey(), location);
                 } else {
                     String message = "GeoFire data has invalid format: " + dataSnapshot.getValue();
-                    this.callback.onCancelled(DatabaseError.fromStatus(message));
+                    this.callback.onCancelled(DatabaseError.fromException(new Throwable(message)));
                 }
             }
         }
