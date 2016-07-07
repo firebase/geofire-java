@@ -8,8 +8,6 @@ import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
@@ -18,6 +16,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +28,8 @@ public class SFVehiclesActivity extends FragmentActivity implements GeoQueryEven
 
     private static final GeoLocation INITIAL_CENTER = new GeoLocation(37.7789, -122.4017);
     private static final int INITIAL_ZOOM_LEVEL = 14;
-    private static final String GEO_FIRE_REF = "https://publicdata-transit.firebaseio.com/_geofire";
+    private static final String GEO_FIRE_DB = "https://publicdata-transit.firebaseio.com";
+    private static final String GEO_FIRE_REF = GEO_FIRE_DB + "/_geofire";
 
     private GoogleMap map;
     private Circle searchCircle;
@@ -50,10 +53,11 @@ public class SFVehiclesActivity extends FragmentActivity implements GeoQueryEven
         this.map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngCenter, INITIAL_ZOOM_LEVEL));
         this.map.setOnCameraChangeListener(this);
 
-        Firebase.setAndroidContext(this);
+        FirebaseOptions options = new FirebaseOptions.Builder().setApplicationId("geofire").setDatabaseUrl(GEO_FIRE_DB).build();
+        FirebaseApp app = FirebaseApp.initializeApp(this, options);
 
         // setup GeoFire
-        this.geoFire = new GeoFire(new Firebase(GEO_FIRE_REF));
+        this.geoFire = new GeoFire(FirebaseDatabase.getInstance(app).getReferenceFromUrl(GEO_FIRE_REF));
         // radius in km
         this.geoQuery = this.geoFire.queryAtLocation(INITIAL_CENTER, 1);
 
@@ -110,7 +114,7 @@ public class SFVehiclesActivity extends FragmentActivity implements GeoQueryEven
     }
 
     @Override
-    public void onGeoQueryError(FirebaseError error) {
+    public void onGeoQueryError(DatabaseError error) {
         new AlertDialog.Builder(this)
                 .setTitle("Error")
                 .setMessage("There was an unexpected error querying GeoFire: " + error.getMessage())

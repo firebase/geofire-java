@@ -31,10 +31,7 @@ package com.firebase.geofire;
 import com.firebase.geofire.core.GeoHash;
 import com.firebase.geofire.core.GeoHashQuery;
 import com.firebase.geofire.util.GeoUtils;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.*;
-import com.google.firebase.database.core.EventTarget;
-import com.google.firebase.database.core.Repo;
 
 import java.util.*;
 
@@ -114,11 +111,6 @@ public class GeoQuery {
         return GeoUtils.distance(location, center) <= this.radius;
     }
 
-    private void postEvent(Runnable r) {
-        Repo repo = geoFire.getDatabaseReference().getRepo();
-        repo.postEvent(r);
-    }
-
     private void updateLocationInfo(final String key, final GeoLocation location) {
         LocationInfo oldInfo = this.locationInfos.get(key);
         boolean isNew = (oldInfo == null);
@@ -128,7 +120,7 @@ public class GeoQuery {
         boolean isInQuery = this.locationIsInQuery(location);
         if ((isNew || !wasInQuery) && isInQuery) {
             for (final GeoQueryEventListener listener: this.eventListeners) {
-                postEvent(new Runnable() {
+                this.geoFire.raiseEvent(new Runnable() {
                     @Override
                     public void run() {
                         listener.onKeyEntered(key, location);
@@ -137,7 +129,7 @@ public class GeoQuery {
             }
         } else if (!isNew && changedLocation && isInQuery) {
             for (final GeoQueryEventListener listener: this.eventListeners) {
-                postEvent(new Runnable() {
+                this.geoFire.raiseEvent(new Runnable() {
                     @Override
                     public void run() {
                         listener.onKeyMoved(key, location);
@@ -146,7 +138,7 @@ public class GeoQuery {
             }
         } else if (wasInQuery && !isInQuery) {
             for (final GeoQueryEventListener listener: this.eventListeners) {
-                postEvent(new Runnable() {
+                this.geoFire.raiseEvent(new Runnable() {
                     @Override
                     public void run() {
                         listener.onKeyExited(key);
@@ -191,7 +183,7 @@ public class GeoQuery {
     private void checkAndFireReady() {
         if (canFireReady()) {
             for (final GeoQueryEventListener listener: this.eventListeners) {
-                postEvent(new Runnable() {
+                this.geoFire.raiseEvent(new Runnable() {
                     @Override
                     public void run() {
                         listener.onGeoQueryReady();
@@ -215,7 +207,7 @@ public class GeoQuery {
             public void onCancelled(final DatabaseError databaseError) {
                 synchronized (GeoQuery.this) {
                     for (final GeoQueryEventListener listener : GeoQuery.this.eventListeners) {
-                        postEvent(new Runnable() {
+                        GeoQuery.this.geoFire.raiseEvent(new Runnable() {
                             @Override
                             public void run() {
                                 listener.onGeoQueryError(databaseError);
@@ -297,7 +289,7 @@ public class GeoQuery {
                             GeoQuery.this.locationInfos.remove(key);
                             if (info != null && info.inGeoQuery) {
                                 for (final GeoQueryEventListener listener: GeoQuery.this.eventListeners) {
-                                    postEvent(new Runnable() {
+                                    GeoQuery.this.geoFire.raiseEvent(new Runnable() {
                                         @Override
                                         public void run() {
                                             listener.onKeyExited(key);
@@ -336,7 +328,7 @@ public class GeoQuery {
                 final String key = entry.getKey();
                 final LocationInfo info = entry.getValue();
                 if (info.inGeoQuery) {
-                    postEvent(new Runnable() {
+                    this.geoFire.raiseEvent(new Runnable() {
                         @Override
                         public void run() {
                             listener.onKeyEntered(key, info.location);
@@ -345,7 +337,7 @@ public class GeoQuery {
                 }
             }
             if (this.canFireReady()) {
-                postEvent(new Runnable() {
+                this.geoFire.raiseEvent(new Runnable() {
                     @Override
                     public void run() {
                         listener.onGeoQueryReady();

@@ -21,7 +21,7 @@ Android app in this repo.
 
 ### Integrating GeoFire with your data
 
-GeoFire is designed as a lightweight add-on to Firebase. However, to keep things
+GeoFire is designed as a lightweight add-on to the Firebase Realtime Database. However, to keep things
 simple, GeoFire stores data in its own format and its own location within
 your Firebase database. This allows your existing data format and security rules to
 remain unchanged and for you to add GeoFire as an easy solution for geo queries
@@ -41,6 +41,10 @@ at `/bars/<bar-id>`.
 
 ## Upgrading GeoFire
 
+### Upgrading from GeoFire 1.x to 2.x
+
+GeoFire 2.0.0 is based on the new 3.x release of [Firebase](https://firebase.google.com).
+
 ### Upgrading from GeoFire 1.0.x to 1.1.x
 
 With the release of GeoFire for Android/Java 1.1.0, this library now uses [the new query
@@ -53,31 +57,32 @@ and [read our docs for more information about indexing your data](https://www.fi
 
 ## Including GeoFire in your project Android/Java
 
-In order to use GeoFire in your project, you need to [add the Firebase Java
-SDK](https://www.firebase.com/docs/java-quickstart.html?utm_source=geofire-java).
-There are then multiple possibilities to use GeoFire in your project.
+In order to use GeoFire in your project, you need to [add the Firebase Android
+SDK](https://firebase.google.com/docs/android/setup). After that you can include
+GeoFire with one of the choices below.
+
+### Gradle
+
+Add a dependency for GeoFire to your `gradle.build` file:
+
+```groovy
+dependencies {
+    compile 'com.firebase:geofire:2.0.0'
+}
+```
 
 ### Maven
 
-Add GeoFire to your Maven enabled projects with a new dependency:
+GeoFire also works with Maven:
 
 ```xml
 <dependency>
   <groupId>com.firebase</groupId>
   <artifactId>geofire</artifactId>
-  <version>[1.1.0,)</version>
+  <version>2.0.0</version>
 </dependency>
 ```
 
-### Gradle
-
-Likewise, you can add a dependency to your `gradle.build` file:
-
-```groovy
-dependencies {
-    compile 'com.firebase:geofire:1.1.0+'
-}
-```
 
 ### Jar-File
 
@@ -88,7 +93,7 @@ page](https://github.com/firebase/geofire-java/releases).
 ## Getting Started with Firebase
 
 GeoFire requires the Firebase database in order to store location data. You can [sign up here for a free
-account](https://www.firebase.com/signup/?utm_source=geofire-java).
+account](https://console.firebase.google.com/).
 
 
 ## Quickstart
@@ -103,7 +108,8 @@ database and to create queries. To create a new `GeoFire` instance you need to a
 reference.
 
 ```java
-GeoFire geoFire = new GeoFire(new Firebase("https://<your-firebase>.firebaseio.com/"));
+DatabaseReference ref = FirebaseDatabase.getInstance().getReference("path/to/geofire");
+GeoFire geoFire = new GeoFire(ref);
 ```
 
 Note that you can point your reference to anywhere in your Firebase database, but don't
@@ -158,8 +164,8 @@ geoFire.getLocation("firebase-hq", new LocationCallback() {
     }
 
     @Override
-    public void onCancelled(FirebaseError firebaseError) {
-        System.err.println("There was an error getting the GeoFire location: " + firebaseError);
+    public void onCancelled(DatabaseError databaseError) {
+        System.err.println("There was an error getting the GeoFire location: " + databaseError);
     }
 });
 ```
@@ -229,7 +235,7 @@ geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
     }
 
     @Override
-    public void onGeoQueryError(FirebaseError error) {
+    public void onGeoQueryError(DatabaseError error) {
         System.err.println("There was an error with this query: " + error);
     }
 });
