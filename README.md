@@ -58,31 +58,56 @@ and [read our docs for more information about indexing your data](https://www.fi
 ## Including GeoFire in your project Android/Java
 
 In order to use GeoFire in your project, you need to [add the Firebase Android
-SDK](https://firebase.google.com/docs/android/setup). After that you can include
-GeoFire with one of the choices below.
+SDK](https://firebase.google.com/docs/android/setup). After that you can include GeoFire with one of the choices below.
+
+Note that after version `1.1.1` the artifact `com.firebase:geofire` is no
+longer updated and has been replaced by the separate Android and Java
+artifacts as described below.
 
 ### Gradle
 
-Add a dependency for GeoFire to your `gradle.build` file:
+Add a dependency for GeoFire to your `gradle.build` file.
+
+For Android applications:
 
 ```groovy
 dependencies {
-    compile 'com.firebase:geofire:2.0.0'
+    compile 'com.firebase:geofire-android:2.0.0'
 }
+```
+
+For non-Android Java applications:
+
+```groovy
+dependencies {
+    compile 'com.firebase:geofire-java:2.0.0'
+}
+
 ```
 
 ### Maven
 
-GeoFire also works with Maven:
+GeoFire also works with Maven.
+
+For Android applications:
 
 ```xml
 <dependency>
   <groupId>com.firebase</groupId>
-  <artifactId>geofire</artifactId>
+  <artifactId>geofire-android</artifactId>
   <version>2.0.0</version>
 </dependency>
 ```
 
+For non-Android Java applications:
+
+```xml
+<dependency>
+  <groupId>com.firebase</groupId>
+  <artifactId>geofire-java</artifactId>
+  <version>2.0.0</version>
+</dependency>
+```
 
 ### Jar-File
 
@@ -257,10 +282,11 @@ the query to the new visible map area after a user scrolls.
 
 
 ## Deployment
-- log onto the build box
-- checkout and update the master branch
-- `./release.sh` to build the client and update maven
-- close/release the repository from sonatype
+- In your local environment set `$BINTRAY_USER` and `$BINTRAY_KEY` to your
+  Bintray.com username and API key.
+- Checkout and update the master branch.
+- Run `./release.sh` to build and deploy.
+- On bintray.com, publish the draft artifacts.
 - Update [firebase-versions](https://github.com/firebase/firebase-clients/blob/master/versions/firebase-versions.json) with the changelog from this version
 - tweet the release
 

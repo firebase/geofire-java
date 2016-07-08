@@ -17,8 +17,8 @@ import java.util.concurrent.TimeoutException;
 
 public class RealDataTest {
 
-    private static final String DATABASE_URL = "https://databaseName.firebaseio.com/";
-    private static final String SERVICE_ACCOUNT_CREDENTIALS = "path/to/serviceAccountCredentials.json";
+    private static final String DATABASE_URL = "https://geofiretest-8d811.firebaseio.com/";
+    private static final String SERVICE_ACCOUNT_CREDENTIALS = "service-account.json";
 
     DatabaseReference databaseReference;
 

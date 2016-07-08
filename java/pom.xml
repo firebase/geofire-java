@@ -34,9 +34,19 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+
+  <distributionManagement>
+    <repository>
+        <id>geofire</id>
+        <url>https://api.bintray.com/maven/firebase/geofire/geofire-java</url>
+    </repository>
+  </distributionManagement>
+
   <build>
-    <!-- Plugins inherited -->
+    <sourceDirectory>../src/main/java</sourceDirectory>
+    <testSourceDirectory>../src/test/java</testSourceDirectory>
   </build>
+
   <dependencies>
     <dependency>
       <groupId>com.google.firebase</groupId>
