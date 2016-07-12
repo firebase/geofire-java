@@ -21,6 +21,21 @@
     <tag>HEAD</tag>
   </scm>
 
+  <developers>
+    <developer>
+      <id>samtstern</id>
+      <name>Sam Stern</name>
+      <email>samstern@google.com</email>
+      <organization>Firebase</organization>
+      <organizationUrl>https://firebase.google.com</organizationUrl>
+      <roles>
+        <role>Project-Administrator</role>
+        <role>Developer</role>
+      </roles>
+      <timezone>-8</timezone>
+    </developer>
+  </developers>
+
   <licenses>
     <license>
       <name>MIT</name>
