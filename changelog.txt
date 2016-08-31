@@ -1,2 +1,5 @@
+v2.1.0
+  * Add method to update GeoQuery center and radius together.
+
 important - Add a new `.indexOn` rule to your Security and Firebase Rules for best performance. See the GitHub documentation for more information.
 feature - Upgraded Firebase dependency to 2.0.x.

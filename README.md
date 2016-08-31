@@ -43,7 +43,7 @@ at `/bars/<bar-id>`.
 
 ### Upgrading from GeoFire 1.x to 2.x
 
-GeoFire 2.0.0 is based on the new 3.x release of [Firebase](https://firebase.google.com).
+GeoFire 2.x is based on the new 3.x release of [Firebase](https://firebase.google.com).
 
 ### Upgrading from GeoFire 1.0.x to 1.1.x
 
@@ -72,7 +72,7 @@ For Android applications:
 
 ```groovy
 dependencies {
-    compile 'com.firebase:geofire-android:2.0.0'
+    compile 'com.firebase:geofire-android:2.1.0'
 }
 ```
 
@@ -80,7 +80,7 @@ For non-Android Java applications:
 
 ```groovy
 dependencies {
-    compile 'com.firebase:geofire-java:2.0.0'
+    compile 'com.firebase:geofire-java:2.1.0'
 }
 
 ```
@@ -95,7 +95,7 @@ For Android applications:
 <dependency>
   <groupId>com.firebase</groupId>
   <artifactId>geofire-android</artifactId>
-  <version>2.0.0</version>
+  <version>2.1.0</version>
 </dependency>
 ```
 
@@ -105,7 +105,7 @@ For non-Android Java applications:
 <dependency>
   <groupId>com.firebase</groupId>
   <artifactId>geofire-java</artifactId>
-  <version>2.0.0</version>
+  <version>2.1.0</version>
 </dependency>
 ```
 
