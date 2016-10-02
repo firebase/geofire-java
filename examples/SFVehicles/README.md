@@ -1,5 +1,7 @@
 ## GeoFire - SF Vehicles Example
 
+**Please note: This example will not function as the Open Data set it depends on has been deprecated. It is left here for historical purposes.**
+
 ### Setup
 
 The SF Vehicles example is based on Gradle. You can use Android Studio to import

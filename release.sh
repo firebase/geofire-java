@@ -49,7 +49,7 @@ fi
 ###################
 read -p "Next, make sure this repo is clean and up to date. We will be kicking off a deploy to maven." DERP
 mvn clean
-mvn release:clean release:prepare release:perform -Dtag=v$VERSION
+mvn -s settings.xml release:clean release:prepare release:perform -Darguments="-DskipTests" -Dtag=v$VERSION
 
 if [[ $? -ne 0 ]]; then
   echo "error: Error building and releasing to maven."

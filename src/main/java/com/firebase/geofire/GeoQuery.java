@@ -411,4 +411,18 @@ public class GeoQuery {
             this.setupQueries();
         }
     }
+
+    /**
+     * Sets the center and radius (in kilometers) of this query, and triggers new events if necessary.
+     * @param center The new center
+     * @param radius The new radius value of this query in kilometers
+     */
+    public synchronized void setLocation(GeoLocation center, double radius) {
+        this.center = center;
+        // convert radius to meters
+        this.radius = radius * 1000;
+        if (this.hasListeners()) {
+            this.setupQueries();
+        }
+    }
 }

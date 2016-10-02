@@ -4,7 +4,7 @@
 
   <groupId>com.firebase</groupId>
   <artifactId>geofire</artifactId>
-  <version>2.0.0-SNAPSHOT</version>
+  <version>2.1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>geofire</name>
@@ -18,12 +18,24 @@
     <connection>scm:git:git@github.com:firebase/geofire-java.git</connection>
     <developerConnection>scm:git:git@github.com:firebase/geofire-java.git</developerConnection>
     <url>https://github.com/firebase/geofire-java</url>
+    <tag>HEAD</tag>
   </scm>
-  <parent>
-    <groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>7</version>
-  </parent>
+
+  <developers>
+    <developer>
+      <id>samtstern</id>
+      <name>Sam Stern</name>
+      <email>samstern@google.com</email>
+      <organization>Firebase</organization>
+      <organizationUrl>https://firebase.google.com</organizationUrl>
+      <roles>
+        <role>Project-Administrator</role>
+        <role>Developer</role>
+      </roles>
+      <timezone>-8</timezone>
+    </developer>
+  </developers>
+
   <licenses>
     <license>
       <name>MIT</name>
@@ -39,7 +51,25 @@
       <module>java</module>
   </modules>
 
+  <distributionManagement>
+    <repository>
+        <id>geofire</id>
+        <url>https://api.bintray.com/maven/firebase/geofire/geofire</url>
+    </repository>
+  </distributionManagement>
+
   <build>
+    <!--
+       Add -Dbuildtime.output.log=true to profile maven task times.
+    -->
+    <extensions>
+        <extension>
+            <groupId>co.leantechniques</groupId>
+            <artifactId>maven-buildtime-extension</artifactId>
+            <version>2.0.3</version>
+        </extension>
+    </extensions>
+
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -84,6 +114,7 @@
       </plugin>
     </plugins>
   </build>
+
   <dependencies>
     <!-- Dependencies defined in child POMs -->
   </dependencies>

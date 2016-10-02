@@ -12,3 +12,11 @@ target
 
 # Other
 /site/docs
+
+# Credentials / Releasing
+service-account.json
+release.properties
+*.xml.releaseBackup
+*.xml.tag
+*.xml.next
+

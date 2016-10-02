@@ -9,6 +9,7 @@ buildscript {
 apply plugin: 'com.android.application'
 
 repositories {
+    jcenter()
     mavenCentral()
     mavenLocal()
 }
@@ -49,6 +50,6 @@ dependencies {
     compile 'com.google.firebase:firebase-database:9.0.2'
 
     // GeoFire
-    compile 'com.firebase:geofire:2.0.0'
+    compile 'com.firebase:geofire-android:2.0.0'
 }
 
