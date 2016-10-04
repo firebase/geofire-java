@@ -69,7 +69,7 @@ public class GeoHashQuery {
 
     public static Set<GeoHashQuery> queriesAtLocation(GeoLocation location, double radius) {
         int queryBits = Math.max(1, Utils.bitsForBoundingBox(location, radius));
-        int geoHashPrecision = (int)(Math.ceil(queryBits/Base32Utils.BITS_PER_BASE32_CHAR));
+        int geoHashPrecision = (int)(Math.ceil(((float)queryBits)/Base32Utils.BITS_PER_BASE32_CHAR));
 
         double latitude = location.latitude;
         double longitude = location.longitude;
