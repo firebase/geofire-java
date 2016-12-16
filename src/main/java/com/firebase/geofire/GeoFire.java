@@ -124,7 +124,10 @@ public class GeoFire {
         try {
             eventRaiser = new AndroidEventRaiser();
         } catch (Throwable e) {
-            // We're not on Android, use the ThreadEventRaiser
+            // We're not on Android, try using GAE-specific event raiser
+            eventRaiser = new AppEngineEventRaiser();
+        } catch (Throwable e) {
+            // We're not on Android or GAE, use the ThreadEventRaiser
             eventRaiser = new ThreadEventRaiser();
         }
         this.eventRaiser = eventRaiser;
