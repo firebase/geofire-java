@@ -4,6 +4,8 @@ import com.google.appengine.api.ThreadManager;
 import java.util.concurrent.Executors;
 
 class AppEngineEventRaiser implements EventRaiser {
+    
+    private final ExecutorService executorService;
 
     public AppEngineEventRaiser() {
         this.executorService = Executors.newSingleThreadExecutor(ThreadManager.backgroundThreadFactory());
