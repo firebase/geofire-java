@@ -5,7 +5,7 @@ import java.util.concurrent.Executors;
 
 class ThreadEventRaiser implements EventRaiser {
 
-    protected final ExecutorService executorService;
+    private final ExecutorService executorService;
 
     public ThreadEventRaiser() {
         this.executorService = Executors.newSingleThreadExecutor();
