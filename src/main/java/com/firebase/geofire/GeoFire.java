@@ -122,12 +122,9 @@ public class GeoFire {
         this.databaseReference = databaseReference;
         EventRaiser eventRaiser;
         try {
-            eventRaiser = new AndroidEventRaiser();
-        } catch (Throwable e) {
-            // We're not on Android, try using GAE-specific event raiser
             eventRaiser = new AppEngineEventRaiser();
         } catch (Throwable e) {
-            // We're not on Android or GAE, use the ThreadEventRaiser
+            // We're not on GAE, use the ThreadEventRaiser
             eventRaiser = new ThreadEventRaiser();
         }
         this.eventRaiser = eventRaiser;
