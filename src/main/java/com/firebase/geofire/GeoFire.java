@@ -89,7 +89,7 @@ public class GeoFire {
         }
     }
 
-    static GeoLocation getLocationValue(DataSnapshot dataSnapshot) {
+    public static GeoLocation getLocationValue(DataSnapshot dataSnapshot) {
         try {
             GenericTypeIndicator<Map<String, Object>> typeIndicator = new GenericTypeIndicator<Map<String, Object>>() {};
             Map<String, Object> data = dataSnapshot.getValue(typeIndicator);
