@@ -3,13 +3,14 @@ package com.firebase.geofire;
 import com.firebase.geofire.core.SimpleFuture;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.FirebaseCredentials;
 import com.google.firebase.database.*;
 import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Before;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
@@ -23,11 +24,11 @@ public class RealDataTest {
     DatabaseReference databaseReference;
 
     @Before
-    public void setup() throws FileNotFoundException {
+    public void setup() throws IOException {
         if (FirebaseApp.getApps().isEmpty()) {
             FirebaseOptions firebaseOptions = new FirebaseOptions.Builder()
                     .setDatabaseUrl(DATABASE_URL)
-                    .setServiceAccount(new FileInputStream(SERVICE_ACCOUNT_CREDENTIALS))
+                    .setCredential(FirebaseCredentials.fromCertificate(new FileInputStream(SERVICE_ACCOUNT_CREDENTIALS)))
                     .build();
             FirebaseApp.initializeApp(firebaseOptions);
             FirebaseDatabase.getInstance().setLogLevel(Logger.Level.DEBUG);

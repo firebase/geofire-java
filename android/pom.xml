@@ -64,12 +64,16 @@
        <id>android-extras</id>
        <url>file://${env.ANDROID_HOME}/extras/android/m2repository</url>
     </repository>
+    <repository>
+      <id>google-maven</id>
+      <url>https://maven.google.com</url>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>
       <groupId>com.google.firebase</groupId>
       <artifactId>firebase-database</artifactId>
-      <version>[9.0.2,)</version>
+      <version>[11.2.2,)</version>
       <scope>provided</scope>
       <type>aar</type>
     </dependency>
