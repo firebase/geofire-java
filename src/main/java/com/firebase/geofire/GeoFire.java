@@ -236,7 +236,7 @@ public class GeoFire {
         return new GeoQuery(this, center, radius);
     }
 
-    void raiseEvent(Runnable r) {
+    public void raiseEvent(Runnable r) {
         this.eventRaiser.raiseEvent(r);
     }
 }
