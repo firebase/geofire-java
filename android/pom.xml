@@ -73,7 +73,7 @@
     <dependency>
       <groupId>com.google.firebase</groupId>
       <artifactId>firebase-database</artifactId>
-      <version>[11.2.2,)</version>
+      <version>11.4.0</version>
       <scope>provided</scope>
       <type>aar</type>
     </dependency>
