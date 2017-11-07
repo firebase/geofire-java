@@ -72,10 +72,11 @@ fi
 ################
 
 echo "Manual steps:"
-echo "  1) release maven repo at http://oss.sonatype.org/"
-echo "  2) Deply new docs: $> firebase deploy"
-echo "  3) Update the release notes for GeoFire version ${VERSION} on GitHub and add jars for downloading"
-echo "  4) Update firebase-versions.json in the firebase-clients repo with the changelog information"
-echo "  5) Tweet @FirebaseRelease: 'v${VERSION} of @Firebase GeoFire for Java is available https://github.com/firebase/geofire-java"
+echo "  1) Release all draft artifacts on Bintray at https://bintray.com/firebase/geofire"
+echo "  2) On bintray, initiate Maven Central sync for latest version"
+echo "  3) Deply new docs: $> firebase deploy"
+echo "  4) Update the release notes for GeoFire version ${VERSION} on GitHub and add jars for downloading"
+echo "  5) Update firebase-versions.json in the firebase-clients repo with the changelog information"
+echo "  6) Tweet @FirebaseRelease: 'v${VERSION} of @Firebase GeoFire for Java is available https://github.com/firebase/geofire-java"
 echo ---
 echo "Done! Woo!"
