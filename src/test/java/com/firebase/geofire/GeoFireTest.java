@@ -119,17 +119,17 @@ public class GeoFireTest extends RealDataTest {
         try {
             geoFire.setLocation("test", new GeoLocation(-91, 90));
             Assert.fail("Did not throw illegal argument exception!");
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException expected) {
         }
         try {
             geoFire.setLocation("test", new GeoLocation(0, -180.1));
             Assert.fail("Did not throw illegal argument exception!");
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException expected) {
         }
         try {
             geoFire.setLocation("test", new GeoLocation(0, 181.1));
             Assert.fail("Did not throw illegal argument exception!");
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException expected) {
         }
     }
 

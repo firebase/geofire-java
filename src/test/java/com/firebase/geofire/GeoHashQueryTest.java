@@ -86,17 +86,17 @@ public class GeoHashQueryTest {
         try {
             new GeoHashQuery("abcd", "abce").joinWith(new GeoHashQuery("abcg", "abch"));
             Assert.fail("Exception was not thrown!");
-        } catch(IllegalArgumentException e) {
+        } catch(IllegalArgumentException expected) {
         }
         try {
             new GeoHashQuery("abcd", "abce").joinWith(new GeoHashQuery("dce", "dcf"));
             Assert.fail("Exception was not thrown!");
-        } catch(IllegalArgumentException e) {
+        } catch(IllegalArgumentException expected) {
         }
         try {
             new GeoHashQuery("abc", "abd").joinWith(new GeoHashQuery("dce", "dcf"));
             Assert.fail("Exception was not thrown!");
-        } catch(IllegalArgumentException e) {
+        } catch(IllegalArgumentException expected) {
         }
     }
 }

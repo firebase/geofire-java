@@ -25,27 +25,27 @@ public class GeoLocationTest {
         try {
             new GeoLocation(-90.1, 90);
             Assert.fail("Did not throw illegal argument exception!");
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException expected) {
         }
         try {
             new GeoLocation(0, -180.1);
             Assert.fail("Did not throw illegal argument exception!");
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException expected) {
         }
         try {
             new GeoLocation(0, 180.1);
             Assert.fail("Did not throw illegal argument exception!");
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException expected) {
         }
         try {
             new GeoLocation(Double.NaN, 0);
             Assert.fail("Did not throw illegal argument exception!");
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException expected) {
         }
         try {
             new GeoLocation(0, Double.NaN);
             Assert.fail("Did not throw illegal argument exception!");
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException expected) {
         }
     }
 }
