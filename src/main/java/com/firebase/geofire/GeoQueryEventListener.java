@@ -44,7 +44,7 @@ public interface GeoQueryEventListener {
      * @param key The key that entered the search area
      * @param location The location for this key as a GeoLocation object
      */
-    public void onKeyEntered(String key, GeoLocation location);
+    void onKeyEntered(String key, GeoLocation location);
 
     /**
      * Called if a key exited the search area of the GeoQuery. This is method is only called if onKeyEntered was called
@@ -52,7 +52,7 @@ public interface GeoQueryEventListener {
      *
      * @param key The key that exited the search area
      */
-    public void onKeyExited(String key);
+    void onKeyExited(String key);
 
     /**
      * Called if a key moved within the search area.
@@ -62,19 +62,19 @@ public interface GeoQueryEventListener {
      * @param key The key that moved within the search area
      * @param location The location for this key as a GeoLocation object
      */
-    public void onKeyMoved(String key, GeoLocation location);
+    void onKeyMoved(String key, GeoLocation location);
 
     /**
      * Called once all initial GeoFire data has been loaded and the relevant events have been fired for this query.
      * Every time the query criteria is updated, this observer will be called after the updated query has fired the
      * appropriate key entered or key exited events.
      */
-    public void onGeoQueryReady();
+    void onGeoQueryReady();
 
     /**
      * Called in case an error occurred while retrieving locations for a query, e.g. violating security rules.
      * @param error The error that occurred while retrieving the query
      */
-    public void onGeoQueryError(DatabaseError error);
+    void onGeoQueryError(DatabaseError error);
 
 }

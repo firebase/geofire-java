@@ -41,12 +41,12 @@ public interface LocationCallback {
      * @param key The key whose location we are getting
      * @param location The location of the key
      */
-    public void onLocationResult(String key, GeoLocation location);
+    void onLocationResult(String key, GeoLocation location);
 
     /**
      * Called if the callback could not be added due to failure on the server or security rules.
      * @param databaseError The error that occurred
      */
-    public void onCancelled(DatabaseError databaseError);
+    void onCancelled(DatabaseError databaseError);
 
 }

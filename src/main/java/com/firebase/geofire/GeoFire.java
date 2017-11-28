@@ -49,7 +49,7 @@ public class GeoFire {
     /**
      * A listener that can be used to be notified about a successful write or an error on writing.
      */
-    public static interface CompletionListener {
+    public interface CompletionListener {
         /**
          * Called once a location was successfully saved on the server or an error occurred. On success, the parameter
          * error will be null; in case of an error, the error will be passed to this method.
@@ -57,7 +57,7 @@ public class GeoFire {
          * @param key   The key whose location was saved
          * @param error The error or null if no error occurred
          */
-        public void onComplete(String key, DatabaseError error);
+        void onComplete(String key, DatabaseError error);
     }
 
     /**
