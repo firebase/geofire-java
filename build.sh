@@ -5,4 +5,4 @@ set -e
 
 # Run test suite
 mvn clean compile
-mvn test -Dsurefire.useFile=false -Dsurefire.rerunFailingTestsCount=3
+mvn -Dsurefire.rerunFailingTestsCount=2 -Dsurefire.useFile=false test

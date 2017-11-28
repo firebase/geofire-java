@@ -238,8 +238,8 @@ public class GeoQueryTest extends RealDataTest {
 
             @Override
             public void onGeoQueryReady() {
-                semaphore.release();
                 done[0] = true;
+                semaphore.release();
             }
 
             @Override
