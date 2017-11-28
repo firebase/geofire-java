@@ -115,9 +115,9 @@ public class GeoQuery {
 
     private void updateLocationInfo(final String key, final GeoLocation location) {
         LocationInfo oldInfo = this.locationInfos.get(key);
-        boolean isNew = (oldInfo == null);
-        boolean changedLocation = (oldInfo != null && !oldInfo.location.equals(location));
-        boolean wasInQuery = (oldInfo != null && oldInfo.inGeoQuery);
+        boolean isNew = oldInfo == null;
+        boolean changedLocation = oldInfo != null && !oldInfo.location.equals(location);
+        boolean wasInQuery = oldInfo != null && oldInfo.inGeoQuery;
 
         boolean isInQuery = this.locationIsInQuery(location);
         if ((isNew || !wasInQuery) && isInQuery) {
