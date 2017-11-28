@@ -2,7 +2,8 @@ package com.firebase.geofire.core;
 
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.util.Base32Utils;
-import com.firebase.geofire.util.GeoUtils;
+
+import static java.util.Locale.US;
 
 public class GeoHash {
     private final String geoHash;
@@ -32,7 +33,7 @@ public class GeoHash {
             throw new IllegalArgumentException("Precision of a GeoHash must be less than " + (MAX_PRECISION + 1) + "!");
         }
         if (!GeoLocation.coordinatesValid(latitude, longitude)) {
-            throw new IllegalArgumentException(String.format("Not valid location coordinates: [%f, %f]", latitude, longitude));
+            throw new IllegalArgumentException(String.format(US, "Not valid location coordinates: [%f, %f]", latitude, longitude));
         }
         double[] longitudeRange = { -180, 180 };
         double[] latitudeRange = { -90, 90 };

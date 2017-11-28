@@ -8,6 +8,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import static java.util.Locale.US;
+
 public class Example {
 
     public static void main(String[] args) throws InterruptedException {
@@ -17,17 +19,17 @@ public class Example {
         query.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
-                System.out.println(String.format("%s entered at [%f, %f]", key, location.latitude, location.longitude));
+                System.out.println(String.format(US, "%s entered at [%f, %f]", key, location.latitude, location.longitude));
             }
 
             @Override
             public void onKeyExited(String key) {
-                System.out.println(String.format("%s exited", key));
+                System.out.println(String.format(US, "%s exited", key));
             }
 
             @Override
             public void onKeyMoved(String key, GeoLocation location) {
-                System.out.println(String.format("%s moved to [%f, %f]", key, location.latitude, location.longitude));
+                System.out.println(String.format(US, "%s moved to [%f, %f]", key, location.latitude, location.longitude));
             }
 
             @Override
