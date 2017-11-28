@@ -32,13 +32,15 @@ import com.firebase.geofire.core.GeoHash;
 import com.firebase.geofire.core.GeoHashQuery;
 import com.firebase.geofire.util.GeoUtils;
 import com.google.firebase.database.*;
-
 import java.util.*;
+
+import static com.firebase.geofire.util.GeoUtils.capRadius;
 
 /**
  * A GeoQuery object can be used for geo queries in a given circle. The GeoQuery class is thread safe.
  */
 public class GeoQuery {
+    private static final int KILOMETER_TO_METER = 1000;
 
     private static class LocationInfo {
         final GeoLocation location;
@@ -98,13 +100,13 @@ public class GeoQuery {
      * Creates a new GeoQuery object centered at the given location and with the given radius.
      * @param geoFire The GeoFire object this GeoQuery uses
      * @param center The center of this query
-     * @param radius The radius of this query, in kilometers
+     * @param radius The radius of the query, in kilometers. The maximum radius that is
+     * supported is about 8587km. If a radius bigger than this is passed we'll cap it.
      */
     GeoQuery(GeoFire geoFire, GeoLocation center, double radius) {
         this.geoFire = geoFire;
         this.center = center;
-        // convert from kilometers to meters
-        this.radius = radius * 1000;
+        this.radius = radius * KILOMETER_TO_METER; // Convert from kilometers to meters.
     }
 
     private boolean locationIsInQuery(GeoLocation location) {
@@ -397,16 +399,17 @@ public class GeoQuery {
      */
     public synchronized double getRadius() {
         // convert from meters
-        return radius / 1000;
+        return radius / KILOMETER_TO_METER;
     }
 
     /**
      * Sets the radius of this query, in kilometers, and triggers new events if necessary.
-     * @param radius The new radius value of this query in kilometers
+     * @param radius The radius of the query, in kilometers. The maximum radius that is
+     * supported is about 8587km. If a radius bigger than this is passed we'll cap it.
      */
     public synchronized void setRadius(double radius) {
         // convert to meters
-        this.radius = radius * 1000;
+        this.radius = capRadius(radius) * KILOMETER_TO_METER;
         if (this.hasListeners()) {
             this.setupQueries();
         }
@@ -415,12 +418,13 @@ public class GeoQuery {
     /**
      * Sets the center and radius (in kilometers) of this query, and triggers new events if necessary.
      * @param center The new center
-     * @param radius The new radius value of this query in kilometers
+     * @param radius The radius of the query, in kilometers. The maximum radius that is
+     * supported is about 8587km. If a radius bigger than this is passed we'll cap it.
      */
     public synchronized void setLocation(GeoLocation center, double radius) {
         this.center = center;
         // convert radius to meters
-        this.radius = radius * 1000;
+        this.radius = capRadius(radius) * KILOMETER_TO_METER;
         if (this.hasListeners()) {
             this.setupQueries();
         }

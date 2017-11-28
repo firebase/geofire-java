@@ -34,14 +34,17 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.GenericTypeIndicator;
-
 import java.lang.Throwable;
 import java.util.*;
+import java.util.logging.Logger;
+
+import static com.firebase.geofire.util.GeoUtils.capRadius;
 
 /**
  * A GeoFire instance is used to store geo location data in Firebase.
  */
 public class GeoFire {
+    public static Logger LOGGER = Logger.getLogger("GeoFire");
 
     /**
      * A listener that can be used to be notified about a successful write or an error on writing.
@@ -229,11 +232,12 @@ public class GeoFire {
      * Returns a new Query object centered at the given location and with the given radius.
      *
      * @param center The center of the query
-     * @param radius The radius of the query, in kilometers
+     * @param radius The radius of the query, in kilometers. The maximum radius that is
+     * supported is about 8587km. If a radius bigger than this is passed we'll cap it.
      * @return The new GeoQuery object
      */
     public GeoQuery queryAtLocation(GeoLocation center, double radius) {
-        return new GeoQuery(this, center, radius);
+        return new GeoQuery(this, center, capRadius(radius));
     }
 
     public void raiseEvent(Runnable r) {
