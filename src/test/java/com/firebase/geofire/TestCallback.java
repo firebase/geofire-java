@@ -8,12 +8,14 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static java.util.Locale.US;
+
 public class TestCallback implements LocationCallback {
 
     private final SimpleFuture<String> future = new SimpleFuture<String>();
 
     public static String location(String key, double latitude, double longitude) {
-        return String.format("LOCATION(%s,%f,%f)", key, latitude, longitude);
+        return String.format(US, "LOCATION(%s,%f,%f)", key, latitude, longitude);
     }
 
     public static String noLocation(String key) {

@@ -2,6 +2,8 @@ package com.firebase.geofire;
 
 import com.google.firebase.database.DatabaseError;
 
+import static java.util.Locale.US;
+
 public class GeoQueryEventTestListener extends TestListener implements GeoQueryEventListener {
 
     private final boolean recordEntered;
@@ -19,11 +21,11 @@ public class GeoQueryEventTestListener extends TestListener implements GeoQueryE
     }
 
     public static String keyEntered(String key, double latitude, double longitude) {
-        return String.format("KEY_ENTERED(%s,%f,%f)", key, latitude, longitude);
+        return String.format(US, "KEY_ENTERED(%s,%f,%f)", key, latitude, longitude);
     }
 
     public static String keyMoved(String key, double latitude, double longitude) {
-        return String.format("KEY_MOVED(%s,%f,%f)", key, latitude, longitude);
+        return String.format(US, "KEY_MOVED(%s,%f,%f)", key, latitude, longitude);
     }
 
     public static String keyExited(String key) {
