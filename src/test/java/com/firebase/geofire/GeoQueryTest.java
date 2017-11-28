@@ -244,11 +244,12 @@ public class GeoQueryTest extends RealDataTest {
 
             @Override
             public void onGeoQueryError(DatabaseError error) {
+                Assert.fail("onGeoQueryError: " + error.toString());
             }
         });
 
         Assert.assertTrue(semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
-        Assert.assertTrue(done[0]);
+        Assert.assertTrue("GeoQuery not ready, test timed out.", done[0]);
         // wait for any further events to fire
         Thread.sleep(250);
         Assert.assertFalse("Key entered after ready event occurred!", failed[0]);
