@@ -2,7 +2,10 @@ package com.firebase.geofire.util;
 
 import com.firebase.geofire.GeoLocation;
 
+import static com.firebase.geofire.GeoFire.LOGGER;
+
 public class GeoUtils {
+    private static final double MAX_SUPPORTED_RADIUS = 8587;
 
     private GeoUtils() {}
 
@@ -50,4 +53,12 @@ public class GeoUtils {
         }
     }
 
+    public static double capRadius(double radius) {
+        if (radius > MAX_SUPPORTED_RADIUS) {
+            LOGGER.warning("The radius is bigger than " + MAX_SUPPORTED_RADIUS + " and hence we'll use that value");
+            return MAX_SUPPORTED_RADIUS;
+        }
+
+        return radius;
+    }
 }

@@ -47,4 +47,16 @@ public class GeoUtilsTest {
         Assert.assertEquals(360, GeoUtils.distanceToLongitudeDegrees(1000, 89.9999), 1e-5);
         Assert.assertEquals(102.594208, GeoUtils.distanceToLongitudeDegrees(1000, 89.995), 1e-5);
     }
+
+    @Test
+    public void capRadius() {
+        Assert.assertEquals(1.0d, GeoUtils.capRadius(1.0d), 0.1d);
+        Assert.assertEquals(100.0d, GeoUtils.capRadius(100.0d), 0.1d);
+        Assert.assertEquals(813.0d, GeoUtils.capRadius(813.0d), 0.1d);
+        Assert.assertEquals(8586.0d, GeoUtils.capRadius(8586.0d), 0.1d);
+        Assert.assertEquals(8587.0d, GeoUtils.capRadius(8587.0d), 0.1d);
+
+        Assert.assertEquals(8587.0d, GeoUtils.capRadius(8588.0d), 0.1d);
+        Assert.assertEquals(8587.0d, GeoUtils.capRadius(10000.0d), 0.1d);
+    }
 }
