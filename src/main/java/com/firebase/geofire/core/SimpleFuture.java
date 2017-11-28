@@ -10,8 +10,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class SimpleFuture<V> implements Future<V> {
 
-    private V object = null;
-    private boolean isSet = false;
+    private V object;
+    private boolean isSet;
 
     private final Lock lock = new ReentrantLock();
     private final Condition setCondition = lock.newCondition();
