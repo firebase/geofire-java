@@ -7,4 +7,5 @@ set -e
 echo "Using mock service-account.json"
 echo "TODO"
 
-mvn -Dsurefire.rerunFailingTestsCount=3 clean compile test
+mvn clean compile
+mvn test -Dsurefire.useFile=false -Dsurefire.rerunFailingTestsCount=3
