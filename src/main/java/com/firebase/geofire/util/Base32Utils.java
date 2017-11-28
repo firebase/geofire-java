@@ -1,13 +1,15 @@
 package com.firebase.geofire.util;
 
-public class Base32Utils {
+public final class Base32Utils {
 
     /* number of bits per base 32 character */
     public static final int BITS_PER_BASE32_CHAR = 5;
 
     private static final String BASE32_CHARS = "0123456789bcdefghjkmnpqrstuvwxyz";
 
-    private Base32Utils() {}
+    private Base32Utils() {
+        throw new AssertionError("No instances.");
+    }
 
     public static char valueToBase32Char(int value) {
         if (value < 0 || value >= BASE32_CHARS.length()) {

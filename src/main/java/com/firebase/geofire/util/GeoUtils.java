@@ -4,10 +4,12 @@ import com.firebase.geofire.GeoLocation;
 
 import static com.firebase.geofire.GeoFire.LOGGER;
 
-public class GeoUtils {
+public final class GeoUtils {
     private static final double MAX_SUPPORTED_RADIUS = 8587;
 
-    private GeoUtils() {}
+    private GeoUtils() {
+        throw new AssertionError("No instances.");
+    }
 
     public static double distance(GeoLocation location1, GeoLocation location2) {
         return distance(location1.latitude, location1.longitude, location2.latitude, location2.longitude);
