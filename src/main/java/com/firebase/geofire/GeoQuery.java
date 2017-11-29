@@ -314,7 +314,7 @@ public class GeoQuery {
     /**
      * Adds a new GeoQueryEventListener to this GeoQuery.
      *
-     * @throws java.lang.IllegalArgumentException If this listener was already added
+     * @throws IllegalArgumentException If this listener was already added
      *
      * @param listener The listener to add
      */
@@ -352,7 +352,7 @@ public class GeoQuery {
     /**
      * Removes an event listener.
      *
-     * @throws java.lang.IllegalArgumentException If the listener was removed already or never added
+     * @throws IllegalArgumentException If the listener was removed already or never added
      *
      * @param listener The listener to remove
      */
