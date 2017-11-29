@@ -61,7 +61,7 @@ public final class GeoLocation {
      * @return True if these are valid geo coordinates
      */
     public static boolean coordinatesValid(double latitude, double longitude) {
-        return (latitude >= -90 && latitude <= 90 && longitude >= -180 && longitude <= 180);
+        return latitude >= -90 && latitude <= 90 && longitude >= -180 && longitude <= 180;
     }
 
     @Override

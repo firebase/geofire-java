@@ -51,7 +51,7 @@ public class GeoHash {
                     hashValue = (hashValue << 1) + 1;
                     range[0] = mid;
                 } else {
-                    hashValue = (hashValue << 1);
+                    hashValue = hashValue << 1;
                     range[1] = mid;
                 }
             }

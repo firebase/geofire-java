@@ -28,9 +28,9 @@ public class GeoHashQuery {
             double latitudeDegreesDelta = GeoUtils.distanceToLatitudeDegrees(size);
             double latitudeNorth = Math.min(90, location.latitude + latitudeDegreesDelta);
             double latitudeSouth = Math.max(-90, location.latitude - latitudeDegreesDelta);
-            int bitsLatitude = ((int)Math.floor(Utils.bitsLatitude(size)))*2;
-            int bitsLongitudeNorth = ((int)Math.floor(Utils.bitsLongitude(size, latitudeNorth)))*2 - 1;
-            int bitsLongitudeSouth = ((int)Math.floor(Utils.bitsLongitude(size, latitudeSouth)))*2 - 1;
+            int bitsLatitude = (int)Math.floor(Utils.bitsLatitude(size)) *2;
+            int bitsLongitudeNorth = (int)Math.floor(Utils.bitsLongitude(size, latitudeNorth)) *2 - 1;
+            int bitsLongitudeSouth = (int)Math.floor(Utils.bitsLongitude(size, latitudeSouth)) *2 - 1;
             return Math.min(bitsLatitude, Math.min(bitsLongitudeNorth, bitsLongitudeSouth));
         }
     }
@@ -53,7 +53,7 @@ public class GeoHashQuery {
         String base = hash.substring(0, hash.length() - 1);
         int lastValue = Base32Utils.base32CharToValue(hash.charAt(hash.length() - 1));
         int significantBits = bits - (base.length() * Base32Utils.BITS_PER_BASE32_CHAR);
-        int unusedBits = (Base32Utils.BITS_PER_BASE32_CHAR - significantBits);
+        int unusedBits = Base32Utils.BITS_PER_BASE32_CHAR - significantBits;
         // delete unused bits
         int startValue = (lastValue >> unusedBits) << unusedBits;
         int endValue = startValue + (1 << unusedBits);
@@ -69,7 +69,7 @@ public class GeoHashQuery {
 
     public static Set<GeoHashQuery> queriesAtLocation(GeoLocation location, double radius) {
         int queryBits = Math.max(1, Utils.bitsForBoundingBox(location, radius));
-        int geoHashPrecision = (int)(Math.ceil(((float)queryBits)/Base32Utils.BITS_PER_BASE32_CHAR));
+        int geoHashPrecision = (int) Math.ceil((float)queryBits /Base32Utils.BITS_PER_BASE32_CHAR);
 
         double latitude = location.latitude;
         double longitude = location.longitude;
