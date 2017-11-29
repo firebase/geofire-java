@@ -10,9 +10,11 @@ import java.util.Set;
 
 public class GeoHashQuery {
 
-    public static class Utils {
+    public static final class Utils {
 
-        private Utils() {}
+        private Utils() {
+            throw new AssertionError("No instances.");
+        }
 
         public static double bitsLatitude(double resolution) {
             return Math.min(Math.log(Constants.EARTH_MERIDIONAL_CIRCUMFERENCE/2/resolution)/Math.log(2),

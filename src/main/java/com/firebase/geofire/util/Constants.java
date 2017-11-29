@@ -1,6 +1,6 @@
 package com.firebase.geofire.util;
 
-public class Constants {
+public final class Constants {
 
     // Length of a degree latitude at the equator
     public static final double METERS_PER_DEGREE_LATITUDE = 110574;
@@ -26,5 +26,7 @@ public class Constants {
     // Cutoff for floating point calculations
     public static final double EPSILON = 1e-12;
 
-    private Constants() {}
+    private Constants() {
+        throw new AssertionError("No instances.");
+    }
 }
