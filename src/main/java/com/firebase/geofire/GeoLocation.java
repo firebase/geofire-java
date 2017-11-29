@@ -42,7 +42,7 @@ public final class GeoLocation {
     /**
      * Creates a new GeoLocation with the given latitude and longitude.
      *
-     * @throws java.lang.IllegalArgumentException If the coordinates are not valid geo coordinates
+     * @throws IllegalArgumentException If the coordinates are not valid geo coordinates
      * @param latitude The latitude in the range of [-90, 90]
      * @param longitude The longitude in the range of [-180, 180]
      */
