@@ -1,5 +1,7 @@
 # GeoFire for Android/Java — Realtime location queries with Firebase
 
+[![Build Status](https://travis-ci.org/firebase/geofire-java.svg?branch=master)](https://travis-ci.org/firebase/geofire-java?branch=master)
+
 GeoFire is an open-source library for Android/Java that allows you to store and query a
 set of keys based on their geographic location.
 

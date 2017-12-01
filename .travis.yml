@@ -1,0 +1,32 @@
+language: android
+jdk: oraclejdk8
+sudo: required
+before_install:
+- mkdir "$ANDROID_HOME/licenses" || true
+- echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
+- echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
+android:
+  components:
+  - tools
+  - tools
+  - platform-tools
+  - android-26
+  - build-tools-26.0.1
+before_cache:
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+  - "$HOME/.android/build-cache"
+before_script:
+- echo y | ${ANDROID_HOME}/tools/bin/sdkmanager --channel=3 "tools" "platform-tools"
+  "build-tools;26.0.1" "platforms;android-26" "extras;google;m2repository"
+script: "./build.sh"
+java/service-account:
+  json:
+    secure: MWpRST/xWJ/t+CCs5u7VGgb5qm7iDMovV+Bv/M5taQFnMq3BnEjyf76Z/or6pHB2hB09HDWws12yC/leAgC3tlUiz3Vp79TXPhHqNVrVOMCsoX7zsGM39cRYVwUfmR4dMUnTc12se3juaS8qy55GnS7fqz8CBPg6YuR1GsDfHcZgvFIRCR38Gj4XaJuvMLfRU23KmpWGWjjwTX3oCg+p07R6GeIMpfcPuOapgYjTm/llDxVCzQ/dpH6uP0tl1S607l4HOpnbnIEwANqD1PyH1YuB1oCvBmjcCazrfVmYm/F9OgR2ElnNKGNIoplAOIvSeK7viNLn9YUTg8PReDgVvfIMkpKeXjAkcGaON7VMjjhIp6S+Tznp4SS1CTSoizN9UWxnSeerwDadB7iqjO5HcjIqvtGH2q+Yyb66N6cRHU1iMQa6OQjk2Vu658k5kv7YVfizNl2huzVdwk5j1gzG2qGJ3sVASaxjhojCP4SNxifvYQW3biggu4ZhK7ABMcS+KrWLc8wD/3SAfVNmzlyNVdD0ye5k5PoQkR2v+J6WJE3MkS/gzldvqnpdpi5VS//dcBgm9u3a3tj9+mGyuPkWP2ka4gueBA9e7h8V+sLFr6/f2ttyzMUJ+vrfHnrr8gUGbswkavzDLv1SNtovyXlbaOfp/oOfhU6qbHubC/H1QRQ=
+env:
+  global:
+    secure: GsBHt/Zbqe+h/ACtg7CKl9rA143Z4EOp1bOsEyUgQ9Ch7kwVdXQkKB5LGdK+I+TbZhvOXvrvQ1JBAwMrj1yHSmPHLfiTFUdNqwOFLfqc8EvWYQ8mjmk3wg5lYohO7Nh1gShYrzevxfiR/cAAixUlRpZEETHF/SGcUKGqyoqKnUg=

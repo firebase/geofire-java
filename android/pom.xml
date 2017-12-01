@@ -50,6 +50,11 @@
         <groupId>com.simpligility.maven.plugins</groupId>
         <artifactId>android-maven-plugin</artifactId>
         <version>4.3.0</version> <!-- use latest release -->
+        <configuration>
+            <sdk>
+              <platform>26</platform>
+            </sdk>
+        </configuration>
         <extensions>true</extensions>
       </plugin>
     </plugins>
