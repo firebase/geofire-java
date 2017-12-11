@@ -1,77 +1,43 @@
 package com.firebase.geofire.core;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class SimpleFuture<V> implements Future<V> {
-
-    private V object;
+public class SimpleFuture<V> {
+    private V value;
     private boolean isSet;
 
     private final Lock lock = new ReentrantLock();
-    private final Condition setCondition = lock.newCondition();
+    private final Condition condition = lock.newCondition();
 
-    public synchronized void put(V object) {
-        this.lock.lock();
+    public synchronized void put(final V valueToPut) {
+        lock.lock();
+
         try {
-            this.object = object;
-            this.isSet = true;
-            this.setCondition.signalAll();
+            value = valueToPut;
+            isSet = true;
+            condition.signalAll();
         } finally {
-            this.lock.unlock();
+            lock.unlock();
         }
     }
 
-    @Override
-    public boolean cancel(boolean mayInterruptIfRunning) {
-        return false;
-    }
+    public V get(final long timeout, final TimeUnit unit) throws InterruptedException, TimeoutException {
+        lock.lock();
 
-    @Override
-    public boolean isCancelled() {
-        return false;
-    }
-
-    @Override
-    public boolean isDone() {
-        this.lock.lock();
         try {
-            return this.isSet;
-        } finally {
-            this.lock.unlock();
-        }
-    }
-
-    @Override
-    public V get() throws InterruptedException, ExecutionException {
-        this.lock.lock();
-        try {
-            while (!this.isSet) {
-                setCondition.await();
-            }
-            return this.object;
-        } finally {
-            this.lock.unlock();
-        }
-    }
-
-    @Override
-    public V get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        this.lock.lock();
-        try {
-            while (!this.isSet) {
-                if (!setCondition.await(timeout, unit)) {
+            while (!isSet) {
+                if (!condition.await(timeout, unit)) {
                     throw new TimeoutException();
                 }
             }
-            return this.object;
+
+            return value;
         } finally {
-            this.lock.unlock();
+            lock.unlock();
         }
     }
 }
