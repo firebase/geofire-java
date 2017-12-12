@@ -1,5 +1,6 @@
 package com.firebase.geofire;
 
+import com.firebase.geofire.util.SimpleFuture;
 import com.firebase.geofire.util.ReadFuture;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,7 +29,7 @@ public class GeoFireTest extends RealDataTest {
         setLoc(geoFire, "loc2", 50.1, 50.1);
         setLoc(geoFire, "loc3", -89.1, -89.1, true);
 
-        Future<Object> future = new ReadFuture(geoFire.getDatabaseReference());
+        SimpleFuture<Object> future = new ReadFuture(geoFire.getDatabaseReference());
         Map<String, Object> expected = new HashMap<>();
         expected.put("loc1", new HashMap<String, Object>() {{
             put("l", Arrays.asList(0.1, 0.1));

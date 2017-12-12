@@ -60,8 +60,6 @@ public class RealDataTest {
             Assert.assertNull(futureError.get(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
         } catch (TimeoutException e) {
             Assert.fail("Timeout occured!");
         }
@@ -79,8 +77,6 @@ public class RealDataTest {
             try {
                 Assert.assertNull(futureError.get(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            } catch (ExecutionException e) {
                 throw new RuntimeException(e);
             } catch (TimeoutException e) {
                 Assert.fail("Timeout occured!");
@@ -100,8 +96,6 @@ public class RealDataTest {
             try {
                 Assert.assertNull(futureError.get(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            } catch (ExecutionException e) {
                 throw new RuntimeException(e);
             } catch (TimeoutException e) {
                 Assert.fail("Timeout occured!");

@@ -40,4 +40,8 @@ public class SimpleFuture<V> {
             lock.unlock();
         }
     }
+
+    public boolean isDone() {
+        return isSet;
+    }
 }
