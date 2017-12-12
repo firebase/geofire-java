@@ -22,7 +22,7 @@ else
 fi
 
 # Build
-mvn clean compile
+mvn clean compile test-compile
 
 # Only run test suite when we can decode the service acct
 if [ "$TRAVIS_SECURE_ENV_VARS" = false ]; then
