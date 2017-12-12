@@ -1,6 +1,5 @@
 package com.firebase.geofire.util;
 
-import com.firebase.geofire.core.SimpleFuture;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
