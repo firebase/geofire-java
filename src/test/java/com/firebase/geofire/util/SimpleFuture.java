@@ -1,4 +1,4 @@
-package com.firebase.geofire.core;
+package com.firebase.geofire.util;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;

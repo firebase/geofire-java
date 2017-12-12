@@ -1,6 +1,6 @@
 package com.firebase.geofire;
 
-import com.firebase.geofire.core.SimpleFuture;
+import com.firebase.geofire.util.SimpleFuture;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseCredentials;
