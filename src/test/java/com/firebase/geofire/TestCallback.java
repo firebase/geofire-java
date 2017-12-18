@@ -12,7 +12,7 @@ import static java.util.Locale.US;
 
 public class TestCallback implements LocationCallback {
 
-    private final SimpleFuture<String> future = new SimpleFuture<String>();
+    private final SimpleFuture<String> future = new SimpleFuture<>();
 
     public static String location(String key, double latitude, double longitude) {
         return String.format(US, "LOCATION(%s,%f,%f)", key, latitude, longitude);

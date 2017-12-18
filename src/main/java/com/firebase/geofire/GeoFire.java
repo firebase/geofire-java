@@ -168,7 +168,7 @@ public class GeoFire {
         }
         DatabaseReference keyRef = this.getDatabaseRefForKey(key);
         GeoHash geoHash = new GeoHash(location);
-        Map<String, Object> updates = new HashMap<String, Object>();
+        Map<String, Object> updates = new HashMap<>();
         updates.put("g", geoHash.getGeoHashString());
         updates.put("l", Arrays.asList(location.latitude, location.longitude));
         if (completionListener != null) {
