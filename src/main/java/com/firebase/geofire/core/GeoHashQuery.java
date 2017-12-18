@@ -141,11 +141,7 @@ public class GeoHashQuery {
 
     private boolean isSuperQuery(GeoHashQuery other) {
         int startCompare = other.startValue.compareTo(this.startValue);
-        if (startCompare <= 0) {
-            return other.endValue.compareTo(this.endValue) >= 0;
-        } else {
-            return false;
-        }
+        return startCompare <= 0 && other.endValue.compareTo(this.endValue) >= 0;
     }
 
     public boolean canJoinWith(GeoHashQuery other) {
