@@ -29,7 +29,7 @@ public class GeoQueryTest extends RealDataTest {
 
         waitForGeoFireReady(geoFire);
 
-        Set<String> events = new HashSet<String>();
+        Set<String> events = new HashSet<>();
         events.add(GeoQueryEventTestListener.keyEntered("1", 37, -122));
         events.add(GeoQueryEventTestListener.keyEntered("2", 37.0001, -122.0001));
         events.add(GeoQueryEventTestListener.keyEntered("4", 37.0002, -121.9998));
@@ -62,7 +62,7 @@ public class GeoQueryTest extends RealDataTest {
         setLoc(geoFire, "1", 4, 0); // not in query
         setLoc(geoFire, "2", 5, 0, true); // not in query
 
-        List<String> events = new LinkedList<String>();
+        List<String> events = new LinkedList<>();
         events.add(GeoQueryEventTestListener.keyExited("1"));
         events.add(GeoQueryEventTestListener.keyExited("2"));
 
@@ -100,7 +100,7 @@ public class GeoQueryTest extends RealDataTest {
         setLoc(geoFire, "2", 37.0000, -122.0000, true); // entered
         setLoc(geoFire, "2", 37.0001, -122.0001, true); // moved
 
-        List<String> events = new LinkedList<String>();
+        List<String> events = new LinkedList<>();
         events.add(GeoQueryEventTestListener.keyMoved("1", 37.0001, -122.0000));
         events.add(GeoQueryEventTestListener.keyMoved("4", 37.0002, -122.0000));
         events.add(GeoQueryEventTestListener.keyMoved("3", 37.0003, -122.0003));
@@ -124,7 +124,7 @@ public class GeoQueryTest extends RealDataTest {
         setLoc(geoFire, "0", -1, -1);
         setLoc(geoFire, "1", 1, 1);
 
-        Set<String> events = new HashSet<String>();
+        Set<String> events = new HashSet<>();
         events.add(GeoQueryEventTestListener.keyMoved("0", -1, -1));
         events.add(GeoQueryEventTestListener.keyMoved("1", 1, 1));
 
@@ -148,7 +148,7 @@ public class GeoQueryTest extends RealDataTest {
         GeoQueryEventTestListener testListenerRemained = new GeoQueryEventTestListener(true, true, true);
         query.addGeoQueryEventListener(testListenerRemained);
 
-        Set<String> addedEvents = new HashSet<String>();
+        Set<String> addedEvents = new HashSet<>();
         addedEvents.add(GeoQueryEventTestListener.keyEntered("1", 37, -122));
         addedEvents.add(GeoQueryEventTestListener.keyEntered("2", 37.0001, -122.0001));
         addedEvents.add(GeoQueryEventTestListener.keyEntered("4", 37.0002, -121.9998));
@@ -162,7 +162,7 @@ public class GeoQueryTest extends RealDataTest {
         setLoc(geoFire, "1", 0, 0); // exited
         setLoc(geoFire, "2", 37, -122.0001); // moved
 
-        Set<String> furtherEvents = new HashSet<String>(addedEvents);
+        Set<String> furtherEvents = new HashSet<>(addedEvents);
         furtherEvents.add(GeoQueryEventTestListener.keyEntered("0", 37, -122)); // entered
         furtherEvents.add(GeoQueryEventTestListener.keyExited("1")); // exited
         furtherEvents.add(GeoQueryEventTestListener.keyMoved("2", 37.0000, -122.0001)); // moved
@@ -188,7 +188,7 @@ public class GeoQueryTest extends RealDataTest {
         GeoQueryEventTestListener testListenerRemained = new GeoQueryEventTestListener(true, true, true);
         query.addGeoQueryEventListener(testListenerRemained);
 
-        Set<String> addedEvents = new HashSet<String>();
+        Set<String> addedEvents = new HashSet<>();
         addedEvents.add(GeoQueryEventTestListener.keyEntered("1", 37, -122));
         addedEvents.add(GeoQueryEventTestListener.keyEntered("2", 37.0001, -122.0001));
         addedEvents.add(GeoQueryEventTestListener.keyEntered("4", 37.0002, -121.9998));

@@ -82,7 +82,7 @@ public class GeoHashQuery {
         double longitudeDeltaSouth = GeoUtils.distanceToLongitudeDegrees(radius, latitudeSouth);
         double longitudeDelta = Math.max(longitudeDeltaNorth, longitudeDeltaSouth);
 
-        Set<GeoHashQuery> queries = new HashSet<GeoHashQuery>();
+        Set<GeoHashQuery> queries = new HashSet<>();
 
         GeoHash geoHash = new GeoHash(latitude, longitude, geoHashPrecision);
         GeoHash geoHashW = new GeoHash(latitude, GeoUtils.wrapLongitude(longitude - longitudeDelta), geoHashPrecision);

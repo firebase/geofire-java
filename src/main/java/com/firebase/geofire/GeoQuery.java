@@ -88,10 +88,10 @@ public class GeoQuery {
     };
 
     private final GeoFire geoFire;
-    private final Set<GeoQueryEventListener> eventListeners = new HashSet<GeoQueryEventListener>();
+    private final Set<GeoQueryEventListener> eventListeners = new HashSet<>();
     private final Map<GeoHashQuery, Query> firebaseQueries = new HashMap<GeoHashQuery, Query>();
-    private final Set<GeoHashQuery> outstandingQueries = new HashSet<GeoHashQuery>();
-    private final Map<String, LocationInfo> locationInfos = new HashMap<String, LocationInfo>();
+    private final Set<GeoHashQuery> outstandingQueries = new HashSet<>();
+    private final Map<String, LocationInfo> locationInfos = new HashMap<>();
     private GeoLocation center;
     private double radius;
     private Set<GeoHashQuery> queries;
