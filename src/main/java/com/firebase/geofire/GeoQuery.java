@@ -263,7 +263,7 @@ public class GeoQuery {
         if (location != null) {
             this.updateLocationInfo(dataSnapshot.getKey(), location);
         } else {
-            // throw an error in future?
+            throw new AssertionError("Got Datasnapshot without location with key " + dataSnapshot.getKey());
         }
     }
 
@@ -272,7 +272,7 @@ public class GeoQuery {
         if (location != null) {
             this.updateLocationInfo(dataSnapshot.getKey(), location);
         } else {
-            // throw an error in future?
+            throw new AssertionError("Got Datasnapshot without location with key " + dataSnapshot.getKey());
         }
     }
 
