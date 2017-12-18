@@ -96,7 +96,7 @@ public class GeoQueryTest extends RealDataTest {
         setLoc(geoFire, "3", 37.0003, -122.0003, true); // moved:
         setLoc(geoFire, "2", 0, 0, true); // exited
         // wait for location to exit
-        exitListener.expectEvents(Arrays.asList(GeoQueryEventTestListener.keyExited("2")));
+        exitListener.expectEvents(Collections.singletonList(GeoQueryEventTestListener.keyExited("2")));
         setLoc(geoFire, "2", 37.0000, -122.0000, true); // entered
         setLoc(geoFire, "2", 37.0001, -122.0001, true); // moved
 
