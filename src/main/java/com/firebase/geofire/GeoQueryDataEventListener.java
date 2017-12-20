@@ -34,26 +34,26 @@ import com.google.firebase.database.DatabaseError;
 /**
  * GeoQuery notifies listeners with this interface about dataSnapshots that entered, exited, or moved within the query.
  */
-public interface DatasnapshotGeoQueryEventListener {
+public interface GeoQueryDataEventListener {
 
     /**
      * Called if a dataSnapshot entered the search area of the GeoQuery. This method is called for every dataSnapshot currently in the
      * search area at the time of adding the listener.
      *
-     * This method is once per datasnapshot, and is only called again if onKeyExited was called in the meantime.
+     * This method is once per datasnapshot, and is only called again if onDataExited was called in the meantime.
      *
      * @param dataSnapshot The associated dataSnapshot that entered the search area
      * @param location The location for this dataSnapshot as a GeoLocation object
      */
-    void onKeyEntered(DataSnapshot dataSnapshot, GeoLocation location);
+    void onDataEntered(DataSnapshot dataSnapshot, GeoLocation location);
 
     /**
-     * Called if a datasnapshot exited the search area of the GeoQuery. This is method is only called if onKeyEntered was called
+     * Called if a datasnapshot exited the search area of the GeoQuery. This is method is only called if onDataEntered was called
      * for the datasnapshot.
      *
      * @param dataSnapshot The associated dataSnapshot that exited the search area
      */
-    void onKeyExited(DataSnapshot dataSnapshot);
+    void onDataExited(DataSnapshot dataSnapshot);
 
     /**
      * Called if a dataSnapshot moved within the search area.
@@ -63,7 +63,7 @@ public interface DatasnapshotGeoQueryEventListener {
      * @param dataSnapshot The associated dataSnapshot that moved within the search area
      * @param location The location for this dataSnapshot as a GeoLocation object
      */
-    void onKeyMoved(DataSnapshot dataSnapshot, GeoLocation location);
+    void onDataMoved(DataSnapshot dataSnapshot, GeoLocation location);
 
     /**
      * Called once all initial GeoFire data has been loaded and the relevant events have been fired for this query.

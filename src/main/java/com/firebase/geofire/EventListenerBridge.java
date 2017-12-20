@@ -35,7 +35,7 @@ import java.util.Objects;
 /**
  * GeoQuery notifies listeners with this interface about dataSnapshots that entered, exited, or moved within the query.
  */
-final class EventListenerBridge implements DatasnapshotGeoQueryEventListener {
+final class EventListenerBridge implements GeoQueryDataEventListener {
     private final GeoQueryEventListener listener;
 
     public EventListenerBridge(final GeoQueryEventListener listener) {
@@ -43,17 +43,17 @@ final class EventListenerBridge implements DatasnapshotGeoQueryEventListener {
     }
 
     @Override
-    public void onKeyEntered(final DataSnapshot dataSnapshot, final GeoLocation location) {
+    public void onDataEntered(final DataSnapshot dataSnapshot, final GeoLocation location) {
         listener.onKeyEntered(dataSnapshot.getKey(), location);
     }
 
     @Override
-    public void onKeyExited(final DataSnapshot dataSnapshot) {
+    public void onDataExited(final DataSnapshot dataSnapshot) {
         listener.onKeyExited(dataSnapshot.getKey());
     }
 
     @Override
-    public void onKeyMoved(final DataSnapshot dataSnapshot, final GeoLocation location) {
+    public void onDataMoved(final DataSnapshot dataSnapshot, final GeoLocation location) {
         listener.onKeyMoved(dataSnapshot.getKey(), location);
     }
 

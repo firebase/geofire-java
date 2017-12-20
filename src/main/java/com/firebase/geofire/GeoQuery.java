@@ -97,7 +97,7 @@ public class GeoQuery {
     };
 
     private final GeoFire geoFire;
-    private final Set<DatasnapshotGeoQueryEventListener> eventListeners = new HashSet<>();
+    private final Set<GeoQueryDataEventListener> eventListeners = new HashSet<>();
     private final Map<GeoHashQuery, Query> firebaseQueries = new HashMap<>();
     private final Set<GeoHashQuery> outstandingQueries = new HashSet<>();
     private final HashMap<String, DataSnapshot> dataCache = new HashMap<>();
@@ -132,29 +132,29 @@ public class GeoQuery {
 
         boolean isInQuery = this.locationIsInQuery(location);
         if ((isNew || !wasInQuery) && isInQuery) {
-            for (final DatasnapshotGeoQueryEventListener listener: this.eventListeners) {
+            for (final GeoQueryDataEventListener listener: this.eventListeners) {
                 this.geoFire.raiseEvent(new Runnable() {
                     @Override
                     public void run() {
-                        listener.onKeyEntered(dataSnapshot, location);
+                        listener.onDataEntered(dataSnapshot, location);
                     }
                 });
             }
         } else if (!isNew && changedLocation && isInQuery) {
-            for (final DatasnapshotGeoQueryEventListener listener: this.eventListeners) {
+            for (final GeoQueryDataEventListener listener: this.eventListeners) {
                 this.geoFire.raiseEvent(new Runnable() {
                     @Override
                     public void run() {
-                        listener.onKeyMoved(dataSnapshot, location);
+                        listener.onDataMoved(dataSnapshot, location);
                     }
                 });
             }
         } else if (wasInQuery && !isInQuery) {
-            for (final DatasnapshotGeoQueryEventListener listener: this.eventListeners) {
+            for (final GeoQueryDataEventListener listener: this.eventListeners) {
                 this.geoFire.raiseEvent(new Runnable() {
                     @Override
                     public void run() {
-                        listener.onKeyExited(dataSnapshot);
+                        listener.onDataExited(dataSnapshot);
                     }
                 });
             }
@@ -197,7 +197,7 @@ public class GeoQuery {
 
     private void checkAndFireReady() {
         if (canFireReady()) {
-            for (final DatasnapshotGeoQueryEventListener listener: this.eventListeners) {
+            for (final GeoQueryDataEventListener listener: this.eventListeners) {
                 this.geoFire.raiseEvent(new Runnable() {
                     @Override
                     public void run() {
@@ -221,7 +221,7 @@ public class GeoQuery {
             @Override
             public void onCancelled(final DatabaseError databaseError) {
                 synchronized (GeoQuery.this) {
-                    for (final DatasnapshotGeoQueryEventListener listener : GeoQuery.this.eventListeners) {
+                    for (final GeoQueryDataEventListener listener : GeoQuery.this.eventListeners) {
                         GeoQuery.this.geoFire.raiseEvent(new Runnable() {
                             @Override
                             public void run() {
@@ -308,11 +308,11 @@ public class GeoQuery {
                             final DataSnapshot data = dataCache.get(key);
 
                             if (info != null && info.inGeoQuery && data != null) {
-                                for (final DatasnapshotGeoQueryEventListener listener: GeoQuery.this.eventListeners) {
+                                for (final GeoQueryDataEventListener listener: GeoQuery.this.eventListeners) {
                                     GeoQuery.this.geoFire.raiseEvent(new Runnable() {
                                         @Override
                                         public void run() {
-                                            listener.onKeyExited(data);
+                                            listener.onDataExited(data);
                                         }
                                     });
                                 }
@@ -337,7 +337,7 @@ public class GeoQuery {
      * @param listener The listener to add
      */
     public synchronized void addGeoQueryEventListener(final GeoQueryEventListener listener) {
-        addDatasnapshotGeoQueryEventListener(new EventListenerBridge(listener));
+        addGeoQueryDataEventListener(new EventListenerBridge(listener));
     }
 
     /**
@@ -347,7 +347,7 @@ public class GeoQuery {
      *
      * @param listener The listener to add
      */
-    public synchronized void addDatasnapshotGeoQueryEventListener(final DatasnapshotGeoQueryEventListener listener) {
+    public synchronized void addGeoQueryDataEventListener(final GeoQueryDataEventListener listener) {
         if (eventListeners.contains(listener)) {
             throw new IllegalArgumentException("Added the same listener twice to a GeoQuery!");
         }
@@ -364,7 +364,7 @@ public class GeoQuery {
                     this.geoFire.raiseEvent(new Runnable() {
                         @Override
                         public void run() {
-                            listener.onKeyEntered(dataSnapshot, info.location);
+                            listener.onDataEntered(dataSnapshot, info.location);
                         }
                     });
                 }
@@ -398,7 +398,7 @@ public class GeoQuery {
      *
      * @param listener The listener to remove
      */
-    public synchronized void removeGeoQueryEventListener(final DatasnapshotGeoQueryEventListener listener) {
+    public synchronized void removeGeoQueryEventListener(final GeoQueryDataEventListener listener) {
         if (!eventListeners.contains(listener)) {
             throw new IllegalArgumentException("Trying to remove listener that was removed or not added!");
         }
