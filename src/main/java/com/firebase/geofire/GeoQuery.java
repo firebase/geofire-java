@@ -31,8 +31,17 @@ package com.firebase.geofire;
 import com.firebase.geofire.core.GeoHash;
 import com.firebase.geofire.core.GeoHashQuery;
 import com.firebase.geofire.util.GeoUtils;
-import com.google.firebase.database.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import static com.firebase.geofire.util.GeoUtils.capRadius;
 
@@ -46,11 +55,13 @@ public class GeoQuery {
         final GeoLocation location;
         final boolean inGeoQuery;
         final GeoHash geoHash;
+        final DataSnapshot dataSnapshot;
 
-        public LocationInfo(GeoLocation location, boolean inGeoQuery) {
+        public LocationInfo(GeoLocation location, boolean inGeoQuery, DataSnapshot dataSnapshot) {
             this.location = location;
             this.inGeoQuery = inGeoQuery;
             this.geoHash = new GeoHash(location);
+            this.dataSnapshot = dataSnapshot;
         }
     }
 
@@ -88,8 +99,8 @@ public class GeoQuery {
     };
 
     private final GeoFire geoFire;
-    private final Set<GeoQueryEventListener> eventListeners = new HashSet<>();
-    private final Map<GeoHashQuery, Query> firebaseQueries = new HashMap<GeoHashQuery, Query>();
+    private final Set<GeoQueryDataEventListener> eventListeners = new HashSet<>();
+    private final Map<GeoHashQuery, Query> firebaseQueries = new HashMap<>();
     private final Set<GeoHashQuery> outstandingQueries = new HashSet<>();
     private final Map<String, LocationInfo> locationInfos = new HashMap<>();
     private GeoLocation center;
@@ -113,42 +124,47 @@ public class GeoQuery {
         return GeoUtils.distance(location, center) <= this.radius;
     }
 
-    private void updateLocationInfo(final String key, final GeoLocation location) {
+    private void updateLocationInfo(final DataSnapshot dataSnapshot, final GeoLocation location) {
+        String key = dataSnapshot.getKey();
         LocationInfo oldInfo = this.locationInfos.get(key);
         boolean isNew = oldInfo == null;
-        boolean changedLocation = oldInfo != null && !oldInfo.location.equals(location);
+        final boolean changedLocation = oldInfo != null && !oldInfo.location.equals(location);
         boolean wasInQuery = oldInfo != null && oldInfo.inGeoQuery;
 
         boolean isInQuery = this.locationIsInQuery(location);
         if ((isNew || !wasInQuery) && isInQuery) {
-            for (final GeoQueryEventListener listener: this.eventListeners) {
+            for (final GeoQueryDataEventListener listener: this.eventListeners) {
                 this.geoFire.raiseEvent(new Runnable() {
                     @Override
                     public void run() {
-                        listener.onKeyEntered(key, location);
+                        listener.onDataEntered(dataSnapshot, location);
                     }
                 });
             }
-        } else if (!isNew && changedLocation && isInQuery) {
-            for (final GeoQueryEventListener listener: this.eventListeners) {
+        } else if (!isNew && isInQuery) {
+            for (final GeoQueryDataEventListener listener: this.eventListeners) {
                 this.geoFire.raiseEvent(new Runnable() {
                     @Override
                     public void run() {
-                        listener.onKeyMoved(key, location);
+                        if (changedLocation) {
+                            listener.onDataMoved(dataSnapshot, location);
+                        }
+
+                        listener.onDataChanged(dataSnapshot, location);
                     }
                 });
             }
         } else if (wasInQuery && !isInQuery) {
-            for (final GeoQueryEventListener listener: this.eventListeners) {
+            for (final GeoQueryDataEventListener listener: this.eventListeners) {
                 this.geoFire.raiseEvent(new Runnable() {
                     @Override
                     public void run() {
-                        listener.onKeyExited(key);
+                        listener.onDataExited(dataSnapshot);
                     }
                 });
             }
         }
-        LocationInfo newInfo = new LocationInfo(location, this.locationIsInQuery(location));
+        LocationInfo newInfo = new LocationInfo(location, this.locationIsInQuery(location), dataSnapshot);
         this.locationInfos.put(key, newInfo);
     }
 
@@ -184,7 +200,7 @@ public class GeoQuery {
 
     private void checkAndFireReady() {
         if (canFireReady()) {
-            for (final GeoQueryEventListener listener: this.eventListeners) {
+            for (final GeoQueryDataEventListener listener: this.eventListeners) {
                 this.geoFire.raiseEvent(new Runnable() {
                     @Override
                     public void run() {
@@ -208,7 +224,7 @@ public class GeoQuery {
             @Override
             public void onCancelled(final DatabaseError databaseError) {
                 synchronized (GeoQuery.this) {
-                    for (final GeoQueryEventListener listener : GeoQuery.this.eventListeners) {
+                    for (final GeoQueryDataEventListener listener : GeoQuery.this.eventListeners) {
                         GeoQuery.this.geoFire.raiseEvent(new Runnable() {
                             @Override
                             public void run() {
@@ -242,9 +258,12 @@ public class GeoQuery {
                 firebaseQueries.put(query, firebaseQuery);
             }
         }
-        for(Map.Entry<String, LocationInfo> info: this.locationInfos.entrySet()) {
+        for (Map.Entry<String, LocationInfo> info: this.locationInfos.entrySet()) {
             LocationInfo oldLocationInfo = info.getValue();
-            this.updateLocationInfo(info.getKey(), oldLocationInfo.location);
+
+            if (oldLocationInfo != null) {
+                updateLocationInfo(oldLocationInfo.dataSnapshot, oldLocationInfo.location);
+            }
         }
         // remove locations that are not part of the geo query anymore
         Iterator<Map.Entry<String, LocationInfo>> it = this.locationInfos.entrySet().iterator();
@@ -261,7 +280,7 @@ public class GeoQuery {
     private void childAdded(DataSnapshot dataSnapshot) {
         GeoLocation location = GeoFire.getLocationValue(dataSnapshot);
         if (location != null) {
-            this.updateLocationInfo(dataSnapshot.getKey(), location);
+            this.updateLocationInfo(dataSnapshot, location);
         } else {
             throw new AssertionError("Got Datasnapshot without location with key " + dataSnapshot.getKey());
         }
@@ -270,7 +289,7 @@ public class GeoQuery {
     private void childChanged(DataSnapshot dataSnapshot) {
         GeoLocation location = GeoFire.getLocationValue(dataSnapshot);
         if (location != null) {
-            this.updateLocationInfo(dataSnapshot.getKey(), location);
+            this.updateLocationInfo(dataSnapshot, location);
         } else {
             throw new AssertionError("Got Datasnapshot without location with key " + dataSnapshot.getKey());
         }
@@ -282,19 +301,19 @@ public class GeoQuery {
         if (info != null) {
             this.geoFire.getDatabaseRefForKey(key).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
+                public void onDataChange(final DataSnapshot dataSnapshot) {
                     synchronized(GeoQuery.this) {
                         GeoLocation location = GeoFire.getLocationValue(dataSnapshot);
                         GeoHash hash = (location != null) ? new GeoHash(location) : null;
                         if (hash == null || !GeoQuery.this.geoHashQueriesContainGeoHash(hash)) {
-                            final LocationInfo info = GeoQuery.this.locationInfos.get(key);
-                            GeoQuery.this.locationInfos.remove(key);
+                            final LocationInfo info = locationInfos.remove(key);
+
                             if (info != null && info.inGeoQuery) {
-                                for (final GeoQueryEventListener listener: GeoQuery.this.eventListeners) {
+                                for (final GeoQueryDataEventListener listener: GeoQuery.this.eventListeners) {
                                     GeoQuery.this.geoFire.raiseEvent(new Runnable() {
                                         @Override
                                         public void run() {
-                                            listener.onKeyExited(key);
+                                            listener.onDataExited(info.dataSnapshot);
                                         }
                                     });
                                 }
@@ -319,6 +338,17 @@ public class GeoQuery {
      * @param listener The listener to add
      */
     public synchronized void addGeoQueryEventListener(final GeoQueryEventListener listener) {
+        addGeoQueryDataEventListener(new EventListenerBridge(listener));
+    }
+
+    /**
+     * Adds a new GeoQueryEventListener to this GeoQuery.
+     *
+     * @throws IllegalArgumentException If this listener was already added
+     *
+     * @param listener The listener to add
+     */
+    public synchronized void addGeoQueryDataEventListener(final GeoQueryDataEventListener listener) {
         if (eventListeners.contains(listener)) {
             throw new IllegalArgumentException("Added the same listener twice to a GeoQuery!");
         }
@@ -329,11 +359,12 @@ public class GeoQuery {
             for (final Map.Entry<String, LocationInfo> entry: this.locationInfos.entrySet()) {
                 final String key = entry.getKey();
                 final LocationInfo info = entry.getValue();
+
                 if (info.inGeoQuery) {
                     this.geoFire.raiseEvent(new Runnable() {
                         @Override
                         public void run() {
-                            listener.onKeyEntered(key, info.location);
+                            listener.onDataEntered(info.dataSnapshot, info.location);
                         }
                     });
                 }
@@ -357,6 +388,17 @@ public class GeoQuery {
      * @param listener The listener to remove
      */
     public synchronized void removeGeoQueryEventListener(GeoQueryEventListener listener) {
+        removeGeoQueryEventListener(new EventListenerBridge(listener));
+    }
+
+    /**
+     * Removes an event listener.
+     *
+     * @throws IllegalArgumentException If the listener was removed already or never added
+     *
+     * @param listener The listener to remove
+     */
+    public synchronized void removeGeoQueryEventListener(final GeoQueryDataEventListener listener) {
         if (!eventListeners.contains(listener)) {
             throw new IllegalArgumentException("Trying to remove listener that was removed or not added!");
         }
