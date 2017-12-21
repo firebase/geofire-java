@@ -1,6 +1,7 @@
 package com.firebase.geofire;
 
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -105,6 +106,43 @@ public class GeoQueryTest extends RealDataTest {
         events.add(GeoQueryEventTestListener.keyMoved("4", 37.0002, -122.0000));
         events.add(GeoQueryEventTestListener.keyMoved("3", 37.0003, -122.0003));
         events.add(GeoQueryEventTestListener.keyMoved("2", 37.0001, -122.0001));
+
+        testListener.expectEvents(events);
+    }
+
+    @Test
+    public void dataChanged() throws InterruptedException {
+        GeoFire geoFire = newTestGeoFire();
+        setLoc(geoFire, "0", 0, 0);
+        setLoc(geoFire, "1", 37.0000, -122.0001);
+        setLoc(geoFire, "2", 37.0001, -122.0001);
+        setLoc(geoFire, "3", 37.1000, -122.0000);
+        setLoc(geoFire, "4", 37.0002, -121.9998, true);
+
+        GeoQuery query = geoFire.queryAtLocation(new GeoLocation(37, -122), 0.5);
+
+        GeoQueryDataEventTestListener testListener = new GeoQueryDataEventTestListener(
+            false, true, true, false);
+        query.addGeoQueryDataEventListener(testListener);
+
+        waitForGeoFireReady(geoFire);
+
+        setLoc(geoFire, "0", 1, 1, true); // outside of query
+        setLoc(geoFire, "1", 37.0001, -122.0001, true); // moved
+        setLoc(geoFire, "2", 37.0001, -122.0001, true); // location stayed the same
+        setLoc(geoFire, "4", 37.0002, -121.9999, true); // moved
+
+        DatabaseReference childRef = geoFire.getDatabaseRefForKey("2").child("some_child");
+        setValueAndWait(childRef, "some_value"); // data changed
+
+        List<String> events = new LinkedList<>();
+        events.add(GeoQueryDataEventTestListener.dataMoved("1", 37.0001, -122.0001));
+        events.add(GeoQueryDataEventTestListener.dataChanged("1", 37.0001, -122.0001));
+
+        events.add(GeoQueryDataEventTestListener.dataMoved("4", 37.0002, -121.9999));
+        events.add(GeoQueryDataEventTestListener.dataChanged("4", 37.0002, -121.9999));
+
+        events.add(GeoQueryDataEventTestListener.dataChanged("2", 37.0001, -122.0001));
 
         testListener.expectEvents(events);
     }

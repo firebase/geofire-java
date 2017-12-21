@@ -67,9 +67,14 @@ public interface GeoQueryDataEventListener {
 
     /**
      * Called if a dataSnapshot changed within the search area.
-     * An onDataMoved() event would always be preceded by onDataChanged() but it would be possible to see onDataChanged() without an antecedent onDataMoved().
      *
-     * This method can be called multiple times.
+     * An onDataMoved() is always followed by onDataChanged() but it is be possible to see
+     * onDataChanged() without an preceding onDataMoved().
+     *
+     * This method can be called multiple times for a single location change, due to the way
+     * the Realtime Database handles floating point numbers.
+     *
+     * Note: this method is not related to ValueEventListener#onDataChange(DataSnapshot).
      *
      * @param dataSnapshot The associated dataSnapshot that moved within the search area
      * @param location The location for this dataSnapshot as a GeoLocation object
