@@ -128,7 +128,7 @@ public class GeoQuery {
         String key = dataSnapshot.getKey();
         LocationInfo oldInfo = this.locationInfos.get(key);
         boolean isNew = oldInfo == null;
-        boolean changedLocation = oldInfo != null && !oldInfo.location.equals(location);
+        final boolean changedLocation = oldInfo != null && !oldInfo.location.equals(location);
         boolean wasInQuery = oldInfo != null && oldInfo.inGeoQuery;
 
         boolean isInQuery = this.locationIsInQuery(location);
@@ -141,12 +141,16 @@ public class GeoQuery {
                     }
                 });
             }
-        } else if (!isNew && changedLocation && isInQuery) {
+        } else if (!isNew && isInQuery) {
             for (final GeoQueryDataEventListener listener: this.eventListeners) {
                 this.geoFire.raiseEvent(new Runnable() {
                     @Override
                     public void run() {
-                        listener.onDataMoved(dataSnapshot, location);
+                        if (changedLocation) {
+                            listener.onDataMoved(dataSnapshot, location);
+                        }
+
+                        listener.onDataChanged(dataSnapshot, location);
                     }
                 });
             }

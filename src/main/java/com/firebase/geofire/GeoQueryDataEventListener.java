@@ -66,6 +66,17 @@ public interface GeoQueryDataEventListener {
     void onDataMoved(DataSnapshot dataSnapshot, GeoLocation location);
 
     /**
+     * Called if a dataSnapshot changed within the search area.
+     * An onDataMoved() event would always be preceded by onDataChanged() but it would be possible to see onDataChanged() without an antecedent onDataMoved().
+     *
+     * This method can be called multiple times.
+     *
+     * @param dataSnapshot The associated dataSnapshot that moved within the search area
+     * @param location The location for this dataSnapshot as a GeoLocation object
+     */
+    void onDataChanged(DataSnapshot dataSnapshot, GeoLocation location);
+
+    /**
      * Called once all initial GeoFire data has been loaded and the relevant events have been fired for this query.
      * Every time the query criteria is updated, this observer will be called after the updated query has fired the
      * appropriate dataSnapshot entered or dataSnapshot exited events.

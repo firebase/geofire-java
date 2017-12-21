@@ -58,6 +58,11 @@ final class EventListenerBridge implements GeoQueryDataEventListener {
     }
 
     @Override
+    public void onDataChanged(final DataSnapshot dataSnapshot, final GeoLocation location) {
+        // No-op.
+    }
+
+    @Override
     public void onGeoQueryReady() {
         listener.onGeoQueryReady();
     }
