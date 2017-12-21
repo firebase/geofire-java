@@ -128,7 +128,8 @@ public class GeoQuery {
         String key = dataSnapshot.getKey();
         LocationInfo oldInfo = this.locationInfos.get(key);
         boolean isNew = oldInfo == null;
-        final boolean changedLocation = oldInfo != null && !oldInfo.location.equals(location);
+        boolean changedLocation = oldInfo != null && !oldInfo.location.equals(location);
+        boolean changedData = oldInfo != null && !oldInfo.dataSnapshot.equals(dataSnapshot);
         boolean wasInQuery = oldInfo != null && oldInfo.inGeoQuery;
 
         boolean isInQuery = this.locationIsInQuery(location);
@@ -142,17 +143,29 @@ public class GeoQuery {
                 });
             }
         } else if (!isNew && isInQuery) {
-            for (final GeoQueryDataEventListener listener: this.eventListeners) {
-                this.geoFire.raiseEvent(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (changedLocation) {
+            // Data moved
+            if (changedLocation) {
+                for (final GeoQueryDataEventListener listener: this.eventListeners) {
+                    this.geoFire.raiseEvent(new Runnable() {
+                        @Override
+                        public void run() {
                             listener.onDataMoved(dataSnapshot, location);
                         }
+                    });
+                }
+            }
 
-                        listener.onDataChanged(dataSnapshot, location);
-                    }
-                });
+            // Data changed
+            // TODO: Check this
+            if (changedData) {
+                for (final GeoQueryDataEventListener listener: this.eventListeners) {
+                    this.geoFire.raiseEvent(new Runnable() {
+                        @Override
+                        public void run() {
+                            listener.onDataChanged(dataSnapshot, location);
+                        }
+                    });
+                }
             }
         } else if (wasInQuery && !isInQuery) {
             for (final GeoQueryDataEventListener listener: this.eventListeners) {
