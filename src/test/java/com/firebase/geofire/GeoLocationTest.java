@@ -1,17 +1,12 @@
 package com.firebase.geofire;
 
 import junit.framework.Assert;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class GeoLocationTest {
-    @Rule
-    public org.junit.rules.ExpectedException exception = ExpectedException.none();
-
     @Test
     public void geoLocationHasCorrectValues() {
         Assert.assertEquals(new GeoLocation(1,2).latitude, 1.0);
@@ -27,21 +22,25 @@ public class GeoLocationTest {
             Assert.fail("Did not throw illegal argument exception!");
         } catch (IllegalArgumentException expected) {
         }
+
         try {
             new GeoLocation(0, -180.1);
             Assert.fail("Did not throw illegal argument exception!");
         } catch (IllegalArgumentException expected) {
         }
+
         try {
             new GeoLocation(0, 180.1);
             Assert.fail("Did not throw illegal argument exception!");
         } catch (IllegalArgumentException expected) {
         }
+
         try {
             new GeoLocation(Double.NaN, 0);
             Assert.fail("Did not throw illegal argument exception!");
         } catch (IllegalArgumentException expected) {
         }
+
         try {
             new GeoLocation(0, Double.NaN);
             Assert.fail("Did not throw illegal argument exception!");
