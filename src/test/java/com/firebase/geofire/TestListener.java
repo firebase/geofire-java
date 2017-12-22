@@ -9,12 +9,12 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import junit.framework.Assert;
 
-public class TestListener {
+abstract class TestListener {
     private final List<String> events = new ArrayList<>();
     private final ReentrantLock lock = new ReentrantLock();
     private final Condition condition = lock.newCondition();
 
-    protected void addEvent(String event) {
+    void addEvent(String event) {
         lock.lock();
 
         try {
