@@ -74,7 +74,7 @@ For Android applications:
 
 ```groovy
 dependencies {
-    compile 'com.firebase:geofire-android:2.1.3'
+    compile 'com.firebase:geofire-android:2.2.0'
 }
 ```
 
@@ -82,7 +82,7 @@ For non-Android Java applications:
 
 ```groovy
 dependencies {
-    compile 'com.firebase:geofire-java:2.1.3'
+    compile 'com.firebase:geofire-java:2.2.0'
 }
 
 ```
@@ -97,7 +97,7 @@ For Android applications:
 <dependency>
   <groupId>com.firebase</groupId>
   <artifactId>geofire-android</artifactId>
-  <version>2.1.3</version>
+  <version>2.2.0</version>
 </dependency>
 ```
 
@@ -107,7 +107,7 @@ For non-Android Java applications:
 <dependency>
   <groupId>com.firebase</groupId>
   <artifactId>geofire-java</artifactId>
-  <version>2.1.3</version>
+  <version>2.2.0</version>
 </dependency>
 ```
 
@@ -211,7 +211,9 @@ GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(37.7832, -122.4056),
 
 #### Receiving events for geo queries
 
-There are five kinds of events that can occur with a geo query:
+##### Key Events
+
+There are five kinds of "key" events that can occur with a geo query:
 
 1. **Key Entered**: The location of a key now matches the query criteria.
 2. **Key Exited**: The location of a key no longer matches the query criteria.
@@ -271,6 +273,58 @@ geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
 You can call either `removeGeoQueryEventListener` to remove a
 single event listener or `removeAllListeners` to remove all event listeners
 for a `GeoQuery`.
+
+##### Data Events
+
+If you are storing model data and geo data in the same database location, you may
+want access to the `DataSnapshot` as part of geo events. In this case, use a
+`GeoQueryDataEventListener` rather than a key listener.
+
+These "data event" listeners have all of the same events as the key listeners with
+one additional event type:
+
+  6. **Data Changed**: the underlying `DataSnapshot` has changed. Every "data moved"
+     event is followed by a data changed event but you can also get change events without
+     a move if the data changed does not affect the location.
+
+Adding a data event listener is similar to adding a key event listener:
+
+```java
+geoQuery.addGeoQueryEventListener(new GeoQueryDataEventListener() {
+
+  @Override
+  public void onDataEntered(DataSnapshot dataSnapshot, GeoLocation location) {
+    // ...
+  }
+
+  @Override
+  public void onDataExited(DataSnapshot dataSnapshot) {
+    // ...
+  }
+
+  @Override
+  public void onDataMoved(DataSnapshot dataSnapshot, GeoLocation location) {
+    // ...
+  }
+
+  @Override
+  public void onDataChanged(DataSnapshot dataSnapshot, GeoLocation location) {
+    // ...
+  }
+
+  @Override
+  public void onGeoQueryReady() {
+    // ...
+  }
+
+  @Override
+  public void onGeoQueryError(DatabaseError error) {
+    // ...
+  }
+
+});
+
+```
 
 #### Updating the query criteria
 
