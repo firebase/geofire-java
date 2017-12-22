@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.concurrent.*;
 
 @RunWith(JUnit4.class)
-public class GeoFireTest extends RealDataTest {
+public class GeoFireIT extends RealDataTest {
     @Test
     public void geoFireSetsLocations() throws InterruptedException, ExecutionException, TimeoutException {
         GeoFire geoFire = newTestGeoFire();

@@ -24,14 +24,17 @@ fi
 # Build
 mvn clean compile test-compile
 
+# Run unit tests
+mvn test
+
 # Only run test suite when we can decode the service acct
 if [ "$TRAVIS_SECURE_ENV_VARS" = false ]; then
-  echo "Could not find secure environment variables, not running tests."
+  echo "Could not find secure environment variables, skipping integration tests."
 else
   # Decrypt service account
   openssl aes-256-cbc -K $encrypted_d7b8d9290299_key -iv $encrypted_d7b8d9290299_iv \
     -in java/service-account.json.enc -out java/service-account.json -d
 
   # Run test suite
-  mvn -Dsurefire.rerunFailingTestsCount=2 -Dsurefire.useFile=false test
+  mvn verify
 fi

@@ -30,7 +30,7 @@ public class TestListener {
         lock.lock();
 
         try {
-            while (!new LinkedHashSet<>(this.events).equals(events)) {
+            while (!contentsEqual(this.events, events)) {
                 if (!stillWaiting) {
                     Assert.assertEquals(events, new LinkedHashSet<>(this.events));
                     Assert.fail("Timeout occured");
@@ -41,5 +41,9 @@ public class TestListener {
         } finally {
             lock.unlock();
         }
+    }
+
+    private boolean contentsEqual(Collection<String> c1, Collection<String> c2) {
+        return (new LinkedHashSet<>(c1).equals(new LinkedHashSet<>(c2)));
     }
 }
