@@ -36,5 +36,5 @@ else
     -in java/service-account.json.enc -out java/service-account.json -d
 
   # Run test suite
-  mvn verify
+  mvn -Dfailsafe.rerunFailingTestsCount=2 verify
 fi
