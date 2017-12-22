@@ -12,7 +12,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 @RunWith(JUnit4.class)
-public class GeoQueryTest extends RealDataTest {
+public class GeoQueryIT extends RealDataTest {
 
     @Test
     public void keyEntered() throws InterruptedException {
