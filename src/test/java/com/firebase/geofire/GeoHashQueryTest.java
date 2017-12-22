@@ -4,9 +4,7 @@ import com.firebase.geofire.core.GeoHash;
 import com.firebase.geofire.core.GeoHashQuery;
 import com.firebase.geofire.util.GeoUtils;
 import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -14,9 +12,6 @@ import java.util.Set;
 
 @RunWith(JUnit4.class)
 public class GeoHashQueryTest {
-    @Rule
-    public org.junit.rules.ExpectedException exception = ExpectedException.none();
-
     @Test
     public void queryForGeoHash() {
         Assert.assertEquals(new GeoHashQuery("60", "6h"), GeoHashQuery.queryForGeoHash(new GeoHash("64m9yn96mx"), 6));
@@ -88,11 +83,13 @@ public class GeoHashQueryTest {
             Assert.fail("Exception was not thrown!");
         } catch(IllegalArgumentException expected) {
         }
+
         try {
             new GeoHashQuery("abcd", "abce").joinWith(new GeoHashQuery("dce", "dcf"));
             Assert.fail("Exception was not thrown!");
         } catch(IllegalArgumentException expected) {
         }
+
         try {
             new GeoHashQuery("abc", "abd").joinWith(new GeoHashQuery("dce", "dcf"));
             Assert.fail("Exception was not thrown!");
