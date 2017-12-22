@@ -59,5 +59,6 @@ public class GeoQueryEventTestListener extends TestListener implements GeoQueryE
 
     @Override
     public void onGeoQueryError(DatabaseError error) {
+        throw error.toException();
     }
 }
