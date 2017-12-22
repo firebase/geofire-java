@@ -6,9 +6,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -19,9 +17,6 @@ import java.util.concurrent.*;
 
 @RunWith(JUnit4.class)
 public class GeoFireTest extends RealDataTest {
-    @Rule
-    public org.junit.rules.ExpectedException exception = ExpectedException.none();
-
     @Test
     public void geoFireSetsLocations() throws InterruptedException, ExecutionException, TimeoutException {
         GeoFire geoFire = newTestGeoFire();
@@ -122,11 +117,13 @@ public class GeoFireTest extends RealDataTest {
             Assert.fail("Did not throw illegal argument exception!");
         } catch (IllegalArgumentException expected) {
         }
+
         try {
             geoFire.setLocation("test", new GeoLocation(0, -180.1));
             Assert.fail("Did not throw illegal argument exception!");
         } catch (IllegalArgumentException expected) {
         }
+
         try {
             geoFire.setLocation("test", new GeoLocation(0, 181.1));
             Assert.fail("Did not throw illegal argument exception!");
