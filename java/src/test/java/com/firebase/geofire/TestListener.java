@@ -1,5 +1,8 @@
 package com.firebase.geofire;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -7,7 +10,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import junit.framework.Assert;
 
 abstract class TestListener {
     private final List<String> events = new ArrayList<>();
@@ -32,8 +34,8 @@ abstract class TestListener {
         try {
             while (!contentsEqual(this.events, events)) {
                 if (!stillWaiting) {
-                    Assert.assertEquals(events, new LinkedHashSet<>(this.events));
-                    Assert.fail("Timeout occured");
+                  assertEquals(events, new LinkedHashSet<>(this.events));
+                  fail("Timeout occured");
                     return;
                 }
                 stillWaiting = condition.await(10, TimeUnit.SECONDS);
