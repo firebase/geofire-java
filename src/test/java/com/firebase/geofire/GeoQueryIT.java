@@ -4,6 +4,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import junit.framework.Assert;
 import org.junit.Test;
+import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -12,23 +13,24 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 @RunWith(JUnit4.class)
-public class GeoQueryIT extends RealDataTest {
+public class GeoQueryIT {
+    @Rule public final GeoFireTestingRule geoFireTestingRule = new GeoFireTestingRule();
 
     @Test
     public void keyEntered() throws InterruptedException {
-        GeoFire geoFire = newTestGeoFire();
-        setLoc(geoFire, "0", 0, 0);
-        setLoc(geoFire, "1", 37.0000, -122.0000);
-        setLoc(geoFire, "2", 37.0001, -122.0001);
-        setLoc(geoFire, "3", 37.1000, -122.0000);
-        setLoc(geoFire, "4", 37.0002, -121.9998, true);
+        GeoFire geoFire = geoFireTestingRule.newTestGeoFire();
+        geoFireTestingRule.setLoc(geoFire, "0", 0, 0);
+        geoFireTestingRule.setLoc(geoFire, "1", 37.0000, -122.0000);
+        geoFireTestingRule.setLoc(geoFire, "2", 37.0001, -122.0001);
+        geoFireTestingRule.setLoc(geoFire, "3", 37.1000, -122.0000);
+        geoFireTestingRule.setLoc(geoFire, "4", 37.0002, -121.9998, true);
 
         GeoQuery query = geoFire.queryAtLocation(new GeoLocation(37, -122), 0.5);
 
         GeoQueryEventTestListener testListener = new GeoQueryEventTestListener();
         query.addGeoQueryEventListener(testListener);
 
-        waitForGeoFireReady(geoFire);
+        geoFireTestingRule.waitForGeoFireReady(geoFire);
 
         Set<String> events = new HashSet<>();
         events.add(GeoQueryEventTestListener.keyEntered("1", 37, -122));
@@ -42,26 +44,26 @@ public class GeoQueryIT extends RealDataTest {
 
     @Test
     public void keyExited() throws InterruptedException {
-        GeoFire geoFire = newTestGeoFire();
-        setLoc(geoFire, "0", 0, 0);
-        setLoc(geoFire, "1", 37.0000, -122.0000);
-        setLoc(geoFire, "2", 37.0001, -122.0001);
-        setLoc(geoFire, "3", 37.1000, -122.0000);
-        setLoc(geoFire, "4", 37.0002, -121.9998, true);
+        GeoFire geoFire = geoFireTestingRule.newTestGeoFire();
+        geoFireTestingRule.setLoc(geoFire, "0", 0, 0);
+        geoFireTestingRule.setLoc(geoFire, "1", 37.0000, -122.0000);
+        geoFireTestingRule.setLoc(geoFire, "2", 37.0001, -122.0001);
+        geoFireTestingRule.setLoc(geoFire, "3", 37.1000, -122.0000);
+        geoFireTestingRule.setLoc(geoFire, "4", 37.0002, -121.9998, true);
 
         GeoQuery query = geoFire.queryAtLocation(new GeoLocation(37, -122), 0.5);
         GeoQueryEventTestListener testListener = new GeoQueryEventTestListener(false, false, true);
         query.addGeoQueryEventListener(testListener);
 
-        waitForGeoFireReady(geoFire);
+        geoFireTestingRule.waitForGeoFireReady(geoFire);
 
-        setLoc(geoFire, "0", 0, 0); // not in query
-        setLoc(geoFire, "1", 0, 0); // exited
-        setLoc(geoFire, "2", 0, 0); // exited
-        setLoc(geoFire, "3", 2, 0, true); // not in query
-        setLoc(geoFire, "0", 3, 0); // not in query
-        setLoc(geoFire, "1", 4, 0); // not in query
-        setLoc(geoFire, "2", 5, 0, true); // not in query
+        geoFireTestingRule.setLoc(geoFire, "0", 0, 0); // not in query
+        geoFireTestingRule.setLoc(geoFire, "1", 0, 0); // exited
+        geoFireTestingRule.setLoc(geoFire, "2", 0, 0); // exited
+        geoFireTestingRule.setLoc(geoFire, "3", 2, 0, true); // not in query
+        geoFireTestingRule.setLoc(geoFire, "0", 3, 0); // not in query
+        geoFireTestingRule.setLoc(geoFire, "1", 4, 0); // not in query
+        geoFireTestingRule.setLoc(geoFire, "2", 5, 0, true); // not in query
 
         List<String> events = new LinkedList<>();
         events.add(GeoQueryEventTestListener.keyExited("1"));
@@ -72,12 +74,12 @@ public class GeoQueryIT extends RealDataTest {
 
     @Test
     public void keyMoved() throws InterruptedException {
-        GeoFire geoFire = newTestGeoFire();
-        setLoc(geoFire, "0", 0, 0);
-        setLoc(geoFire, "1", 37.0000, -122.0000);
-        setLoc(geoFire, "2", 37.0001, -122.0001);
-        setLoc(geoFire, "3", 37.1000, -122.0000);
-        setLoc(geoFire, "4", 37.0002, -121.9998, true);
+        GeoFire geoFire = geoFireTestingRule.newTestGeoFire();
+        geoFireTestingRule.setLoc(geoFire, "0", 0, 0);
+        geoFireTestingRule.setLoc(geoFire, "1", 37.0000, -122.0000);
+        geoFireTestingRule.setLoc(geoFire, "2", 37.0001, -122.0001);
+        geoFireTestingRule.setLoc(geoFire, "3", 37.1000, -122.0000);
+        geoFireTestingRule.setLoc(geoFire, "4", 37.0002, -121.9998, true);
 
         GeoQuery query = geoFire.queryAtLocation(new GeoLocation(37, -122), 0.5);
 
@@ -87,19 +89,19 @@ public class GeoQueryIT extends RealDataTest {
         GeoQueryEventTestListener exitListener = new GeoQueryEventTestListener(false, false, true);
         query.addGeoQueryEventListener(exitListener);
 
-        waitForGeoFireReady(geoFire);
+        geoFireTestingRule.waitForGeoFireReady(geoFire);
 
-        setLoc(geoFire, "0", 1, 1); // outside of query
-        setLoc(geoFire, "1", 37.0001, -122.0000); // moved
-        setLoc(geoFire, "2", 37.0001, -122.0001); // location stayed the same
-        setLoc(geoFire, "4", 37.0002, -122.0000); // moved
-        setLoc(geoFire, "3", 37.0000, -122.0000, true); // entered
-        setLoc(geoFire, "3", 37.0003, -122.0003, true); // moved:
-        setLoc(geoFire, "2", 0, 0, true); // exited
+        geoFireTestingRule.setLoc(geoFire, "0", 1, 1); // outside of query
+        geoFireTestingRule.setLoc(geoFire, "1", 37.0001, -122.0000); // moved
+        geoFireTestingRule.setLoc(geoFire, "2", 37.0001, -122.0001); // location stayed the same
+        geoFireTestingRule.setLoc(geoFire, "4", 37.0002, -122.0000); // moved
+        geoFireTestingRule.setLoc(geoFire, "3", 37.0000, -122.0000, true); // entered
+        geoFireTestingRule.setLoc(geoFire, "3", 37.0003, -122.0003, true); // moved:
+        geoFireTestingRule.setLoc(geoFire, "2", 0, 0, true); // exited
         // wait for location to exit
         exitListener.expectEvents(Collections.singletonList(GeoQueryEventTestListener.keyExited("2")));
-        setLoc(geoFire, "2", 37.0000, -122.0000, true); // entered
-        setLoc(geoFire, "2", 37.0001, -122.0001, true); // moved
+        geoFireTestingRule.setLoc(geoFire, "2", 37.0000, -122.0000, true); // entered
+        geoFireTestingRule.setLoc(geoFire, "2", 37.0001, -122.0001, true); // moved
 
         List<String> events = new LinkedList<>();
         events.add(GeoQueryEventTestListener.keyMoved("1", 37.0001, -122.0000));
@@ -112,12 +114,12 @@ public class GeoQueryIT extends RealDataTest {
 
     @Test
     public void dataChanged() throws InterruptedException {
-        GeoFire geoFire = newTestGeoFire();
-        setLoc(geoFire, "0", 0, 0);
-        setLoc(geoFire, "1", 37.0000, -122.0001);
-        setLoc(geoFire, "2", 37.0001, -122.0001);
-        setLoc(geoFire, "3", 37.1000, -122.0000);
-        setLoc(geoFire, "4", 37.0002, -121.9998, true);
+        GeoFire geoFire = geoFireTestingRule.newTestGeoFire();
+        geoFireTestingRule.setLoc(geoFire, "0", 0, 0);
+        geoFireTestingRule.setLoc(geoFire, "1", 37.0000, -122.0001);
+        geoFireTestingRule.setLoc(geoFire, "2", 37.0001, -122.0001);
+        geoFireTestingRule.setLoc(geoFire, "3", 37.1000, -122.0000);
+        geoFireTestingRule.setLoc(geoFire, "4", 37.0002, -121.9998, true);
 
         GeoQuery query = geoFire.queryAtLocation(new GeoLocation(37, -122), 0.5);
 
@@ -125,15 +127,15 @@ public class GeoQueryIT extends RealDataTest {
             false, true, true, false);
         query.addGeoQueryDataEventListener(testListener);
 
-        waitForGeoFireReady(geoFire);
+        geoFireTestingRule.waitForGeoFireReady(geoFire);
 
-        setLoc(geoFire, "0", 1, 1, true); // outside of query
-        setLoc(geoFire, "1", 37.0001, -122.0001, true); // moved
-        setLoc(geoFire, "2", 37.0001, -122.0001, true); // location stayed the same
-        setLoc(geoFire, "4", 37.0002, -121.9999, true); // moved
+        geoFireTestingRule.setLoc(geoFire, "0", 1, 1, true); // outside of query
+        geoFireTestingRule.setLoc(geoFire, "1", 37.0001, -122.0001, true); // moved
+        geoFireTestingRule.setLoc(geoFire, "2", 37.0001, -122.0001, true); // location stayed the same
+        geoFireTestingRule.setLoc(geoFire, "4", 37.0002, -121.9999, true); // moved
 
         DatabaseReference childRef = geoFire.getDatabaseRefForKey("2").child("some_child");
-        setValueAndWait(childRef, "some_value"); // data changed
+        geoFireTestingRule.setValueAndWait(childRef, "some_value"); // data changed
 
         List<String> events = new LinkedList<>();
         events.add(GeoQueryDataEventTestListener.dataMoved("1", 37.0001, -122.0001));
@@ -149,18 +151,18 @@ public class GeoQueryIT extends RealDataTest {
 
     @Test
     public void subQueryTriggersKeyMoved() throws InterruptedException {
-        GeoFire geoFire = newTestGeoFire();
-        setLoc(geoFire, "0", 1, 1, true);
-        setLoc(geoFire, "1", -1, -1, true);
+        GeoFire geoFire = geoFireTestingRule.newTestGeoFire();
+        geoFireTestingRule.setLoc(geoFire, "0", 1, 1, true);
+        geoFireTestingRule.setLoc(geoFire, "1", -1, -1, true);
 
         GeoQuery query = geoFire.queryAtLocation(new GeoLocation(0, 0), 1000);
         GeoQueryEventTestListener testListener = new GeoQueryEventTestListener(false, true, true);
         query.addGeoQueryEventListener(testListener);
 
-        waitForGeoFireReady(geoFire);
+        geoFireTestingRule.waitForGeoFireReady(geoFire);
 
-        setLoc(geoFire, "0", -1, -1);
-        setLoc(geoFire, "1", 1, 1);
+        geoFireTestingRule.setLoc(geoFire, "0", -1, -1);
+        geoFireTestingRule.setLoc(geoFire, "1", 1, 1);
 
         Set<String> events = new HashSet<>();
         events.add(GeoQueryEventTestListener.keyMoved("0", -1, -1));
@@ -171,12 +173,12 @@ public class GeoQueryIT extends RealDataTest {
 
     @Test
     public void removeSingleObserver() throws InterruptedException {
-        GeoFire geoFire = newTestGeoFire();
-        setLoc(geoFire, "0", 0, 0);
-        setLoc(geoFire, "1", 37.0000, -122.0000);
-        setLoc(geoFire, "2", 37.0001, -122.0001);
-        setLoc(geoFire, "3", 37.1000, -122.0000);
-        setLoc(geoFire, "4", 37.0002, -121.9998, true);
+        GeoFire geoFire = geoFireTestingRule.newTestGeoFire();
+        geoFireTestingRule.setLoc(geoFire, "0", 0, 0);
+        geoFireTestingRule.setLoc(geoFire, "1", 37.0000, -122.0000);
+        geoFireTestingRule.setLoc(geoFire, "2", 37.0001, -122.0001);
+        geoFireTestingRule.setLoc(geoFire, "3", 37.1000, -122.0000);
+        geoFireTestingRule.setLoc(geoFire, "4", 37.0002, -121.9998, true);
 
         GeoQuery query = geoFire.queryAtLocation(new GeoLocation(37.0, -122), 1);
 
@@ -196,9 +198,9 @@ public class GeoQueryIT extends RealDataTest {
 
         query.removeGeoQueryEventListener(testListenerRemoved);
 
-        setLoc(geoFire, "0", 37, -122); // entered
-        setLoc(geoFire, "1", 0, 0); // exited
-        setLoc(geoFire, "2", 37, -122.0001); // moved
+        geoFireTestingRule.setLoc(geoFire, "0", 37, -122); // entered
+        geoFireTestingRule.setLoc(geoFire, "1", 0, 0); // exited
+        geoFireTestingRule.setLoc(geoFire, "2", 37, -122.0001); // moved
 
         Set<String> furtherEvents = new HashSet<>(addedEvents);
         furtherEvents.add(GeoQueryEventTestListener.keyEntered("0", 37, -122)); // entered
@@ -211,12 +213,12 @@ public class GeoQueryIT extends RealDataTest {
 
     @Test
     public void removeAllObservers() throws InterruptedException {
-        GeoFire geoFire = newTestGeoFire();
-        setLoc(geoFire, "0", 0, 0);
-        setLoc(geoFire, "1", 37.0000, -122.0000);
-        setLoc(geoFire, "2", 37.0001, -122.0001);
-        setLoc(geoFire, "3", 37.1000, -122.0000);
-        setLoc(geoFire, "4", 37.0002, -121.9998, true);
+        GeoFire geoFire = geoFireTestingRule.newTestGeoFire();
+        geoFireTestingRule.setLoc(geoFire, "0", 0, 0);
+        geoFireTestingRule.setLoc(geoFire, "1", 37.0000, -122.0000);
+        geoFireTestingRule.setLoc(geoFire, "2", 37.0001, -122.0001);
+        geoFireTestingRule.setLoc(geoFire, "3", 37.1000, -122.0000);
+        geoFireTestingRule.setLoc(geoFire, "4", 37.0002, -121.9998, true);
 
         GeoQuery query = geoFire.queryAtLocation(new GeoLocation(37.0, -122), 1);
 
@@ -237,9 +239,9 @@ public class GeoQueryIT extends RealDataTest {
         query.removeGeoQueryEventListener(testListenerRemoved);
         query.removeAllListeners();
 
-        setLoc(geoFire, "0", 37, -122); // entered
-        setLoc(geoFire, "1", 0, 0); // exited
-        setLoc(geoFire, "2", 37, -122.0001, true); // moved
+        geoFireTestingRule.setLoc(geoFire, "0", 37, -122); // entered
+        geoFireTestingRule.setLoc(geoFire, "1", 0, 0); // exited
+        geoFireTestingRule.setLoc(geoFire, "2", 37, -122.0001, true); // moved
 
         testListenerRemained.expectEvents(addedEvents);
         testListenerRemoved.expectEvents(addedEvents);
@@ -247,12 +249,12 @@ public class GeoQueryIT extends RealDataTest {
 
     @Test
     public void readyListener() throws InterruptedException {
-        GeoFire geoFire = newTestGeoFire();
-        setLoc(geoFire, "0", 0, 0);
-        setLoc(geoFire, "1", 37.0000, -122.0000);
-        setLoc(geoFire, "2", 37.0001, -122.0001);
-        setLoc(geoFire, "3", 37.1000, -122.0000);
-        setLoc(geoFire, "4", 37.0002, -121.9998, true);
+        GeoFire geoFire = geoFireTestingRule.newTestGeoFire();
+        geoFireTestingRule.setLoc(geoFire, "0", 0, 0);
+        geoFireTestingRule.setLoc(geoFire, "1", 37.0000, -122.0000);
+        geoFireTestingRule.setLoc(geoFire, "2", 37.0001, -122.0001);
+        geoFireTestingRule.setLoc(geoFire, "3", 37.1000, -122.0000);
+        geoFireTestingRule.setLoc(geoFire, "4", 37.0002, -121.9998, true);
 
         GeoQuery query = geoFire.queryAtLocation(new GeoLocation(37.0, -122), 1);
         final boolean[] done = new boolean[1];
@@ -295,12 +297,12 @@ public class GeoQueryIT extends RealDataTest {
 
     @Test
     public void readyListenerAfterReady() throws InterruptedException {
-        GeoFire geoFire = newTestGeoFire();
-        setLoc(geoFire, "0", 0, 0);
-        setLoc(geoFire, "1", 37.0000, -122.0000);
-        setLoc(geoFire, "2", 37.0001, -122.0001);
-        setLoc(geoFire, "3", 37.1000, -122.0000);
-        setLoc(geoFire, "4", 37.0002, -121.9998, true);
+        GeoFire geoFire = geoFireTestingRule.newTestGeoFire();
+        geoFireTestingRule.setLoc(geoFire, "0", 0, 0);
+        geoFireTestingRule.setLoc(geoFire, "1", 37.0000, -122.0000);
+        geoFireTestingRule.setLoc(geoFire, "2", 37.0001, -122.0001);
+        geoFireTestingRule.setLoc(geoFire, "3", 37.1000, -122.0000);
+        geoFireTestingRule.setLoc(geoFire, "4", 37.0002, -121.9998, true);
 
         GeoQuery query = geoFire.queryAtLocation(new GeoLocation(37.0, -122), 1);
 
@@ -357,12 +359,12 @@ public class GeoQueryIT extends RealDataTest {
 
     @Test
     public void readyAfterUpdateCriteria() throws InterruptedException {
-        GeoFire geoFire = newTestGeoFire();
-        setLoc(geoFire, "0", 0, 0);
-        setLoc(geoFire, "1", 37.0000, -122.0000);
-        setLoc(geoFire, "2", 37.0001, -122.0001);
-        setLoc(geoFire, "3", 37.1000, -122.0000);
-        setLoc(geoFire, "4", 37.0002, -121.9998, true);
+        GeoFire geoFire = geoFireTestingRule.newTestGeoFire();
+        geoFireTestingRule.setLoc(geoFire, "0", 0, 0);
+        geoFireTestingRule.setLoc(geoFire, "1", 37.0000, -122.0000);
+        geoFireTestingRule.setLoc(geoFire, "2", 37.0001, -122.0001);
+        geoFireTestingRule.setLoc(geoFire, "3", 37.1000, -122.0000);
+        geoFireTestingRule.setLoc(geoFire, "4", 37.0002, -121.9998, true);
 
         GeoQuery query = geoFire.queryAtLocation(new GeoLocation(37.0, -122), 1);
         final boolean[] done = new boolean[1];

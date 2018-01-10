@@ -7,6 +7,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -16,13 +17,15 @@ import java.util.Map;
 import java.util.concurrent.*;
 
 @RunWith(JUnit4.class)
-public class GeoFireIT extends RealDataTest {
+public class GeoFireIT {
+    @Rule public final GeoFireTestingRule geoFireTestingRule = new GeoFireTestingRule();
+
     @Test
     public void geoFireSetsLocations() throws InterruptedException, ExecutionException, TimeoutException {
-        GeoFire geoFire = newTestGeoFire();
-        setLoc(geoFire, "loc1", 0.1, 0.1);
-        setLoc(geoFire, "loc2", 50.1, 50.1);
-        setLoc(geoFire, "loc3", -89.1, -89.1, true);
+        GeoFire geoFire = geoFireTestingRule.newTestGeoFire();
+        geoFireTestingRule.setLoc(geoFire, "loc1", 0.1, 0.1);
+        geoFireTestingRule.setLoc(geoFire, "loc2", 50.1, 50.1);
+        geoFireTestingRule.setLoc(geoFire, "loc3", -89.1, -89.1, true);
 
         final SimpleFuture<Object> future = new SimpleFuture<>();
         geoFire.getDatabaseReference().addListenerForSingleValueEvent(new ValueEventListener() {
@@ -56,37 +59,37 @@ public class GeoFireIT extends RealDataTest {
 
     @Test
     public void getLocationReturnsCorrectLocation() throws InterruptedException, ExecutionException, TimeoutException {
-        GeoFire geoFire = newTestGeoFire();
+        GeoFire geoFire = geoFireTestingRule.newTestGeoFire();
 
         TestCallback testCallback1 = new TestCallback();
         geoFire.getLocation("loc1", testCallback1);
         Assert.assertEquals(TestCallback.noLocation("loc1"), testCallback1.getCallbackValue());
 
         TestCallback testCallback2 = new TestCallback();
-        setLoc(geoFire, "loc1", 0, 0, true);
+        geoFireTestingRule.setLoc(geoFire, "loc1", 0, 0, true);
         geoFire.getLocation("loc1", testCallback2);
         Assert.assertEquals(TestCallback.location("loc1", 0, 0), testCallback2.getCallbackValue());
 
         TestCallback testCallback3 = new TestCallback();
-        setLoc(geoFire, "loc2", 1, 1, true);
+        geoFireTestingRule.setLoc(geoFire, "loc2", 1, 1, true);
         geoFire.getLocation("loc2", testCallback3);
         Assert.assertEquals(TestCallback.location("loc2", 1, 1), testCallback3.getCallbackValue());
 
         TestCallback testCallback4 = new TestCallback();
-        setLoc(geoFire, "loc1", 5, 5, true);
+        geoFireTestingRule.setLoc(geoFire, "loc1", 5, 5, true);
         geoFire.getLocation("loc1", testCallback4);
         Assert.assertEquals(TestCallback.location("loc1", 5, 5), testCallback4.getCallbackValue());
 
         TestCallback testCallback5 = new TestCallback();
-        removeLoc(geoFire, "loc1");
+        geoFireTestingRule.removeLoc(geoFire, "loc1");
         geoFire.getLocation("loc1", testCallback5);
         Assert.assertEquals(TestCallback.noLocation("loc1"), testCallback5.getCallbackValue());
     }
 
     @Test
     public void getLocationOnWrongDataReturnsError() throws InterruptedException {
-        GeoFire geoFire = newTestGeoFire();
-        setValueAndWait(geoFire.getDatabaseRefForKey("loc1"), "NaN");
+        GeoFire geoFire = geoFireTestingRule.newTestGeoFire();
+        geoFireTestingRule.setValueAndWait(geoFire.getDatabaseRefForKey("loc1"), "NaN");
 
         final Semaphore semaphore = new Semaphore(0);
         geoFire.getLocation("loc1", new LocationCallback() {
@@ -102,7 +105,7 @@ public class GeoFireIT extends RealDataTest {
         });
         semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS);
 
-        setValueAndWait(geoFire.getDatabaseRefForKey("loc2"), new HashMap<String, Object>() {{
+        geoFireTestingRule.setValueAndWait(geoFire.getDatabaseRefForKey("loc2"), new HashMap<String, Object>() {{
            put("l", 10);
            put("g", "abc");
         }});
@@ -123,7 +126,7 @@ public class GeoFireIT extends RealDataTest {
 
     @Test
     public void invalidCoordinatesThrowException() {
-        GeoFire geoFire = newTestGeoFire();
+        GeoFire geoFire = geoFireTestingRule.newTestGeoFire();
         try {
             geoFire.setLocation("test", new GeoLocation(-91, 90));
             Assert.fail("Did not throw illegal argument exception!");
@@ -145,7 +148,7 @@ public class GeoFireIT extends RealDataTest {
 
     @Test
     public void locationWorksWithLongs() throws InterruptedException, ExecutionException, TimeoutException {
-        GeoFire geoFire = newTestGeoFire();
+        GeoFire geoFire = geoFireTestingRule.newTestGeoFire();
         DatabaseReference databaseReference = geoFire.getDatabaseRefForKey("loc");
 
         final Semaphore semaphore = new Semaphore(0);
