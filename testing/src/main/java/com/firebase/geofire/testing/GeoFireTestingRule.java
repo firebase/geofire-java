@@ -16,6 +16,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Random;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -24,6 +25,10 @@ import org.junit.runner.Description;
 import org.slf4j.impl.SimpleLogger;
 
 public final class GeoFireTestingRule extends TestWatcher {
+
+    static final long TIMEOUT_SECONDS = 5;
+
+    private static final String ALPHA_NUM_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789";
 
     private static final String DATABASE_URL = "https://geofiretest-8d811.firebaseio.com/";
     private static final String SERVICE_ACCOUNT_CREDENTIALS = "service-account.json";
@@ -53,7 +58,7 @@ public final class GeoFireTestingRule extends TestWatcher {
     }
 
     public GeoFire newTestGeoFire() {
-        return new GeoFire(databaseReference.child(TestHelpers.randomAlphaNumericString(16)));
+        return new GeoFire(databaseReference.child(randomAlphaNumericString(16)));
     }
 
     public void setLoc(GeoFire geoFire, String key, double latitude, double longitude) {
@@ -73,7 +78,7 @@ public final class GeoFireTestingRule extends TestWatcher {
             }
         });
         try {
-            assertNull(futureError.get(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
+            assertNull(futureError.get(TIMEOUT_SECONDS, TimeUnit.SECONDS));
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } catch (TimeoutException e) {
@@ -91,7 +96,7 @@ public final class GeoFireTestingRule extends TestWatcher {
         });
         if (wait) {
             try {
-                assertNull(futureError.get(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
+                assertNull(futureError.get(TIMEOUT_SECONDS, TimeUnit.SECONDS));
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             } catch (TimeoutException e) {
@@ -110,7 +115,7 @@ public final class GeoFireTestingRule extends TestWatcher {
         });
         if (wait) {
             try {
-                assertNull(futureError.get(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
+                assertNull(futureError.get(TIMEOUT_SECONDS, TimeUnit.SECONDS));
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             } catch (TimeoutException e) {
@@ -133,12 +138,21 @@ public final class GeoFireTestingRule extends TestWatcher {
             }
         });
 
-        assertTrue("Timeout occured!", semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
+        assertTrue("Timeout occured!", semaphore.tryAcquire(TIMEOUT_SECONDS, TimeUnit.SECONDS));
     }
 
     @Override
     public void finished(Description description) {
         this.databaseReference.setValueAsync(null);
         this.databaseReference = null;
+    }
+
+    private static String randomAlphaNumericString(int length) {
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < length; i++ ) {
+            sb.append(ALPHA_NUM_CHARS.charAt(random.nextInt(ALPHA_NUM_CHARS.length())));
+        }
+        return sb.toString();
     }
 }

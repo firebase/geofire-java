@@ -50,7 +50,7 @@
       <module>android</module>
       <module>common</module>
       <module>java</module>
-      <module>test</module>
+      <module>testing</module>
   </modules>
 
   <distributionManagement>

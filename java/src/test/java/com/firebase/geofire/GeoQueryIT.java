@@ -7,7 +7,6 @@ import static org.junit.Assert.fail;
 import com.firebase.geofire.testing.GeoFireTestingRule;
 import com.firebase.geofire.testing.GeoQueryDataEventTestListener;
 import com.firebase.geofire.testing.GeoQueryEventTestListener;
-import com.firebase.geofire.testing.TestHelpers;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import java.util.Collections;
