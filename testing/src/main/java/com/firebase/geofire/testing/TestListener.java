@@ -12,6 +12,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 abstract class TestListener {
+
     private final List<String> events = new ArrayList<>();
     private final ReentrantLock lock = new ReentrantLock();
     private final Condition condition = lock.newCondition();
@@ -34,8 +35,8 @@ abstract class TestListener {
         try {
             while (!contentsEqual(this.events, events)) {
                 if (!stillWaiting) {
-                  assertEquals(events, new LinkedHashSet<>(this.events));
-                  fail("Timeout occured");
+                    assertEquals(events, new LinkedHashSet<>(this.events));
+                    fail("Timeout occured");
                     return;
                 }
                 stillWaiting = condition.await(10, TimeUnit.SECONDS);
