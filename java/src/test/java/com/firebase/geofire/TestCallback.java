@@ -1,6 +1,7 @@
 package com.firebase.geofire;
 
-import com.firebase.geofire.util.SimpleFuture;
+import com.firebase.geofire.testing.SimpleFuture;
+import com.firebase.geofire.testing.TestHelpers;
 import com.google.firebase.database.DatabaseError;
 import org.junit.Assert;
 

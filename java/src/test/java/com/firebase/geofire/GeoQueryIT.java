@@ -4,6 +4,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.firebase.geofire.testing.GeoFireTestingRule;
+import com.firebase.geofire.testing.TestHelpers;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import java.util.Collections;

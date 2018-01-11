@@ -1,4 +1,4 @@
-package com.firebase.geofire;
+package com.firebase.geofire.testing;
 
 import java.util.Random;
 
