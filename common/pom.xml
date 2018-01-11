@@ -10,10 +10,10 @@
     <relativePath>../</relativePath>
   </parent>
 
-  <artifactId>geofire-android</artifactId>
-  <packaging>aar</packaging>
+  <artifactId>geofire-common</artifactId>
+  <packaging>jar</packaging>
 
-  <name>geofire-android</name>
+  <name>geofire-common</name>
   <description>GeoFire is an open-source library for Android/Java that allows you to store and query a set of keys based on their geographic location.</description>
   <organization>
     <name>Firebase</name>
@@ -39,53 +39,21 @@
   <distributionManagement>
     <repository>
         <id>geofire</id>
-        <url>https://api.bintray.com/maven/firebase/geofire/geofire-android</url>
+        <url>https://api.bintray.com/maven/firebase/geofire/geofire-common</url>
     </repository>
   </distributionManagement>
 
   <build>
-    <plugins>
-      <plugin>
-        <groupId>com.simpligility.maven.plugins</groupId>
-        <artifactId>android-maven-plugin</artifactId>
-        <version>4.3.0</version> <!-- use latest release -->
-        <configuration>
-            <sdk>
-              <platform>26</platform>
-            </sdk>
-        </configuration>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
+    <sourceDirectory>src/main/java</sourceDirectory>
   </build>
 
-  <repositories>
-    <repository>
-       <id>google-extras</id>
-       <url>file://${env.ANDROID_HOME}/extras/google/m2repository</url>
-    </repository>
-    <repository>
-       <id>android-extras</id>
-       <url>file://${env.ANDROID_HOME}/extras/android/m2repository</url>
-    </repository>
-    <repository>
-      <id>google-maven</id>
-      <url>https://maven.google.com</url>
-    </repository>
-  </repositories>
   <dependencies>
-    <dependency>
-      <groupId>com.firebase</groupId>
-      <artifactId>geofire-common</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
+    <!-- Provided dependencies -->
     <dependency>
       <groupId>com.google.firebase</groupId>
-      <artifactId>firebase-database</artifactId>
-      <version>11.4.0</version>
+      <artifactId>firebase-admin</artifactId>
+      <version>[5.3.0,)</version>
       <scope>provided</scope>
-      <type>aar</type>
     </dependency>
     <dependency>
       <groupId>com.google.android</groupId>
@@ -93,6 +61,8 @@
       <version>2.2.1</version>
       <scope>provided</scope>
     </dependency>
+
+    <!-- Test dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

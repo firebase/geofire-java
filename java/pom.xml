@@ -44,11 +44,17 @@
   </distributionManagement>
 
   <build>
-    <sourceDirectory>../src/main/java</sourceDirectory>
-    <testSourceDirectory>../src/test/java</testSourceDirectory>
+    <testSourceDirectory>src/test/java</testSourceDirectory>
   </build>
 
   <dependencies>
+    <dependency>
+      <groupId>com.firebase</groupId>
+      <artifactId>geofire-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- Provided dependencies -->
     <dependency>
       <groupId>com.google.firebase</groupId>
       <artifactId>firebase-admin</artifactId>
@@ -61,10 +67,18 @@
       <version>2.2.1</version>
       <scope>provided</scope>
     </dependency>
+
+    <!-- Test dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.firebase</groupId>
+      <artifactId>geofire-testing</artifactId>
+      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

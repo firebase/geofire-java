@@ -1,14 +1,14 @@
-package com.firebase.geofire;
+package com.firebase.geofire.testing;
 
-import com.firebase.geofire.util.SimpleFuture;
+import static java.util.Locale.US;
+
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.LocationCallback;
 import com.google.firebase.database.DatabaseError;
-import org.junit.Assert;
-
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import static java.util.Locale.US;
+import org.junit.Assert;
 
 public class TestCallback implements LocationCallback {
 
@@ -23,7 +23,7 @@ public class TestCallback implements LocationCallback {
     }
 
     public String getCallbackValue() throws InterruptedException, ExecutionException, TimeoutException {
-        return future.get(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        return future.get(GeoFireTestingRule.TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 
     @Override

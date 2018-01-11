@@ -1,16 +1,25 @@
 package com.firebase.geofire;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import com.firebase.geofire.testing.GeoFireTestingRule;
+import com.firebase.geofire.testing.GeoQueryDataEventTestListener;
+import com.firebase.geofire.testing.GeoQueryEventTestListener;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import junit.framework.Assert;
-import org.junit.Test;
-import org.junit.Rule;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class GeoQueryIT {
@@ -284,15 +293,15 @@ public class GeoQueryIT {
 
             @Override
             public void onGeoQueryError(DatabaseError error) {
-                Assert.fail("onGeoQueryError: " + error.toString());
+                fail("onGeoQueryError: " + error.toString());
             }
         });
 
-        Assert.assertTrue(semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
-        Assert.assertTrue("GeoQuery not ready, test timed out.", done[0]);
+        assertTrue(semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
+        assertTrue("GeoQuery not ready, test timed out.", done[0]);
         // wait for any further events to fire
         Thread.sleep(250);
-        Assert.assertFalse("Key entered after ready event occurred!", failed[0]);
+        assertFalse("Key entered after ready event occurred!", failed[0]);
     }
 
     @Test
@@ -330,7 +339,7 @@ public class GeoQueryIT {
             }
         });
 
-        Assert.assertTrue(semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
+        assertTrue(semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
 
         query.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
@@ -354,7 +363,7 @@ public class GeoQueryIT {
             public void onGeoQueryError(DatabaseError error) {
             }
         });
-        Assert.assertTrue(semaphore.tryAcquire(10, TimeUnit.MILLISECONDS));
+        assertTrue(semaphore.tryAcquire(10, TimeUnit.MILLISECONDS));
     }
 
     @Test
@@ -398,9 +407,9 @@ public class GeoQueryIT {
             }
         });
 
-        Assert.assertTrue(semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
+        assertTrue(semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
         query.setCenter(new GeoLocation(0,0));
-        Assert.assertTrue(semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
-        Assert.assertTrue(done[0]);
+        assertTrue(semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
+        assertTrue(done[0]);
     }
 }

@@ -1,54 +1,64 @@
-package com.firebase.geofire;
+package com.firebase.geofire.testing;
 
-import com.firebase.geofire.util.SimpleFuture;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.auth.FirebaseCredential;
-import com.google.firebase.auth.FirebaseCredentials;
-import com.google.firebase.database.*;
-import java.io.FileNotFoundException;
-import junit.framework.Assert;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.rules.TestWatcher;
-import org.junit.runner.Description;
-import org.junit.runner.Description;
-
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
+import java.util.Random;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
+import org.slf4j.impl.SimpleLogger;
 
 public final class GeoFireTestingRule extends TestWatcher {
+
+    static final long TIMEOUT_SECONDS = 5;
+
+    private static final String ALPHA_NUM_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789";
+
     private static final String DATABASE_URL = "https://geofiretest-8d811.firebaseio.com/";
     private static final String SERVICE_ACCOUNT_CREDENTIALS = "service-account.json";
 
     private DatabaseReference databaseReference;
 
-    @Override public void starting(Description description) {
+    @Override
+    public void starting(Description description) {
         if (FirebaseApp.getApps().isEmpty()) {
-            final FirebaseCredential credentials;
+            final GoogleCredentials credentials;
 
             try {
-                credentials = FirebaseCredentials.fromCertificate(new FileInputStream(SERVICE_ACCOUNT_CREDENTIALS));
+                credentials = GoogleCredentials.fromStream(new FileInputStream(SERVICE_ACCOUNT_CREDENTIALS));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
 
             FirebaseOptions firebaseOptions = new FirebaseOptions.Builder()
                     .setDatabaseUrl(DATABASE_URL)
-                    .setCredential(credentials)
+                    .setCredentials(credentials)
                     .build();
             FirebaseApp.initializeApp(firebaseOptions);
-            FirebaseDatabase.getInstance().setLogLevel(Logger.Level.DEBUG);
+
+            System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
         }
         this.databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl(DATABASE_URL);
     }
 
     public GeoFire newTestGeoFire() {
-        return new GeoFire(databaseReference.child(TestHelpers.randomAlphaNumericString(16)));
+        return new GeoFire(databaseReference.child(randomAlphaNumericString(16)));
     }
 
     public void setLoc(GeoFire geoFire, String key, double latitude, double longitude) {
@@ -68,11 +78,11 @@ public final class GeoFireTestingRule extends TestWatcher {
             }
         });
         try {
-            Assert.assertNull(futureError.get(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
+            assertNull(futureError.get(TIMEOUT_SECONDS, TimeUnit.SECONDS));
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } catch (TimeoutException e) {
-            Assert.fail("Timeout occured!");
+            fail("Timeout occured!");
         }
     }
 
@@ -86,11 +96,11 @@ public final class GeoFireTestingRule extends TestWatcher {
         });
         if (wait) {
             try {
-                Assert.assertNull(futureError.get(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
+                assertNull(futureError.get(TIMEOUT_SECONDS, TimeUnit.SECONDS));
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             } catch (TimeoutException e) {
-                Assert.fail("Timeout occured!");
+                fail("Timeout occured!");
             }
         }
     }
@@ -105,11 +115,11 @@ public final class GeoFireTestingRule extends TestWatcher {
         });
         if (wait) {
             try {
-                Assert.assertNull(futureError.get(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
+                assertNull(futureError.get(TIMEOUT_SECONDS, TimeUnit.SECONDS));
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             } catch (TimeoutException e) {
-                Assert.fail("Timeout occured!");
+                fail("Timeout occured!");
             }
         }
     }
@@ -124,15 +134,25 @@ public final class GeoFireTestingRule extends TestWatcher {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Assert.fail("Firebase error: " + databaseError);
+                fail("Firebase error: " + databaseError);
             }
         });
-        Assert.assertTrue("Timeout occured!", semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
+
+        assertTrue("Timeout occured!", semaphore.tryAcquire(TIMEOUT_SECONDS, TimeUnit.SECONDS));
     }
 
     @Override
     public void finished(Description description) {
-        this.databaseReference.setValue(null);
+        this.databaseReference.setValueAsync(null);
         this.databaseReference = null;
+    }
+
+    private static String randomAlphaNumericString(int length) {
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < length; i++ ) {
+            sb.append(ALPHA_NUM_CHARS.charAt(random.nextInt(ALPHA_NUM_CHARS.length())));
+        }
+        return sb.toString();
     }
 }
