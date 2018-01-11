@@ -1,11 +1,14 @@
-package com.firebase.geofire;
+package com.firebase.geofire.testing;
 
 import static java.util.Locale.US;
 
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQueryDataEventListener;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DataSnapshot;
 
-public final class GeoQueryDataEventTestListener extends TestListener implements GeoQueryDataEventListener {
+public final class GeoQueryDataEventTestListener extends TestListener implements
+    GeoQueryDataEventListener {
   public static String dataEntered(String key, double latitude, double longitude) {
     return String.format(US, "DATA_ENTERED(%s,%f,%f)", key, latitude, longitude);
   }

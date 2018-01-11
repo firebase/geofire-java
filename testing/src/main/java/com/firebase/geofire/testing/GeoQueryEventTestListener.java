@@ -1,5 +1,7 @@
-package com.firebase.geofire;
+package com.firebase.geofire.testing;
 
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.google.firebase.database.DatabaseError;
 
 import static java.util.Locale.US;

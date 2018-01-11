@@ -1,5 +1,7 @@
-package com.firebase.geofire;
+package com.firebase.geofire.testing;
 
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.LocationCallback;
 import com.firebase.geofire.testing.SimpleFuture;
 import com.firebase.geofire.testing.TestHelpers;
 import com.google.firebase.database.DatabaseError;

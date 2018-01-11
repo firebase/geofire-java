@@ -2,6 +2,7 @@ package com.firebase.geofire;
 
 import com.firebase.geofire.testing.GeoFireTestingRule;
 import com.firebase.geofire.testing.SimpleFuture;
+import com.firebase.geofire.testing.TestCallback;
 import com.firebase.geofire.testing.TestHelpers;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

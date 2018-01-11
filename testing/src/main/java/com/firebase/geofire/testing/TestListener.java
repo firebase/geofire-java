@@ -1,4 +1,4 @@
-package com.firebase.geofire;
+package com.firebase.geofire.testing;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
