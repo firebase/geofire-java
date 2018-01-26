@@ -298,7 +298,7 @@ public class GeoQueryIT {
             }
         });
 
-        assertTrue(semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
+        assertTrue(semaphore.tryAcquire(geoFireTestingRule.timeout, TimeUnit.SECONDS));
         assertTrue("GeoQuery not ready, test timed out.", done[0]);
         // wait for any further events to fire
         Thread.sleep(250);
@@ -340,7 +340,7 @@ public class GeoQueryIT {
             }
         });
 
-        assertTrue(semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
+        assertTrue(semaphore.tryAcquire(geoFireTestingRule.timeout, TimeUnit.SECONDS));
 
         query.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
@@ -408,9 +408,9 @@ public class GeoQueryIT {
             }
         });
 
-        assertTrue(semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
+        assertTrue(semaphore.tryAcquire(geoFireTestingRule.timeout, TimeUnit.SECONDS));
         query.setCenter(new GeoLocation(0,0));
-        assertTrue(semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
+        assertTrue(semaphore.tryAcquire(geoFireTestingRule.timeout, TimeUnit.SECONDS));
         assertTrue(done[0]);
     }
 }

@@ -29,7 +29,7 @@ import org.slf4j.impl.SimpleLogger;
  */
 public final class GeoFireTestingRule extends TestWatcher {
 
-    static final long TIMEOUT_SECONDS = 5;
+    static final long DEFAULT_TIMEOUT_SECONDS = 5;
 
     private static final String ALPHA_NUM_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -43,7 +43,7 @@ public final class GeoFireTestingRule extends TestWatcher {
     public final long timeout;
 
     public GeoFireTestingRule(final String databaseUrl) {
-        this(databaseUrl, TIMEOUT_SECONDS);
+        this(databaseUrl, DEFAULT_TIMEOUT_SECONDS);
     }
 
     public GeoFireTestingRule(final String databaseUrl, final long timeout) {

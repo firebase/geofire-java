@@ -1,10 +1,10 @@
 package com.firebase.geofire.testing;
 
-import static com.firebase.geofire.testing.GeoFireTestingRule.TIMEOUT_SECONDS;
 import static java.util.Locale.US;
 
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.LocationCallback;
+import com.firebase.geofire.testing.GeoFireTestingRule;
 import com.google.firebase.database.DatabaseError;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -30,7 +30,7 @@ public final class TestCallback implements LocationCallback {
     public final long timeout;
 
     public TestCallback() {
-        this(TIMEOUT_SECONDS);
+        this(GeoFireTestingRule.DEFAULT_TIMEOUT_SECONDS);
     }
 
     public TestCallback(final long timeout) {
