@@ -26,7 +26,7 @@ public final class TestCallback implements LocationCallback {
 
     private final SimpleFuture<String> future = new SimpleFuture<>();
 
-    /** Timeout in milliseconds. */
+    /** Timeout in seconds. */
     public final long timeout;
 
     public TestCallback() {

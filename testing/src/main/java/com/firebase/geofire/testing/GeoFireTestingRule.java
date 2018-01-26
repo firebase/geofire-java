@@ -39,7 +39,7 @@ public final class GeoFireTestingRule extends TestWatcher {
 
     public final String databaseUrl;
 
-    /** Timeout in milliseconds. */
+    /** Timeout in seconds. */
     public final long timeout;
 
     public GeoFireTestingRule(final String databaseUrl) {
