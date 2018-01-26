@@ -20,7 +20,9 @@ import java.util.concurrent.*;
 
 @RunWith(JUnit4.class)
 public class GeoFireIT {
-    @Rule public final GeoFireTestingRule geoFireTestingRule = new GeoFireTestingRule();
+    static final String DATABASE_URL = "https://geofiretest-8d811.firebaseio.com/";
+
+    @Rule public final GeoFireTestingRule geoFireTestingRule = new GeoFireTestingRule(DATABASE_URL);
 
     @Test
     public void geoFireSetsLocations() throws InterruptedException, ExecutionException, TimeoutException {
@@ -55,7 +57,7 @@ public class GeoFireIT {
             put("l", Arrays.asList(-89.1, -89.1));
             put("g", "400th7z6gs");
         }});
-        Object result = future.get(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        Object result = future.get(geoFireTestingRule.timeout, TimeUnit.SECONDS);
         Assert.assertEquals(expected, ((DataSnapshot)result).getValue());
     }
 
@@ -105,7 +107,7 @@ public class GeoFireIT {
                 semaphore.release();
             }
         });
-        semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        semaphore.tryAcquire(geoFireTestingRule.timeout, TimeUnit.SECONDS);
 
         geoFireTestingRule.setValueAndWait(geoFire.getDatabaseRefForKey("loc2"), new HashMap<String, Object>() {{
            put("l", 10);
@@ -123,7 +125,7 @@ public class GeoFireIT {
                 semaphore.release();
             }
         });
-        semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        semaphore.tryAcquire(geoFireTestingRule.timeout, TimeUnit.SECONDS);
     }
 
     @Test
@@ -163,7 +165,7 @@ public class GeoFireIT {
                 semaphore.release();
             }
         });
-        semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        semaphore.tryAcquire(geoFireTestingRule.timeout, TimeUnit.SECONDS);
 
         TestCallback testCallback = new TestCallback();
         geoFire.getLocation("loc", testCallback);

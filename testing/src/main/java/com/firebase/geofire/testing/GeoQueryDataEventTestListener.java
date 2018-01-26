@@ -7,6 +7,9 @@ import com.firebase.geofire.GeoQueryDataEventListener;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DataSnapshot;
 
+/**
+ * This listener can be used for testing your Geofire instance and asserting that certain events were sent.
+ */
 public final class GeoQueryDataEventTestListener extends TestListener implements
     GeoQueryDataEventListener {
   public static String dataEntered(String key, double latitude, double longitude) {
@@ -30,10 +33,12 @@ public final class GeoQueryDataEventTestListener extends TestListener implements
   private final boolean recordChanged;
   private final boolean recordExited;
 
+  /** This will by default record all of the events. */
   public GeoQueryDataEventTestListener() {
     this(true, true, true, true);
   }
 
+  /** Allows you to specify exactly which of the events you want to record. */
   public GeoQueryDataEventTestListener(boolean recordEntered, boolean recordMoved,
       boolean recordChanged, boolean recordExited) {
     this.recordEntered = recordEntered;

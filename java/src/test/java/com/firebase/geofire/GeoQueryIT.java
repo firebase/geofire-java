@@ -1,5 +1,6 @@
 package com.firebase.geofire;
 
+import static com.firebase.geofire.GeoFireIT.DATABASE_URL;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -23,7 +24,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class GeoQueryIT {
-    @Rule public final GeoFireTestingRule geoFireTestingRule = new GeoFireTestingRule();
+    @Rule public final GeoFireTestingRule geoFireTestingRule = new GeoFireTestingRule(DATABASE_URL);
 
     @Test
     public void keyEntered() throws InterruptedException {
@@ -297,7 +298,7 @@ public class GeoQueryIT {
             }
         });
 
-        assertTrue(semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
+        assertTrue(semaphore.tryAcquire(geoFireTestingRule.timeout, TimeUnit.SECONDS));
         assertTrue("GeoQuery not ready, test timed out.", done[0]);
         // wait for any further events to fire
         Thread.sleep(250);
@@ -339,7 +340,7 @@ public class GeoQueryIT {
             }
         });
 
-        assertTrue(semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
+        assertTrue(semaphore.tryAcquire(geoFireTestingRule.timeout, TimeUnit.SECONDS));
 
         query.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
@@ -407,9 +408,9 @@ public class GeoQueryIT {
             }
         });
 
-        assertTrue(semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
+        assertTrue(semaphore.tryAcquire(geoFireTestingRule.timeout, TimeUnit.SECONDS));
         query.setCenter(new GeoLocation(0,0));
-        assertTrue(semaphore.tryAcquire(TestHelpers.TIMEOUT_SECONDS, TimeUnit.SECONDS));
+        assertTrue(semaphore.tryAcquire(geoFireTestingRule.timeout, TimeUnit.SECONDS));
         assertTrue(done[0]);
     }
 }
