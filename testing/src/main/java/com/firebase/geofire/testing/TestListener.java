@@ -12,7 +12,6 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 abstract class TestListener {
-
     private final List<String> events = new ArrayList<>();
     private final ReentrantLock lock = new ReentrantLock();
     private final Condition condition = lock.newCondition();
@@ -28,6 +27,11 @@ abstract class TestListener {
         }
     }
 
+    /**
+     * This allows you to assert that certain events were retrieved.
+     * You can use the static factory methods on {@link GeoQueryDataEventTestListener} or
+     * {@link GeoQueryEventTestListener} to retrieve the strings.
+     */
     public void expectEvents(Collection<String> events) throws InterruptedException {
         boolean stillWaiting = true;
         lock.lock();

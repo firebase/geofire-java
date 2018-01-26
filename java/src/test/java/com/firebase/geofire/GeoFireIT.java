@@ -20,7 +20,9 @@ import java.util.concurrent.*;
 
 @RunWith(JUnit4.class)
 public class GeoFireIT {
-    @Rule public final GeoFireTestingRule geoFireTestingRule = new GeoFireTestingRule();
+    static final String DATABASE_URL = "https://geofiretest-8d811.firebaseio.com/";
+
+    @Rule public final GeoFireTestingRule geoFireTestingRule = new GeoFireTestingRule(DATABASE_URL);
 
     @Test
     public void geoFireSetsLocations() throws InterruptedException, ExecutionException, TimeoutException {

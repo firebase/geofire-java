@@ -1,5 +1,6 @@
 package com.firebase.geofire.testing;
 
+import static com.firebase.geofire.testing.GeoFireTestingRule.TIMEOUT_SECONDS;
 import static java.util.Locale.US;
 
 import com.firebase.geofire.GeoLocation;
@@ -10,10 +11,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.junit.Assert;
 
-public class TestCallback implements LocationCallback {
-
-    private final SimpleFuture<String> future = new SimpleFuture<>();
-
+/**
+ * This is a test callback for the LocationCallback interface.
+ * It allows you to verify that a certain value was set on the given location.
+ */
+public final class TestCallback implements LocationCallback {
     public static String location(String key, double latitude, double longitude) {
         return String.format(US, "LOCATION(%s,%f,%f)", key, latitude, longitude);
     }
@@ -22,8 +24,25 @@ public class TestCallback implements LocationCallback {
         return String.format("NO_LOCATION(%s)", key);
     }
 
+    private final SimpleFuture<String> future = new SimpleFuture<>();
+
+    /** Timeout in milliseconds. */
+    public final long timeout;
+
+    public TestCallback() {
+        this(TIMEOUT_SECONDS);
+    }
+
+    public TestCallback(final long timeout) {
+        this.timeout = timeout;
+    }
+
+    /**
+     * Returns the callback value as a string in a blocking fashion.
+     * It's one of the values that are returned by the static factory methods above.
+     */
     public String getCallbackValue() throws InterruptedException, ExecutionException, TimeoutException {
-        return future.get(GeoFireTestingRule.TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        return future.get(timeout, TimeUnit.SECONDS);
     }
 
     @Override
@@ -31,6 +50,7 @@ public class TestCallback implements LocationCallback {
         if (future.isDone()) {
             throw new IllegalStateException("Already received callback");
         }
+
         if (location != null) {
             future.put(location(key, location.latitude, location.longitude));
         } else {
