@@ -82,16 +82,16 @@ public final class GeoFireTestingRule extends TestWatcher {
      * Sets a given location key from the latitude and longitude on the provided Geofire instance.
      * This operation will run asychronously.
      */
-    public void setLoc(GeoFire geoFire, String key, double latitude, double longitude) {
-        setLoc(geoFire, key, latitude, longitude, false);
+    public void setLocation(GeoFire geoFire, String key, double latitude, double longitude) {
+        setLocation(geoFire, key, latitude, longitude, false);
     }
 
     /**
      * Removes a location on the provided Geofire instance.
      * This operation will run asychronously.
      */
-    public void removeLoc(GeoFire geoFire, String key) {
-        removeLoc(geoFire, key, false);
+    public void removeLocation(GeoFire geoFire, String key) {
+        removeLocation(geoFire, key, false);
     }
 
     /** Sets the value on the given databaseReference and waits until the operation has successfully finished. */
@@ -116,7 +116,7 @@ public final class GeoFireTestingRule extends TestWatcher {
      * Sets a given location key from the latitude and longitude on the provided Geofire instance.
      * This operation will run asychronously or synchronously depending on the wait boolean.
      */
-    public void setLoc(GeoFire geoFire, String key, double latitude, double longitude, boolean wait) {
+    public void setLocation(GeoFire geoFire, String key, double latitude, double longitude, boolean wait) {
         final SimpleFuture<DatabaseError> futureError = new SimpleFuture<DatabaseError>();
         geoFire.setLocation(key, new GeoLocation(latitude, longitude), new GeoFire.CompletionListener() {
             @Override
@@ -139,7 +139,7 @@ public final class GeoFireTestingRule extends TestWatcher {
      * Removes a location on the provided Geofire instance.
      * This operation will run asychronously or synchronously depending on the wait boolean.
      */
-    public void removeLoc(GeoFire geoFire, String key, boolean wait) {
+    public void removeLocation(GeoFire geoFire, String key, boolean wait) {
         final SimpleFuture<DatabaseError> futureError = new SimpleFuture<DatabaseError>();
         geoFire.removeLocation(key, new GeoFire.CompletionListener() {
             @Override

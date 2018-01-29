@@ -27,9 +27,9 @@ public class GeoFireIT {
     @Test
     public void geoFireSetsLocations() throws InterruptedException, ExecutionException, TimeoutException {
         GeoFire geoFire = geoFireTestingRule.newTestGeoFire();
-        geoFireTestingRule.setLoc(geoFire, "loc1", 0.1, 0.1);
-        geoFireTestingRule.setLoc(geoFire, "loc2", 50.1, 50.1);
-        geoFireTestingRule.setLoc(geoFire, "loc3", -89.1, -89.1, true);
+        geoFireTestingRule.setLocation(geoFire, "loc1", 0.1, 0.1);
+        geoFireTestingRule.setLocation(geoFire, "loc2", 50.1, 50.1);
+        geoFireTestingRule.setLocation(geoFire, "loc3", -89.1, -89.1, true);
 
         final SimpleFuture<Object> future = new SimpleFuture<>();
         geoFire.getDatabaseReference().addListenerForSingleValueEvent(new ValueEventListener() {
@@ -70,22 +70,22 @@ public class GeoFireIT {
         Assert.assertEquals(TestCallback.noLocation("loc1"), testCallback1.getCallbackValue());
 
         TestCallback testCallback2 = new TestCallback();
-        geoFireTestingRule.setLoc(geoFire, "loc1", 0, 0, true);
+        geoFireTestingRule.setLocation(geoFire, "loc1", 0, 0, true);
         geoFire.getLocation("loc1", testCallback2);
         Assert.assertEquals(TestCallback.location("loc1", 0, 0), testCallback2.getCallbackValue());
 
         TestCallback testCallback3 = new TestCallback();
-        geoFireTestingRule.setLoc(geoFire, "loc2", 1, 1, true);
+        geoFireTestingRule.setLocation(geoFire, "loc2", 1, 1, true);
         geoFire.getLocation("loc2", testCallback3);
         Assert.assertEquals(TestCallback.location("loc2", 1, 1), testCallback3.getCallbackValue());
 
         TestCallback testCallback4 = new TestCallback();
-        geoFireTestingRule.setLoc(geoFire, "loc1", 5, 5, true);
+        geoFireTestingRule.setLocation(geoFire, "loc1", 5, 5, true);
         geoFire.getLocation("loc1", testCallback4);
         Assert.assertEquals(TestCallback.location("loc1", 5, 5), testCallback4.getCallbackValue());
 
         TestCallback testCallback5 = new TestCallback();
-        geoFireTestingRule.removeLoc(geoFire, "loc1");
+        geoFireTestingRule.removeLocation(geoFire, "loc1");
         geoFire.getLocation("loc1", testCallback5);
         Assert.assertEquals(TestCallback.noLocation("loc1"), testCallback5.getCallbackValue());
     }
