@@ -74,7 +74,7 @@ For Android applications:
 
 ```groovy
 dependencies {
-    compile 'com.firebase:geofire-android:2.3.0'
+    compile 'com.firebase:geofire-android:2.3.1'
 }
 ```
 
@@ -82,7 +82,7 @@ For non-Android Java applications:
 
 ```groovy
 dependencies {
-    compile 'com.firebase:geofire-java:2.3.0'
+    compile 'com.firebase:geofire-java:2.3.1'
 }
 
 ```
@@ -97,7 +97,7 @@ For Android applications:
 <dependency>
   <groupId>com.firebase</groupId>
   <artifactId>geofire-android</artifactId>
-  <version>2.3.0</version>
+  <version>2.3.1</version>
 </dependency>
 ```
 
@@ -107,7 +107,7 @@ For non-Android Java applications:
 <dependency>
   <groupId>com.firebase</groupId>
   <artifactId>geofire-java</artifactId>
-  <version>2.3.0</version>
+  <version>2.3.1</version>
 </dependency>
 ```
 
