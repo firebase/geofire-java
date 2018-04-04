@@ -84,6 +84,13 @@
       <type>aar</type>
     </dependency>
     <dependency>
+      <groupId>com.android.support</groupId>
+      <artifactId>support-v4</artifactId>
+      <version>27.1.0</version>
+      <scope>provided</scope>
+      <type>aar</type>
+    </dependency>
+    <dependency>
       <groupId>com.google.android</groupId>
       <artifactId>android</artifactId>
       <version>2.2.1</version>
