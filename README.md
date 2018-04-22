@@ -290,7 +290,7 @@ one additional event type:
 Adding a data event listener is similar to adding a key event listener:
 
 ```java
-geoQuery.addGeoQueryEventListener(new GeoQueryDataEventListener() {
+geoQuery.addGeoQueryDataEventListener(new GeoQueryDataEventListener() {
 
   @Override
   public void onDataEntered(DataSnapshot dataSnapshot, GeoLocation location) {
