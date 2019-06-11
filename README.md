@@ -1,25 +1,27 @@
-# GeoFire for Android/Java — Realtime location queries with Firebase
+# GeoFire for Java — Realtime location queries with Firebase
 
 [![Build Status](https://travis-ci.org/firebase/geofire-java.svg?branch=master)](https://travis-ci.org/firebase/geofire-java?branch=master)
 
-GeoFire is an open-source library for Android/Java that allows you to store and query a
+**Note** This library is only for _server side_ Java development. If you want to use GeoFire
+in your Android application, see [`geofire-android`](https://github.com/firebase/geofire-android).
+
+GeoFire is an open-source library for Java that allows you to store and query a
 set of keys based on their geographic location.
 
 At its heart, GeoFire simply stores locations with string keys. Its main
 benefit however, is the possibility of querying keys within a given geographic
 area - all in realtime.
 
-GeoFire uses the [Firebase](https://www.firebase.com/?utm_source=geofire-java) database for
+GeoFire uses the [Firebase Realtime Database](https://firebase.google.com/products/realtime-database/) database for
 data storage, allowing query results to be updated in realtime as they change.
 GeoFire *selectively loads only the data near certain locations, keeping your
 applications light and responsive*, even with extremely large datasets.
 
-A compatible GeoFire client is also available for [Objective-C](https://github.com/firebase/geofire-objc)
-and [JavaScript](https://github.com/firebase/geofire-js).
+GeoFire clients are also available for other languages:
 
-For a full example of an application using GeoFire to display realtime transit data, see the
-[SFVehicles](https://github.com/firebase/geofire-java/tree/master/examples/SFVehicles) example in
-Android app in this repo.
+  * [Android](https://github.com/firebase/geofire-android)
+  * [Objective-C (iOS)](https://github.com/firebase/geofire-objc)
+  * [JavaScript (Web)](https://github.com/firebase/geofire-js)
 
 ### Integrating GeoFire with your data
 
@@ -57,28 +59,14 @@ here](https://github.com/firebase/geofire-js/blob/master/examples/securityRules/
 and [read our docs for more information about indexing your data](https://www.firebase.com/docs/security/guide/indexing-data.html).
 
 
-## Including GeoFire in your project Android/Java
+## Including GeoFire in your Java project
 
-In order to use GeoFire in your project, you need to [add the Firebase Android
-SDK](https://firebase.google.com/docs/android/setup). After that you can include GeoFire with one of the choices below.
-
-Note that after version `1.1.1` the artifact `com.firebase:geofire` is no
-longer updated and has been replaced by the separate Android and Java
-artifacts as described below.
+In order to use GeoFire in your project, you need to [add the Firebase Admin
+SDK](https://firebase.google.com/docs/admin/setup). After that you can include GeoFire with one of the choices below.
 
 ### Gradle
 
-Add a dependency for GeoFire to your `gradle.build` file.
-
-For Android applications:
-
-```groovy
-dependencies {
-    compile 'com.firebase:geofire-android:2.3.1'
-}
-```
-
-For non-Android Java applications:
+Add a dependency for GeoFire to your `build.gradle` file:
 
 ```groovy
 dependencies {
@@ -89,19 +77,7 @@ dependencies {
 
 ### Maven
 
-GeoFire also works with Maven.
-
-For Android applications:
-
-```xml
-<dependency>
-  <groupId>com.firebase</groupId>
-  <artifactId>geofire-android</artifactId>
-  <version>2.3.1</version>
-</dependency>
-```
-
-For non-Android Java applications:
+Add a dependency for GeoFire to your `pom.xml` file:
 
 ```xml
 <dependency>
@@ -111,22 +87,7 @@ For non-Android Java applications:
 </dependency>
 ```
 
-### Jar-File
-
-You can also download the jar file from the latest release on the [releases
-page](https://github.com/firebase/geofire-java/releases).
-
-
-## Getting Started with Firebase
-
-GeoFire requires the Firebase database in order to store location data. You can [sign up here for a free
-account](https://console.firebase.google.com/).
-
-
-## Quickstart
-
-This is a quickstart on how to use GeoFire's core features. There is also a
-[full API reference available online](https://geofire-java.firebaseapp.com/docs/).
+## Usage
 
 ### GeoFire
 
@@ -338,24 +299,10 @@ the query to the new visible map area after a user scrolls.
 
 
 ## Deployment
+
 - In your local environment set `$BINTRAY_USER` and `$BINTRAY_KEY` to your
   Bintray.com username and API key.
 - Checkout and update the master branch.
 - Run `./release.sh` to build and deploy.
 - On bintray.com, publish the draft artifacts.
-- Update [firebase-versions](https://github.com/firebase/firebase-clients/blob/master/versions/firebase-versions.json) with the changelog from this version
-- tweet the release
-
-## API Reference
-
-[A full API reference is available here](https://geofire-java.firebaseapp.com/docs/).
-
-
-## Contributing
-
-If you want to contribute to GeoFire for Java, clone the repository
-and just start making pull requests.
-
-```bash
-git clone https://github.com/firebase/geofire-java.git
 ```
