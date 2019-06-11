@@ -28,17 +28,19 @@
 
 package com.firebase.geofire;
 
+import static com.firebase.geofire.util.GeoUtils.capRadius;
+
 import com.firebase.geofire.core.GeoHash;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.GenericTypeIndicator;
-import java.lang.Throwable;
-import java.util.*;
+import com.google.firebase.database.ValueEventListener;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
-
-import static com.firebase.geofire.util.GeoUtils.capRadius;
 
 /**
  * A GeoFire instance is used to store geo location data in Firebase.
@@ -123,14 +125,7 @@ public class GeoFire {
      */
     public GeoFire(DatabaseReference databaseReference) {
         this.databaseReference = databaseReference;
-        EventRaiser eventRaiser;
-        try {
-            eventRaiser = new AndroidEventRaiser();
-        } catch (Throwable e) {
-            // We're not on Android, use the ThreadEventRaiser
-            eventRaiser = new ThreadEventRaiser();
-        }
-        this.eventRaiser = eventRaiser;
+        this.eventRaiser = new ThreadEventRaiser();
     }
 
     /**
@@ -179,7 +174,8 @@ public class GeoFire {
                 }
             });
         } else {
-            keyRef.setValue(updates, geoHash.getGeoHashString());
+            Object priority = geoHash.getGeoHashString();
+            keyRef.setValueAsync(updates, priority);
         }
     }
 
@@ -212,7 +208,7 @@ public class GeoFire {
                 }
             });
         } else {
-            keyRef.setValue(null);
+            keyRef.removeValueAsync();
         }
     }
 
