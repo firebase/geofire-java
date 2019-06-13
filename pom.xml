@@ -47,7 +47,6 @@
   </properties>
 
   <modules>
-      <module>android</module>
       <module>common</module>
       <module>java</module>
       <module>testing</module>
