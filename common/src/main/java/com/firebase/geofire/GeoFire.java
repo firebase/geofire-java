@@ -180,6 +180,35 @@ public class GeoFire {
     }
 
     /**
+     * Update the location for a given key.
+     *
+     * @param key                The key to save the location for
+     * @param location           The location of this key
+     * @param completionListener A listener that is called once the location was successfully saved on the server or an
+     *                           error occurred
+     */
+    public void updateLocation(final String key, final GeoLocation location, final CompletionListener completionListener){
+        if (key == null) {
+            throw new NullPointerException();
+        }
+        DatabaseReference keyRef = this.getDatabaseRefForKey(key);
+        GeoHash geoHash = new GeoHash(location);
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("g", geoHash.getGeoHashString());
+        updates.put("l", Arrays.asList(location.latitude, location.longitude));
+        if (completionListener != null) {
+            keyRef.updateChildren(updates, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                    completionListener.onComplete(key, databaseError);
+                }
+            });
+        } else {
+            keyRef.updateChildren(updates);
+        }
+    }
+
+    /**
      * Removes the location for a key from this GeoFire.
      *
      * @param key The key to remove from this GeoFire
